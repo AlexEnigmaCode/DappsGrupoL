@@ -1,20 +1,33 @@
+import org.jetbrains.kotlin.fir.types.CompilerConeAttributes.EnhancedNullability.key
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
 	id("org.springframework.boot") version "2.7.3"
 	id("io.spring.dependency-management") version "1.0.13.RELEASE"
+	id ("java")
+	id ("idea")
+	id ("eclipse")
 	war
 	kotlin("jvm") version "1.6.21"
 	kotlin("plugin.spring") version "1.6.21"
 	kotlin("plugin.jpa") version "1.6.21"
 }
 
+
+
+
+
 group = "ar.edu.unq.desapp.grupoL"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
+java.sourceCompatibility = JavaVersion.VERSION_1_8
+
+
 
 repositories {
 	mavenCentral()
+	mavenLocal()
+
 }
 
 dependencies {
