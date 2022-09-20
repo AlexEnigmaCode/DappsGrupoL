@@ -23,7 +23,7 @@ class InitServiceInMemory {
     fun initialize() {
         if (className == "org.h2.Driver") {
             logger.info("Init Data Using H2 DB")
-            fireInitialData()
+           // fireInitialData()
         }
     }
 

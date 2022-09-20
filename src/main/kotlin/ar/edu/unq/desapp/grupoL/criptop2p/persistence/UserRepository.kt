@@ -10,6 +10,7 @@ import java.util.*
 @Repository
 interface UserRepository : CrudRepository<User?, Int?> {
     override fun findById(id: Int): Optional<User?>
-    override fun findAll(): List<User?>
-    override fun deleteById(id: Int)
+   // override fun findAll(): MutableIterable<User?>
+     override fun findAll(): List<User>
+     override fun deleteById(id: Int)
 }
