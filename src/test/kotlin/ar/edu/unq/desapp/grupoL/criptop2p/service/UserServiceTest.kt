@@ -4,7 +4,8 @@ import ar.edu.unq.desapp.grupoL.criptop2p.UserNotFoundException
 import ar.edu.unq.desapp.grupoL.criptop2p.UserRegisterMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.UserUpdateMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.UsernameExistException
-import ar.edu.unq.desapp.grupoL.criptop2p.model.User
+import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
+import ar.edu.unq.desapp.grupoL.criptop2p.persistence.UserRepository
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -18,9 +19,11 @@ import org.springframework.boot.test.context.SpringBootTest
 internal class UserServiceTest {
     @Autowired
    lateinit var   userService: UserService
+    @Autowired
+   lateinit var  repoService: UserRepository
 
 
-    var  users =listOf<User>()
+    var  users =listOf<Usuario>()
 
     lateinit var user1: UserRegisterMapper
     lateinit var user2: UserRegisterMapper
@@ -28,6 +31,7 @@ internal class UserServiceTest {
 
     @BeforeEach
     fun setUp() {
+        repoService.deleteAll(users)
         user1 = UserRegisterMapper( "Ale", "Fariña", "ale@gmail.com", "address1","1", 123, 7  )
 
         user2 = UserRegisterMapper( "Ulises", "Lopez","ulisese@gmail.com", "address2","2", 234, 8 )
@@ -35,7 +39,7 @@ internal class UserServiceTest {
         updateUser = UserUpdateMapper( "ale@edu.unq.com", "another_address1","11", 1234, 9  )
     }
 
-    //getUsers
+    /**getUsers*/
     @Test
     fun al_solicitar_a_una_DB_sin_usuarios_no_devuelve_ningun_usuario() {
         users = userService.findAll()
@@ -52,20 +56,18 @@ internal class UserServiceTest {
         assertEquals(2, users.size)
     }
 
+   /**Register */
 
-
-
-    //Register
     @Test
-    fun el_usuario_registrado_mantiene_las_mismas_propiedades_que_antes_de_registrarse() {
+    fun el_usuario_registrado_mantiene_las_mismas_propiedades() {
         val newser1 = userService.register(user1)
         assertEquals(user1.name, newser1.name)
         assertEquals(user1.surname, newser1.surname)
         assertEquals(user1.email, newser1.email)
-        assertEquals(user1.adress, newser1.address)
-        assertEquals(user1.password, newser1.password)
+        assertEquals(user1.address, newser1.address)
+        assertNotEquals(user1.password, newser1.password)
         assertEquals(user1.cvu, newser1.cvu)
-        assertEquals(user1.walletAdress, newser1.walletAddress)
+        assertEquals(user1.walletAddress, newser1.walletAddress)
     }
 
 
@@ -83,7 +85,7 @@ internal class UserServiceTest {
     }
 
 
-
+    /**logginr*/
     @Test
     fun al_intentar_loguearse_un_usuario_no_registrado_Lanza_excepcion() {
         userService.register(user1)
@@ -92,19 +94,20 @@ internal class UserServiceTest {
 
     @Test
     fun un_usuario_se_loguea_si_esta_registrado() {
-        userService.register(user1)
-        val newser1= userService.login( "ale@gmail.com", "1")
-        assertEquals(user1.name, newser1.name)
-        assertEquals(user1.surname, newser1.surname)
-        assertEquals(user1.email, newser1.email)
-        assertEquals(user1.adress, newser1.address)
-        assertEquals(user1.password, newser1.password)
-        assertEquals(user1.cvu, newser1.cvu)
-        assertEquals(user1.walletAdress, newser1.walletAddress)
+        val registered= userService.register(user1)
+        val logged= userService.login( registered.email!!, registered.password!!)
+        assertEquals(registered.id,  logged.id)
+        assertEquals(registered.name,  logged.name)
+        assertEquals(registered.surname, logged.surname)
+        assertEquals(registered.email,  logged.email)
+        assertEquals(registered.address,  logged.address)
+        assertEquals(registered.password, logged.password)
+        assertEquals(registered.cvu,  logged.cvu)
+        assertEquals(registered.walletAddress,  logged.walletAddress)
     }
 
 
-  // findById
+  /** findById*/
     @Test
     fun al_intentar_buscar_un_usuario_con_id_no_existente_Lanza_excepcion() {
        userService.register(user1)
@@ -126,7 +129,7 @@ internal class UserServiceTest {
     }
 
 
-    // update
+    /** update* */
     @Test
     fun al_intentar_actualizar_un_usuario_con_id_no_existente_Lanza_excepcion() {
         userService.register(user1)
@@ -136,23 +139,24 @@ internal class UserServiceTest {
     @Test
     fun Si_el_id_es_existente_Actualiza_el_usuario_asociado_con_ese_id_() {
         val newuser = userService.register(user1)
-        val update = userService.update(newuser.id!!, updateUser)
-        assertEquals( newuser.id, update.id)
-        assertEquals( newuser.name, update.name)
-        assertEquals( newuser.surname, update.surname)
-        assertEquals( "ale@edu.unq.com", update.email)
-        assertEquals( "another_address1", update.address)
-        assertEquals( "11", update.password)
-        assertEquals( 1234 ,update.cvu)
-        assertEquals( 9, update.walletAddress)
+        val updated = userService.update(newuser.id!!, updateUser)
+        val restored= userService.findByID(newuser.id!!)
+        assertEquals( updated.id, restored.id)
+        assertEquals( updated.name, restored.name)
+        assertEquals( updated.surname, restored.surname)
+        assertEquals( updated.email, restored.email)
+        assertEquals( updated.address, restored.address)
+        assertEquals( updated.password, restored.password)
+        assertEquals( updated.cvu ,restored.cvu)
+        assertEquals(updated.walletAddress , restored.walletAddress)
     }
 
 
-    //DeleteById
+    /** DeleteById */
     @Test
-    fun al_intentar_borrar_un_usuario_con_id_no_existente_no_hace_nada() {
+    fun al_intentar_borrar_un_usuario_con_id_no_existente_lanza_excepcionm_y_La_DB_se_mantiene_sin_alterar() {
         userService.register(user1)
-        userService.deleteById(2)
+        assertThrows<UserNotFoundException> {  userService.deleteById(2)}
         val users = userService.findAll()
         assertTrue( users.isNotEmpty() )
     }
@@ -166,9 +170,9 @@ internal class UserServiceTest {
     }
 
 
-
     @AfterEach
     fun tearDown() {
+       repoService.deleteAll(users)
     }
 
 }

@@ -7,7 +7,7 @@ import javax.persistence.Table
 
 @Entity
 @Table(name = "users")
-class User {
+class Usuario {
     @Id
     var id: Int? = null
 
@@ -43,4 +43,7 @@ class User {
         this.cvu= cvu
         this.walletAddress = walletAddress
     }
+
+
+
 }

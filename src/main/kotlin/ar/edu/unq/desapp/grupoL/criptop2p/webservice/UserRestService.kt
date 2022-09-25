@@ -34,7 +34,7 @@ class UserRestService {
 
 
 
-    //register a user
+    /**register a user*/
     @PostMapping("/api/register")
     fun register(@RequestBody user: UserRegisterMapper): ResponseEntity<*> {
         var response : ResponseEntity<*>?
@@ -63,7 +63,7 @@ class UserRestService {
         return response!!
     }
 
-    //login a user
+    /**login a user*/
     @PostMapping("/api/login")
     fun login(@RequestBody user: UserLoginMapper): ResponseEntity<*> {
         var response : ResponseEntity<*>?
@@ -83,7 +83,7 @@ class UserRestService {
     }
 
 
-    //get user by id
+    /**get user by id**/
     @GetMapping("/api/users/{id}")
     fun userById(@PathVariable("id") id: Int): ResponseEntity<*> {
         var response : ResponseEntity<*>?
@@ -111,7 +111,7 @@ class UserRestService {
 
 
 
-    // Update
+    /** Update*/
     @PutMapping("/api/users/{id}")
     fun update (@PathVariable("id") id: Int,@RequestBody entity: UserUpdateMapper): ResponseEntity<*> {
         var response : ResponseEntity<*>?
@@ -132,13 +132,13 @@ class UserRestService {
             ResponseEntity.status(404)
 
             val resultado: MutableMap<String, String> = HashMap()
-            resultado["user with id not found"] = id.toString()
+            resultado["usuario con id no encontrado"] = id.toString()
             response = ResponseEntity.ok().body<Map<String, String>>(resultado)
         }
         return response !!
     }
 
-    //Delete user by id
+    /**Delete user by id*/
     @DeleteMapping("/api/users/{id}")
     fun deleteUserById(@PathVariable("id") id: Int): ResponseEntity<*> {
         var response : ResponseEntity<*>?
@@ -159,7 +159,7 @@ class UserRestService {
     }
 
 
-
+     /**version*/
     @get:ResponseBody
     @get:RequestMapping(value = ["/api/version"], method = [RequestMethod.GET])
     val version: ResponseEntity<*>
