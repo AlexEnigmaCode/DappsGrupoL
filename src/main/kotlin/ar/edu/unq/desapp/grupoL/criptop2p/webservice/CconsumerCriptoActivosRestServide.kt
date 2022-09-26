@@ -37,7 +37,7 @@ class CconsumerCriptoActivosRestServide {
              val fecha:String = LocalDateTime.now().toString()
             criptoActivos =  list.map { CriptoActivo(it.symbol, it.price, fecha )}
         }
-        criptoActivoService.saveAll(criptoActivos )
+          criptoActivoService.saveAll(criptoActivos)
         return criptoActivos
     }
 

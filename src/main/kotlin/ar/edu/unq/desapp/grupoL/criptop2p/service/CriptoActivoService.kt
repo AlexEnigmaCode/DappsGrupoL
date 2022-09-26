@@ -24,7 +24,7 @@ class CriptoActivoService {
     @Transactional
     fun saveAll(criptoActivos: List<CriptoActivo>): MutableList<CriptoActivo> {
 
-        return repository.saveAll(criptoActivos)
+        return repository.saveAll(criptoActivos.asIterable()).toMutableList()
     }
 
     @Transactional
