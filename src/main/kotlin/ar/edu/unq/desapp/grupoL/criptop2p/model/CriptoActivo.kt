@@ -1,6 +1,7 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.model
 
 
+import java.time.LocalDate
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -11,15 +12,20 @@ import javax.persistence.Table
 class CriptoActivo {
 
     @Id
-    var symbol: String? = null
+    var criptoactivo: String? = null
 
     @Column
-    var price: String? = null
+    var cotizacion: String? = null
+
+    @Column
+    var fecha: String? = null
+
 
     constructor() : super() {}
-    constructor(symbol: String?, price: String?  ) : super() {
-        this.symbol = symbol
-        this.price = price
+    constructor(criptoactivo: String?, cotizacion: String?, fecha: String?) : super() {
+        this.criptoactivo = criptoactivo
+        this.cotizacion = cotizacion
+        this.fecha = fecha
     }
 
 }

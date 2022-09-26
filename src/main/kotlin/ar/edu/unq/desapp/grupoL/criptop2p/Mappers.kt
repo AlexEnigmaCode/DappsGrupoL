@@ -25,3 +25,5 @@ data class UserViewMapper(val id: Int?,
                           val address:String?,
                           val cvu:Int?,
                           val walletAddress:Int?)
+
+data class Binance (val symbol:String?, val price: String?)

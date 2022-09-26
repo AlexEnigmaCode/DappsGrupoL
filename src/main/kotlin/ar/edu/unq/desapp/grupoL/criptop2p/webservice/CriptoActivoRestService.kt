@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.*
 
 
@@ -29,58 +30,35 @@ class CriptoActivoRestService {
     fun allCriptoActivos(): List<CriptoActivo> {
         val list = criptoActivoService?.findAll()
         if (list != null) {
-
-            criptoActivos =  list.map { CriptoActivo(it.symbol, it.price) }
+            criptoActivos =  list.map { CriptoActivo(it.criptoactivo, it.cotizacion, it.fecha ) }
         }
         return criptoActivos
 
     }
 
-    /*  try {
+
+     /** Get criptoActivo  by criptoActivo */
+    @GetMapping("api/criptoactivos/{symbol}")
+    fun findCriptoActivoBySymbol(@PathVariable("symbol") symbol: String): ResponseEntity<*> {
+        var response : ResponseEntity<*>?
+        try {
+
+            val criptoActivo =  criptoActivoService?.findByCriptoActivo(symbol)
 
             ResponseEntity.status(200)
-            // return  ResponseEntity.status(HttpStatus.OK).body(criptoActivos)      }
-            val datacriptoactivos = ResponseEntity.ok().body(criptoActivos)
-          //val criptos: List<CriptoActivo> = datacriptoactivos.body!!
-
-           // val fecha = LocalDate.now()
-          // criptoActivos = criptos.map { CriptoActivo (it.symbol.toString(), it.price.toString(), ) }
-          System.out.println(datacriptoactivos)
-         // System.out.println(datacriptoactivos.size )
-            return  (datacriptoactivos)
-       }
-            catch (e:Exception ){
-
-         throw Exception ( "criptoActivo not found")
-                // return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ºerror:ERROR to get elements").toString().toList()
-
+            response = ResponseEntity.ok().body(criptoActivo)
+        } catch (e: Exception) {
+            ResponseEntity.status(404)
+            val resultado: MutableMap<String, String> = HashMap()
+            resultado["cripto Activo with symbol not found"] = symbol.toString()
+            response = ResponseEntity.ok().body<Map<String, String>>(resultado)
         }
-
+        return response !!
     }
 
 
-    @GetMapping("https://api1.binance.com/api/v3/ticker/price/{criptoactivo}")
-    fun criptoActivoByName(@PathVariable("criptoactivo") criptoactivo: String): ResponseEntity<CriptoActivo> {
-        try {
-             ResponseEntity.status(200)
-          // val dataCriptoActivo: CriptoActivo =  ResponseEntity.ok().body(criptoActivo).body!!
-            val dataCriptoActivo =  ResponseEntity.ok().body(criptoActivo)
-            //val fecha = LocalDate.now()
-            //val newCriptoActivoo: CriptoActivo =  CriptoActivo (dataCriptoActivo.criptoactivo, dataCriptoActivo.cotizacion, fecha)
-            //return  ResponseEntity.status(HttpStatus.OK).body(newCriptoActivoo)
-           // criptoActivo = CriptoActivo (dataCriptoActivo.symbol.toString(), dataCriptoActivo.price.toString())
-            System.out.println(dataCriptoActivo )
-            return  dataCriptoActivo
-       }
-        catch (e:Exception ){
-            //return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ºerror:ERROR to get element").toString()
-            System.out.println(criptoActivo )
-           throw Exception (" criptoActivo not found")
-        }
 
-    }
 
-*/
 
 
 }

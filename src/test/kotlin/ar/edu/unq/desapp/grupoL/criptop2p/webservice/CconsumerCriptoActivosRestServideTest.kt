@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
-internal class CriptoActivoRestServiceTest {
+internal class CconsumerCriptoActivosRestServideTest {
 
     @BeforeEach
     fun setUp() {
@@ -19,10 +19,10 @@ internal class CriptoActivoRestServiceTest {
     }
 
     @Test
-    fun allCriptoActivos() {
+    fun consumeAllCriptoActivos() {
     }
 
     @Test
-    fun findCriptoActivoBySymbol() {
+    fun consumeCriptoActivoBySymbol() {
     }
 }

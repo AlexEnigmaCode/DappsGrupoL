@@ -1,6 +1,8 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.service
 
+import ar.edu.unq.desapp.grupoL.criptop2p.UserNotFoundException
 import ar.edu.unq.desapp.grupoL.criptop2p.model.CriptoActivo
+import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.CriptoActivoRepository
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,6 +20,21 @@ class CriptoActivoService {
 
         return repository.findAll()
     }
+
+    @Transactional
+    fun saveAll(criptoActivos: List<CriptoActivo>): MutableList<CriptoActivo> {
+
+        return repository.saveAll(criptoActivos)
+    }
+
+    @Transactional
+    fun findByCriptoActivo(symbol:String): CriptoActivo {
+       return repository.findByCriptoactivo(symbol)
+
+
+    }
+
+
 
 
 }
