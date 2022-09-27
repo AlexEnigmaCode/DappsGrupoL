@@ -24,8 +24,8 @@ jobs:
 
       - name: Make Gradle executable
         run: chmod +x ./gradlew
-      - name: Run tests
-        run: ./gradlew test -i
+      #- name: Run tests
+       # run: ./gradlew test -i
 
       #- name: Deploy Heroku App
         #if: success() && github.ref == 'refs/heads/main'
