@@ -33,12 +33,12 @@ jobs:
          # heroku_app_name: ${{secrets.HEROKU_APP}}
           #heroku_email: ${{secrets.HEROKU_API_EMAIL}}
 
-      - name: Install dependencies
-        run: npm install
-      #- name: Build
-       # run: npm run build
-      #- name: Test
-       # run: npm test
+      #- name: Install dependencies
+       # run: npm install
+      - name: Build
+        run: npm run build
+      - name: Test
+        run: npm test
 
       #- name: Deploy Heroku App
        # if: success() && github.ref == 'refs/heads/main'
