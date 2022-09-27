@@ -6,8 +6,8 @@ on:
       - dev
 
 jobs:
-  fecha:
-    runs-on: windows-2022
+  pipeline:
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
         with:
@@ -33,12 +33,12 @@ jobs:
          # heroku_app_name: ${{secrets.HEROKU_APP}}
           #heroku_email: ${{secrets.HEROKU_API_EMAIL}}
 
-      #- name: Install dependencies
-      #  run: npm install --no-audit --no-found --no-optional
+      - name: Install dependencies
+        run: npm install --no-audit --no-found --no-optional
       #- name: Build
        # run: npm run build
-      - name: Test
-        run: npm test
+      #- name: Test
+       # run: npm test
 
       #- name: Deploy Heroku App
        # if: success() && github.ref == 'refs/heads/main'
