@@ -24,11 +24,11 @@ jobs:
 
       - name: Make Gradle executable
         run: chmod +x ./gradlew
-      #- name: Run tests
-       # run: ./gradlew test -i
+      - name: Run tests
+        run: ./gradlew test -i
 
-      - name: Deploy Heroku App
-        if: success() && github.ref == 'refs/heads/main'
+      #- name: Deploy Heroku App
+        #if: success() && github.ref == 'refs/heads/main'
       - uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
