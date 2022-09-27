@@ -6,12 +6,12 @@ on:
       - dev
 
 jobs:
-  pipeline:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+        #with:
+        #  fetch-depth: 0
 
       - uses: gradle/gradle-build-action@v2
         with:
@@ -26,12 +26,12 @@ jobs:
        # run: ./gradlew test -i
 
 
-      - name: Install dependencies
-        run: npm install --no-audit --no-found --no-optional
-      - name: Build
-        run: npm run build
-      - name: Test
-        run: npm test
+      #- name: Install dependencies
+       # run: npm install --no-audit --no-found --no-optional
+      #- name: Build
+       # run: npm run build
+      #- name: Test
+       # run: npm test
 
       - name: Deploy Heroku App
       - uses: akhileshns/heroku-deploy@v3.12.12
