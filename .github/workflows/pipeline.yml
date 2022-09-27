@@ -6,8 +6,8 @@ on:
       - dev
 
 jobs:
-  fecha:
-    runs-on: windows-2022
+  pipeline:
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
         with:
@@ -22,28 +22,30 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Make Gradle executable
+        run: chmod +x ./gradlew
       #- name: Run tests
        # run: ./gradlew test -i
 
+      #- name: Execute Gradle build
+       # run: ./gradlew build
 
+      #- uses: gradle/gradle-build-action@v2
+       # with:
+        #  arguments: check
 
+      - name: Execute Gradle dependencies
+        run: ./gradlew dependencies
+
+      #- name: Deploy Heroku App
+        #if: success() && github.ref == 'refs/heads/main'
       - uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: ${{secrets.HEROKU_APP}}
           heroku_email: ${{secrets.HEROKU_API_EMAIL}}
 
-      #- name: Install dependencies
-      #  run: npm install --no-audit --no-found --no-optional
-      - name: Build
-        run: npm run build
-      - name: Test
-        run: npm test
-
-      #- name: Deploy Heroku App
-       # if: success() && github.ref == 'refs/heads/main'
-        #uses: akhileshns/heroku-deploy@v3.12.12
+      #- name: Execute Gradle build
+       # uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
         #with:
-         # heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          #heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
-          #heroku_email: ${{secrets.HEROKU_MAIL_ADDRESS}}
+         # arguments: build
