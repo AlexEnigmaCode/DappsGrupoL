@@ -172,7 +172,7 @@ internal class UserServiceTest {
 
     @AfterEach
     fun tearDown() {
-       repoService.deleteAll(users)
+       repoService.deleteAll()
     }
 
 }

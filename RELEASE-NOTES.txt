@@ -1,0 +1,14 @@
+---------------------------------------------------------------------
+ENTREGA 1 TAG 1.0
+---------------------------------------------------------------------
+NEW FEATURES:
+* User registration service
+* SonarCloud integration 
+* GitHubActions tool for continuous integration
+* Deploy on Heroku (https://desapp-grupol-unqui.herokuapp.com/swagger-ui/)
+* API documentation with Swagger 2.9
+* Model logic implementation
+* 15 unit tests
+
+KNOWN ISSUES:
+* throws the exception could not be executed statementorg.hibernate.exception.GenericJDBCException.

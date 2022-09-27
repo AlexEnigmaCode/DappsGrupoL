@@ -35,7 +35,7 @@ internal class CriptoActivoServiceTest {
         criptoActivos.add(criptoActivo2)
 
     }
-
+/*
     @Test
     fun saveAll() {
        val criptos  =  criptoactivoService.saveAll(criptoActivos)
@@ -86,7 +86,7 @@ internal class CriptoActivoServiceTest {
 
     }
 
-
+*/
 
 
     @AfterEach
