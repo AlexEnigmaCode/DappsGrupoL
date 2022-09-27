@@ -25,18 +25,20 @@ jobs:
       #- name: Run tests
        # run: ./gradlew test -i
 
-      - name: Install dependencies
-        run: npm install --no-audit --no-fund --no-optional
-      - name: Build
-        run: npm run build
-      - name: Test
-        run: npm test
+
 
       - uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: ${{secrets.HEROKU_APP}}
           heroku_email: ${{secrets.HEROKU_API_EMAIL}}
+
+      #- name: Install dependencies
+      #  run: npm install --no-audit --no-fund --no-optional
+      - name: Build
+        run: npm run build
+      - name: Test
+        run: npm test
 
       #- name: Deploy Heroku App
        # if: success() && github.ref == 'refs/heads/main'
