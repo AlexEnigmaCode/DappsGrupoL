@@ -22,18 +22,19 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Make Gradle executable
-        run: chmod +x ./gradlew
-      - name: Run tests
-        run: ./gradlew test -i
 
-
-
+      - name: Deploy Heroku App
+        if: success() && github.ref == 'refs/heads/main'
       - uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: ${{secrets.HEROKU_APP}}
           heroku_email: ${{secrets.HEROKU_API_EMAIL}}
+
+      - name: Make Gradle executable
+        run: chmod +x ./gradlew
+      - name: Run tests
+        run: ./gradlew test -i
 
       #- name: Install dependencies
        # run: npm install
@@ -41,11 +42,3 @@ jobs:
        # run: npm run build
       #- name: Test
        # run: npm test
-
-      #- name: Deploy Heroku App
-       # if: success() && github.ref == 'refs/heads/main'
-        #uses: akhileshns/heroku-deploy@v3.12.12
-        #with:
-         # heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          #heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
-          #heroku_email: ${{secrets.HEROKU_MAIL_ADDRESS}}
