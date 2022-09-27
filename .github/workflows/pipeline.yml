@@ -19,8 +19,8 @@ jobs:
 
       - uses: actions/setup-java@v3
         with:
-          distribution: kotlin #temurin
-          java-version: 17
+          distribution: 'temurin'
+          java-version: '17'
 
       #- name: Run tests
        # run: ./gradlew test -i
