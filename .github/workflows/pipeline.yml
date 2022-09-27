@@ -27,8 +27,8 @@ jobs:
       #- name: Run tests
        # run: ./gradlew test -i
 
-      - name: Execute Gradle build
-        run: ./gradlew build
+      #- name: Execute Gradle build
+       # run: ./gradlew build
 
       - uses: gradle/gradle-build-action@v2
         with:
