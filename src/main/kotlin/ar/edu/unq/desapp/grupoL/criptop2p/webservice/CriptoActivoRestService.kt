@@ -1,7 +1,7 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.webservice
 
 
-import ar.edu.unq.desapp.grupoL.criptop2p.UserNotFoundException
+
 import ar.edu.unq.desapp.grupoL.criptop2p.UserViewMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.model.CriptoActivo
 import ar.edu.unq.desapp.grupoL.criptop2p.service.CriptoActivoService
