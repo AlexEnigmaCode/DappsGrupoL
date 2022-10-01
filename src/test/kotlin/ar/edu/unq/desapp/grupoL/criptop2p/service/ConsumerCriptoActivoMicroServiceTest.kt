@@ -19,28 +19,27 @@ internal class ConsumerCriptoActivoMicroServiceTest {
     lateinit var  consumerService: ConsumerCriptoActivoMicroService
 
 
-    var  criptoActivos =listOf<Binance>()
-    lateinit var   criptoActivo : Binance
+    var  criptoActivos =listOf<CriptoActivo>()
     lateinit var symbol : String
 
     @BeforeEach
     fun setUp() {
-       symbol="BNBUSDT"
+        symbol="BNBUSDT"
     }
 
     @Test
     fun consumeAllCriptoActivos() {
         criptoActivos  = consumerService.consumeCriptoActivos()
         System.out.println( "cantidad de criptoActivos = ${criptoActivos.size} ")
-        assertEquals ("ETHBTC",criptoActivos.get(0).symbol)
+        assertEquals ("ETHBTC",criptoActivos.get(0).criptoactivo)
         assertTrue { criptoActivos.isNotEmpty() }
     }
 
     @Test
     fun consumeCriptoActivoBySymbol(){
-      val  criptoActivo: Binance = consumerService.consumeBySymbol(symbol)
+        val  criptoActivo: CriptoActivo = consumerService.consumeBySymbol(symbol)
         System.out.println( "El cripto Activo es = $criptoActivo ")
-        assertEquals (symbol,criptoActivo.symbol)
+        assertEquals (symbol,criptoActivo.criptoactivo)
     }
 
 

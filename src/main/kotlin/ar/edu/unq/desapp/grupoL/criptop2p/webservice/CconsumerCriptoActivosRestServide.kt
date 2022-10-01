@@ -22,7 +22,7 @@ import java.util.HashMap
 class CconsumerCriptoActivosRestServide {
 
     @Autowired
-    private val consumerService: ConsumerCriptoActivoMicroService? = null
+    lateinit var consumerService: ConsumerCriptoActivoMicroService
     private val builder: ResponseEntity.BodyBuilder? = null
     private var criptoActivos = listOf<CriptoActivo>()
 
@@ -32,14 +32,18 @@ class CconsumerCriptoActivosRestServide {
 
     @GetMapping("/api/consumecriptoactivos")
     fun consumeAllCriptoActivos(): List<CriptoActivo> {
-        val list = consumerService?.consumeCriptoActivos()
-        if (list != null) {
-             val fecha:String = LocalDateTime.now().toString()
-            criptoActivos =  list.map { CriptoActivo(it.symbol, it.price, fecha )}
-        }
-          criptoActivoService.saveAll(criptoActivos)
-        return criptoActivos
+        return consumerService.consumeCriptoActivos()
+        /*
+            val list = consumerService?.consumeCriptoActivos()
+                  if (list != null) {
+                 val fecha:String = LocalDateTime.now().toString()
+                criptoActivos =  list.map { CriptoActivo(it.symbol, it.price, fecha )}
+            }
+              criptoActivoService.saveAll(criptoActivos)
+            return criptoActivos
+        */
     }
+
 
 
     /**consume criptoActivo  by symbol*/
@@ -48,18 +52,21 @@ class CconsumerCriptoActivosRestServide {
         var response : ResponseEntity<*>?
         try {
             val fecha = LocalDateTime.now().toString()
-            val newCriptoActivo =  consumerService?.consumeBySymbol(symbol)
-            val criptoActivo = CriptoActivo(
-                newCriptoActivo!!.symbol,
-                newCriptoActivo.price,
-                fecha
-            )
+            val criptoActivo =  consumerService.consumeBySymbol(symbol)
+            /*
+             val criptoActivo = CriptoActivo(
+                 newCriptoActivo!!.symbol,
+                 newCriptoActivo.price,
+                 fecha
+             )
+
+             */
             ResponseEntity.status(200)
             response = ResponseEntity.ok().body(criptoActivo)
         } catch (e: Exception) {
             ResponseEntity.status(404)
             val resultado: MutableMap<String, String> = HashMap()
-            resultado["cripto Activo with symbol not found"] = symbol.toString()
+            resultado["cripto Activo with symbol not found"] = symbol
             response = ResponseEntity.ok().body<Map<String, String>>(resultado)
         }
         return response !!

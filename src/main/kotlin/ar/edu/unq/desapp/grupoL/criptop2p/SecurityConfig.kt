@@ -15,8 +15,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 @Configuration
 @EnableWebSecurity
 class SecurityConfig : WebSecurityConfigurerAdapter() {
-    @Autowired
-    private val userDetailsService: UserService? = null
+   // @Autowired
+    private val userDetailsService: UserService = UserService()
 
     @Autowired
     private val bCrypt: BCryptPasswordEncoder? = null
