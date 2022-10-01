@@ -32,8 +32,8 @@ compileTestJava.options.encoding = 'utf-8'
 
 group = "ar.edu.unq.desapp.grupoL"
 version = "0.0.1-SNAPSHOT"
-//java.sourceCompatibility = JavaVersion.VERSION_17
-java.sourceCompatibility = JavaVersion.VERSION_1_8
+java.sourceCompatibility = JavaVersion.VERSION_17
+//java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 /*
 configurations {
@@ -51,8 +51,9 @@ repositories {
 
 dependencies {
 
-	implementation ("io.springfox:springfox-swagger2:2.9.2")
-	implementation ("io.springfox:springfox-swagger-ui:2.9.2")
+	//implementation ("io.springfox:springfox-swagger2:2.9.2")
+	implementation ("io.springfox:springfox-boot-starter:3.0.0")
+	implementation ("io.springfox:springfox-swagger-ui:3.0.0")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-web")
@@ -76,8 +77,8 @@ dependencies {
 tasks.withType<KotlinCompile> {
 	kotlinOptions {
 		freeCompilerArgs = listOf("-Xjsr305=strict")
-		//jvmTarget = "17"
-		jvmTarget = "1.8"
+		jvmTarget = "17"
+		//jvmTarget = "1.8"
 	}
 }
 
