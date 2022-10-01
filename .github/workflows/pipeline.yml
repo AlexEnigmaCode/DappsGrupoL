@@ -28,9 +28,9 @@ jobs:
       - name: Execute Gradle dependencies
         run: ./gradlew dependencies
 
-      - uses: gradle/gradle-build-action@v2
-        with:
-         arguments: check
+      #- uses: gradle/gradle-build-action@v2
+        #with:
+         #arguments: check
 
       #- name: Execute Gradle build
         #run: ./gradlew build
