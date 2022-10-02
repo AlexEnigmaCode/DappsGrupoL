@@ -40,11 +40,13 @@ internal class CriptoActivoServiceTest {
 
     @Test
     fun save() {
-        val criptos  =  criptoactivoService.save(binance)
-        assertEquals (1, criptos.size)
+        val cripto  =  criptoactivoService.save(binance)
+       val criptos =  repository.findAll()
 
-        assertEquals (binance.symbol, criptos.get(0).criptoactivo)
-        assertEquals (binance.price,criptos.get(0).cotizacion)
+        assertEquals (1, criptos.size)
+         assertEquals (cripto.criptoactivo, criptos.get(0).criptoactivo)
+        assertEquals (cripto.cotizacion,criptos.get(0).cotizacion)
+        assertEquals (cripto.fecha, criptos.get(0).fecha)
 
            
     }
