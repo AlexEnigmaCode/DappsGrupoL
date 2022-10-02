@@ -12,5 +12,5 @@ interface CriptoActivoRepository :JpaRepository<CriptoActivo?, Int?> {
 
     override fun findAll(): List<CriptoActivo>
 
-    fun findByCriptoactivo(symbol:String): CriptoActivo
+
 }

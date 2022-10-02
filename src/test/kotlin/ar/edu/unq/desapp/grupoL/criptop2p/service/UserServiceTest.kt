@@ -1,9 +1,6 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.service
 
-import ar.edu.unq.desapp.grupoL.criptop2p.UserNotFoundException
-import ar.edu.unq.desapp.grupoL.criptop2p.UserRegisterMapper
-import ar.edu.unq.desapp.grupoL.criptop2p.UserUpdateMapper
-import ar.edu.unq.desapp.grupoL.criptop2p.UsernameExistException
+import ar.edu.unq.desapp.grupoL.criptop2p.*
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.UserRepository
 import org.junit.jupiter.api.AfterEach
@@ -23,7 +20,7 @@ internal class UserServiceTest {
    lateinit var  repoService: UserRepository
 
 
-    var  users =listOf<Usuario>()
+    var  users =listOf<UserViewMapper>()
 
     lateinit var user1: UserRegisterMapper
     lateinit var user2: UserRegisterMapper
@@ -31,7 +28,7 @@ internal class UserServiceTest {
 
     @BeforeEach
     fun setUp() {
-        repoService.deleteAll(users)
+
         user1 = UserRegisterMapper( "Ale", "Fariña", "ale@gmail.com", "address1","1", 123, 7  )
 
         user2 = UserRegisterMapper( "Ulises", "Lopez","ulisese@gmail.com", "address2","2", 234, 8 )
@@ -65,8 +62,7 @@ internal class UserServiceTest {
         assertEquals(user1.surname, newser1.surname)
         assertEquals(user1.email, newser1.email)
         assertEquals(user1.address, newser1.address)
-        assertNotEquals(user1.password, newser1.password)
-        assertEquals(user1.cvu, newser1.cvu)
+       assertEquals(user1.cvu, newser1.cvu)
         assertEquals(user1.walletAddress, newser1.walletAddress)
     }
 
@@ -89,19 +85,18 @@ internal class UserServiceTest {
     @Test
     fun al_intentar_loguearse_un_usuario_no_registrado_Lanza_excepcion() {
         userService.register(user1)
-      assertThrows<UserNotFoundException> {  userService.login( "ulisese@gmail.com", "2") }
+      assertThrows<ItemNotFoundException> {  userService.login( "ulisese@gmail.com", "2") }
     }
 
     @Test
     fun un_usuario_se_loguea_si_esta_registrado() {
         val registered= userService.register(user1)
-        val logged= userService.login( registered.email!!, registered.password!!)
+        val logged= userService.login( registered.email!!, "1")
         assertEquals(registered.id,  logged.id)
         assertEquals(registered.name,  logged.name)
         assertEquals(registered.surname, logged.surname)
         assertEquals(registered.email,  logged.email)
         assertEquals(registered.address,  logged.address)
-        assertEquals(registered.password, logged.password)
         assertEquals(registered.cvu,  logged.cvu)
         assertEquals(registered.walletAddress,  logged.walletAddress)
     }
@@ -111,7 +106,7 @@ internal class UserServiceTest {
     @Test
     fun al_intentar_buscar_un_usuario_con_id_no_existente_Lanza_excepcion() {
        userService.register(user1)
-      assertThrows<UserNotFoundException> {  userService.findByID( 2) }
+      assertThrows<ItemNotFoundException> {  userService.findByID( 2) }
     }
 
 
@@ -123,8 +118,7 @@ internal class UserServiceTest {
         assertEquals( newuser.name, userFound.name)
         assertEquals( newuser.surname, userFound.surname)
         assertEquals( newuser.email, userFound.email)
-        assertEquals( newuser.password, userFound.password)
-        assertEquals( newuser.cvu ,userFound.cvu)
+       assertEquals( newuser.cvu ,userFound.cvu)
         assertEquals( newuser.walletAddress, userFound.walletAddress)
     }
 
@@ -133,7 +127,7 @@ internal class UserServiceTest {
     @Test
     fun al_intentar_actualizar_un_usuario_con_id_no_existente_Lanza_excepcion() {
         userService.register(user1)
-        assertThrows<UserNotFoundException> {  userService.update(2, updateUser)}
+        assertThrows<ItemNotFoundException> {  userService.update(2, updateUser)}
     }
 
     @Test
@@ -146,7 +140,6 @@ internal class UserServiceTest {
         assertEquals( updated.surname, restored.surname)
         assertEquals( updated.email, restored.email)
         assertEquals( updated.address, restored.address)
-        assertEquals( updated.password, restored.password)
         assertEquals( updated.cvu ,restored.cvu)
         assertEquals(updated.walletAddress , restored.walletAddress)
     }
@@ -156,7 +149,7 @@ internal class UserServiceTest {
     @Test
     fun al_intentar_borrar_un_usuario_con_id_no_existente_lanza_excepcionm_y_La_DB_se_mantiene_sin_alterar() {
         userService.register(user1)
-        assertThrows<UserNotFoundException> {  userService.deleteById(2)}
+        assertThrows<ItemNotFoundException> {  userService.deleteById(2)}
         val users = userService.findAll()
         assertTrue( users.isNotEmpty() )
     }

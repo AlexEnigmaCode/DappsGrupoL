@@ -1,9 +1,6 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.service
 
-import ar.edu.unq.desapp.grupoL.criptop2p.UserNotFoundException
-import ar.edu.unq.desapp.grupoL.criptop2p.UserRegisterMapper
-import ar.edu.unq.desapp.grupoL.criptop2p.UserUpdateMapper
-import ar.edu.unq.desapp.grupoL.criptop2p.UsernameExistException
+import ar.edu.unq.desapp.grupoL.criptop2p.*
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
 import org.springframework.beans.factory.annotation.Autowired
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.UserRepository
@@ -29,7 +26,7 @@ class UserService: UserDetailsService {
     private lateinit var encoder: BCryptPasswordEncoder
 
     @Transactional
-    fun register(user: UserRegisterMapper): Usuario {
+    fun register(user: UserRegisterMapper): UserViewMapper {
 
        if ( existUser(user) )  {
          throw UsernameExistException("User with email:  ${user.email} is used")
@@ -37,48 +34,61 @@ class UserService: UserDetailsService {
         val password =encoder.encode(user.password)
        //val newUser = Usuario(++userId,user.name, user.surname, user.email,user.address,user.password,user.cvu,user.walletAddress)
         val newUser = Usuario(++userId,user.name, user.surname, user.email,user.address,password,user.cvu,user.walletAddress)
-        return  repository.save(newUser)
+        val savedUser = repository.save(newUser)
+
+        val userview = UserViewMapper(
+            savedUser.id,
+            savedUser.name,
+            savedUser.surname,
+            savedUser.email,
+            savedUser.address,
+            savedUser.cvu,
+            savedUser.walletAddress
+        )
+
+        return  userview
       }
 
-    fun login(email: String, password: String): Usuario {
 
-        val users = repository.findAll()
+
+
+
+    fun login(email: String, password: String): UserViewMapper {
+
+       val users = repository.findAll()
        // return users.find { (it.email == email) && (it.password == password) } ?: throw UserNotFoundException("Not found user")
-        return users.find { (it.email == email)  } ?: throw UserNotFoundException("Not found user")
+        val newUser = users.find { (it.email == email)  } ?: throw ItemNotFoundException("Not found user")
+        val userview = UserViewMapper(newUser.id,newUser.name,newUser.surname,newUser.email,newUser.address,newUser.cvu,newUser.walletAddress)
+        return userview
     }
 
     @Transactional
-    fun findByID(id: Int): Usuario {
+    fun findByID(id: Int): UserViewMapper {
        val user =  repository.findById(id)
        if ( ! (user.isPresent ))
-       {throw UserNotFoundException("User with Id:  $id not found") }
-       return user.get()
-    }
+       {throw ItemNotFoundException("User with Id:  $id not found") }
+       val newUser=  user.get()
+       val userView =   UserViewMapper(newUser.id, newUser.name, newUser.surname, newUser.email, newUser.address, newUser.cvu, newUser.walletAddress)
+       return userView
+
+       }
+
+    //    return ResponseEntity.ok().body(users)
+
 
     @Transactional
     fun deleteById(id: Int) {
         val user =  repository.findById(id)
         if ( ! (user.isPresent ))
-        {throw UserNotFoundException("User with Id:  $id not found") }
+        {throw ItemNotFoundException("User with Id:  $id not found") }
        repository.deleteById(id)
 
     }
-/*
-    @Transactional
-    fun update(id: Int , entity: UserUpdateMapper) : User{
-        val user =  repository.findById(id)
-        if ( ! (user.isPresent ))
-        {throw UserNotFoundException("User with Id:  $id not found") }
-        var newUser :User  =  user.get()
-          newUser = User(newUser.id,newUser.name, newUser.surname, entity.email,entity.adress,entity.password,entity.cvu,entity.walletAdress)
-          repository.save(newUser)
-        return  repository.findById(id).get()
-    }
-*/
+
 
 
     @Transactional
-    fun update(id: Int , entity: UserUpdateMapper) : Usuario {
+    fun update(id: Int , entity: UserUpdateMapper) : UserViewMapper {
        lateinit var   entityOptional:Optional<Usuario?>
         try {
               entityOptional = repository.findById(id)
@@ -86,21 +96,25 @@ class UserService: UserDetailsService {
             val password =encoder.encode(entity.password)
             val user = Usuario(newUser.id,newUser.name, newUser.surname, entity.email,entity.address,password,entity.cvu,entity.walletAddress)
             repository.deleteById(id)
-             return  repository.save(user)
-
+            val savedUser = repository.save(user)
+            val userView =   UserViewMapper(savedUser.id, savedUser.name, savedUser.surname, savedUser.email, savedUser.address, savedUser.cvu, savedUser.walletAddress)
+             return userView
             }
         catch (e:Exception){
-             throw UserNotFoundException("User with Id:  $id not found")
-          //throw  Exception (e.message)
+             throw ItemNotFoundException("User with Id:  $id not found")
+
 
     }
 }
 
     @Transactional
-    fun findAll(): List<Usuario> {
-
-        return repository.findAll()
+    fun findAll(): List<UserViewMapper> {
+     val list =  repository.findAll()
+     val users =  list.map { UserViewMapper(it.id, it.name, it.surname, it.email, it.address, it.cvu, it.walletAddress) }
+     return users
     }
+
+
 
     private fun existUser(user: UserRegisterMapper): Boolean {
         var bool = false
@@ -113,7 +127,7 @@ class UserService: UserDetailsService {
 
     override fun loadUserByUsername(username: String?): UserDetails {
        val  users : List<Usuario> = repository.findAll()
-      val user : Usuario = users.find { (it.name == username)  } ?: throw UserNotFoundException("Not found user")
+      val user : Usuario = users.find { (it.name == username)  } ?: throw ItemNotFoundException("Not found user")
        var  roles : List<GrantedAuthority> = listOf()
         roles.toMutableList().add (SimpleGrantedAuthority("ADMIN") )
 

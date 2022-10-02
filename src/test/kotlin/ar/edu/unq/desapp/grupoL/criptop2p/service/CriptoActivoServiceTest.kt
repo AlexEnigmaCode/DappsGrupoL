@@ -22,19 +22,33 @@ internal class CriptoActivoServiceTest {
 
 
     var  criptoActivos = mutableListOf<CriptoActivo>()
+    var  binances = mutableListOf<Binance>()
+    lateinit var   binance : Binance
     lateinit var   criptoActivo1 : CriptoActivo
     lateinit var   criptoActivo2 : CriptoActivo
     lateinit var symbol : String
 
     @BeforeEach
     fun setUp() {
-
+        binance = Binance("A", "1")
         criptoActivo1 = CriptoActivo("A", "1" , "fecha1")
         criptoActivo2 = CriptoActivo("B", "2" , "fecha2")
         criptoActivos.add(criptoActivo1)
         criptoActivos.add(criptoActivo2)
 
     }
+
+    @Test
+    fun save() {
+        val criptos  =  criptoactivoService.save(binance)
+        assertEquals (1, criptos.size)
+
+        assertEquals (binance.symbol, criptos.get(0).criptoactivo)
+        assertEquals (binance.price,criptos.get(0).cotizacion)
+
+           
+    }
+
 /*
     @Test
     fun saveAll() {

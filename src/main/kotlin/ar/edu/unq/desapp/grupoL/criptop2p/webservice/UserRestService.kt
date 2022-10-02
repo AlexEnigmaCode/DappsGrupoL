@@ -23,15 +23,10 @@ class UserRestService {
 
     @GetMapping("/api/users")
     fun allUsers(): ResponseEntity<*> {
-       lateinit var users: List<UserViewMapper>
-       val list = userService?.findAll()
-        if (list != null) {
+        val users = userService?.findAll()
 
-                users =  list.map { UserViewMapper(it.id, it.name, it.surname, it.email, it.address, it.cvu, it.walletAddress) }
-            }
-           return ResponseEntity.ok().body(users)
-        }
-
+         return ResponseEntity.ok().body(users)
+    }
 
 
     /**register a user*/
@@ -40,17 +35,8 @@ class UserRestService {
         var response : ResponseEntity<*>?
 
         try {
-            val newUser = userService!!.register(user)
-            val userview = UserViewMapper(
-                newUser.id,
-                newUser.name,
-                newUser.surname,
-                newUser.email,
-                newUser.address,
-                newUser.cvu,
-                newUser.walletAddress
-            )
 
+           val  userview = userService!!.register(user)
             ResponseEntity.status(201)
            response =  ResponseEntity.ok().body(userview)
         } catch (e: Exception) {
@@ -68,8 +54,8 @@ class UserRestService {
     fun login(@RequestBody user: UserLoginMapper): ResponseEntity<*> {
         var response : ResponseEntity<*>?
         try {
-            val newUser = userService!!.login(user.email, user.password)
-            val userview = UserViewMapper(newUser.id,newUser.name,newUser.surname,newUser.email,newUser.address,newUser.cvu,newUser.walletAddress)
+            val userview = userService!!.login(user.email, user.password)
+
             ResponseEntity.status(200)
            response = ResponseEntity.ok().body(userview)
         }
@@ -88,16 +74,8 @@ class UserRestService {
     fun userById(@PathVariable("id") id: Int): ResponseEntity<*> {
         var response : ResponseEntity<*>?
         try {
-            val newUser = userService!!.findByID(id)
-            val userview = UserViewMapper(
-                newUser.id,
-                newUser.name,
-                newUser.surname,
-                newUser.email,
-                newUser.address,
-                newUser.cvu,
-                newUser.walletAddress
-            )
+            val userview = userService!!.findByID(id)
+
             ResponseEntity.status(200)
             response = ResponseEntity.ok().body(userview)
         } catch (e: Exception) {
@@ -116,16 +94,8 @@ class UserRestService {
     fun update (@PathVariable("id") id: Int,@RequestBody entity: UserUpdateMapper): ResponseEntity<*> {
         var response : ResponseEntity<*>?
         try {
-            val newUser = userService!!.update(id,entity)
-            val userview = UserViewMapper(
-                newUser.id,
-                newUser.name,
-                newUser.surname,
-                newUser.email,
-                newUser.address,
-                newUser.cvu,
-                newUser.walletAddress
-            )
+            val userview = userService!!.update(id,entity)
+
             ResponseEntity.status(200)
             response = ResponseEntity.ok().body(userview)
         } catch (e: Exception) {

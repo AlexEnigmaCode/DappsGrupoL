@@ -2,6 +2,7 @@ package ar.edu.unq.desapp.grupoL.criptop2p.webservice
 
 
 
+import ar.edu.unq.desapp.grupoL.criptop2p.Binance
 import ar.edu.unq.desapp.grupoL.criptop2p.UserViewMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.model.CriptoActivo
 import ar.edu.unq.desapp.grupoL.criptop2p.service.CriptoActivoService
@@ -26,16 +27,18 @@ class CriptoActivoRestService {
     private val builder: ResponseEntity.BodyBuilder? = null
     private var criptoActivos = listOf<CriptoActivo>()
 
-    @GetMapping("/api/criptoactivos")
-    fun allCriptoActivos(): List<CriptoActivo> {
-        val list = criptoActivoService?.findAll()
-        if (list != null) {
-            criptoActivos =  list.map { CriptoActivo(it.criptoactivo, it.cotizacion, it.fecha ) }
-        }
-        return criptoActivos
+
+    @GetMapping("/api/criptoactivos/save/")
+    fun saveCriptoActivo(@RequestBody binance: Binance): CriptoActivo {
+        return criptoActivoService!!.save(binance)
 
     }
 
+    @GetMapping("/api/criptoactivos")
+    fun allCriptoActivos(): List<CriptoActivo> {
+        return criptoActivoService!!.findAll()
+
+    }
 
      /** Get criptoActivo  by criptoActivo */
     @GetMapping("api/criptoactivos/{symbol}")
