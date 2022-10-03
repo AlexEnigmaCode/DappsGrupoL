@@ -18,12 +18,12 @@ import java.util.HashMap
 @EnableAutoConfiguration
 class UserRestService {
     @Autowired
-    private val userService: UserService? = null
+    private  lateinit var  userService: UserService
     private val builder: ResponseEntity.BodyBuilder? = null
 
     @GetMapping("/api/users")
     fun allUsers(): ResponseEntity<*> {
-        val users = userService?.findAll()
+        val users = userService.findAll()
 
          return ResponseEntity.ok().body(users)
     }
@@ -36,7 +36,7 @@ class UserRestService {
 
         try {
 
-           val  userview = userService!!.register(user)
+           val  userview = userService.register(user)
             ResponseEntity.status(201)
            response =  ResponseEntity.ok().body(userview)
         } catch (e: Exception) {
@@ -54,7 +54,7 @@ class UserRestService {
     fun login(@RequestBody user: UserLoginMapper): ResponseEntity<*> {
         var response : ResponseEntity<*>?
         try {
-            val userview = userService!!.login(user.email, user.password)
+            val userview = userService.login(user.email, user.password)
 
             ResponseEntity.status(200)
            response = ResponseEntity.ok().body(userview)
@@ -74,10 +74,11 @@ class UserRestService {
     fun userById(@PathVariable("id") id: Int): ResponseEntity<*> {
         var response : ResponseEntity<*>?
         try {
-            val userview = userService!!.findByID(id)
+            val newUser = userService.findByID(id)
+            val userView =   UserViewMapper(newUser.id, newUser.name, newUser.surname, newUser.email, newUser.address, newUser.cvu, newUser.walletAddress)
 
             ResponseEntity.status(200)
-            response = ResponseEntity.ok().body(userview)
+            response = ResponseEntity.ok().body(userView)
         } catch (e: Exception) {
             ResponseEntity.status(404)
           val resultado: MutableMap<String, String> = HashMap()
@@ -94,7 +95,7 @@ class UserRestService {
     fun update (@PathVariable("id") id: Int,@RequestBody entity: UserUpdateMapper): ResponseEntity<*> {
         var response : ResponseEntity<*>?
         try {
-            val userview = userService!!.update(id,entity)
+            val userview = userService.update(id,entity)
 
             ResponseEntity.status(200)
             response = ResponseEntity.ok().body(userview)

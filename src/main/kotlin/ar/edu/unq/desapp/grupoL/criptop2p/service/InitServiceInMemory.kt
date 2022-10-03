@@ -29,7 +29,7 @@ class InitServiceInMemory {
        // if (className == "org.h2.Driver") {
          //   logger.info("Init Data Using H2 DB")
          if (className == "com.mysql.cj.jdbc.Driver") {
-            logger.info("Init Data Using Nysql DB")
+            logger.info("Init Data Using Mysql DB")
             //fireInitialData()
         }
     }
@@ -37,11 +37,11 @@ class InitServiceInMemory {
     private fun fireInitialData() {
        // val user1 = UserRegisterMapper( "Ale", "Fariña", "ale@gmail.com", "address1","1", 123, 7  )
       // val password_1 =encoder.encode("1")
-        val user1 = UserRegisterMapper( "Ale", "Fariña", "ale@gmail.com", "address1","1", 123, 7  )
+        val user1 = UserRegisterMapper( "Ale", "Fariña", "ale@gmail.com", "address1","1", "123", "7"  )
         userService!!.register(user1)
       //val user2 = UserRegisterMapper( "Ulises", "Lopez","ulisese@gmail.com", "address2","2", 234, 8 )
        // val password_2 =encoder.encode("2")
-        val user2 = UserRegisterMapper( "Ulises", "Lopez","ulisese@gmail.com", "address2","2", 234, 8 )
-        userService!!.register(user2)
+        val user2 = UserRegisterMapper( "Ulises", "Lopez","ulisese@gmail.com", "address2","2", "234", "8" )
+        userService.register(user2)
     }
 }

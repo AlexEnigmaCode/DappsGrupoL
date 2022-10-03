@@ -34,6 +34,7 @@ class UserService: UserDetailsService {
         val password =encoder.encode(user.password)
        //val newUser = Usuario(++userId,user.name, user.surname, user.email,user.address,user.password,user.cvu,user.walletAddress)
         val newUser = Usuario(++userId,user.name, user.surname, user.email,user.address,password,user.cvu,user.walletAddress)
+
         val savedUser = repository.save(newUser)
 
         val userview = UserViewMapper(
@@ -63,17 +64,16 @@ class UserService: UserDetailsService {
     }
 
     @Transactional
-    fun findByID(id: Int): UserViewMapper {
+    fun findByID(id: Int): Usuario {
        val user =  repository.findById(id)
        if ( ! (user.isPresent ))
        {throw ItemNotFoundException("User with Id:  $id not found") }
        val newUser=  user.get()
-       val userView =   UserViewMapper(newUser.id, newUser.name, newUser.surname, newUser.email, newUser.address, newUser.cvu, newUser.walletAddress)
-       return userView
+       return newUser
 
        }
 
-    //    return ResponseEntity.ok().body(users)
+
 
 
     @Transactional

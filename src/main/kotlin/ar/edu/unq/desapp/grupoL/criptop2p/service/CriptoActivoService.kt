@@ -4,6 +4,7 @@ package ar.edu.unq.desapp.grupoL.criptop2p.service
 import ar.edu.unq.desapp.grupoL.criptop2p.Binance
 import ar.edu.unq.desapp.grupoL.criptop2p.ItemNotFoundException
 import ar.edu.unq.desapp.grupoL.criptop2p.model.CriptoActivo
+import ar.edu.unq.desapp.grupoL.criptop2p.model.CriptoActivoRegisterMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.CriptoActivoRepository
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.UserRepository
@@ -32,9 +33,8 @@ class CriptoActivoService {
     @Transactional
     fun save(binance: Binance): CriptoActivo {
         val fecha = LocalDateTime.now().toString()
-       val criptoActivo =  CriptoActivo (binance.symbol,binance.price, fecha)
-        return repository.save(criptoActivo)
-
+       val criptoActivo =  CriptoActivoRegisterMapper (binance.symbol,binance.price, fecha)
+        return  repository.save(criptoActivo)
     }
 
 

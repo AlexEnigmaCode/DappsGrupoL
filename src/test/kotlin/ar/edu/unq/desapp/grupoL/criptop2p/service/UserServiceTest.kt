@@ -17,7 +17,7 @@ internal class UserServiceTest {
     @Autowired
    lateinit var   userService: UserService
     @Autowired
-   lateinit var  repoService: UserRepository
+   lateinit var  repository: UserRepository
 
 
     var  users =listOf<UserViewMapper>()
@@ -29,11 +29,11 @@ internal class UserServiceTest {
     @BeforeEach
     fun setUp() {
 
-        user1 = UserRegisterMapper( "Ale", "Fariña", "ale@gmail.com", "address1","1", 123, 7  )
+        user1 = UserRegisterMapper( "Ale", "Fariña", "ale@gmail.com", "address1","1", "123", "7"  )
 
-        user2 = UserRegisterMapper( "Ulises", "Lopez","ulisese@gmail.com", "address2","2", 234, 8 )
+        user2 = UserRegisterMapper( "Ulises", "Lopez","ulisese@gmail.com", "address2","2", "234", "8" )
 
-        updateUser = UserUpdateMapper( "ale@edu.unq.com", "another_address1","11", 1234, 9  )
+        updateUser = UserUpdateMapper( "ale@edu.unq.com", "another_address1","11", "1234", "9"  )
     }
 
     /**getUsers*/
@@ -165,7 +165,7 @@ internal class UserServiceTest {
 
     @AfterEach
     fun tearDown() {
-       repoService.deleteAll()
+        repository.deleteAll()
     }
 
 }

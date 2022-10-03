@@ -27,13 +27,19 @@ class Usuario {
     var password: String? = null
 
     @Column
-    var cvu: Int? = null
+    var cvu: String? = null
 
     @Column
-    var walletAddress: Int? = null
+    var walletAddress: String? = null
+
+   // @Column
+    var cantidadOperaciones: Int? = null
+
+    // @Column
+    var reputacion: Int? = null
 
     constructor() : super() {}
-    constructor(id: Int?, name: String?, surname: String?, email:String?,address:String?,password:String?,cvu:Int?,walletAddress:Int?) : super() {
+    constructor(id: Int?, name: String?, surname: String?, email:String?,address:String?,password:String?,cvu:String?,walletAddress:String?/*,cantidadOperaciones: Int?*/  ) : super() {
         this.id = id
         this.name = name
         this.surname = surname
@@ -42,8 +48,15 @@ class Usuario {
         this.password = password
         this.cvu= cvu
         this.walletAddress = walletAddress
+       // this.cantidadOperaciones = cantidadOperaciones
     }
 
+    fun getOperaciones(): Int {
+        return cantidadOperaciones!!
+    }
 
+    fun icrementarOperqaciones(): Int {
+       return   cantidadOperaciones!! + 1
+    }
 
 }
