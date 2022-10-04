@@ -68,5 +68,5 @@ jobs:
           heroku_app_name: ${{secrets.HEROKU_APP}}
           heroku_email: ${{secrets.HEROKU_API_EMAIL}}
 
-      - name: Run tests
-        run: ./gradlew test -i
+      #- name: Run tests
+        #run: ./gradlew test -i
