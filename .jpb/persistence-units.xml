@@ -2,7 +2,7 @@
 <project version="4">
   <component name="PersistenceUnitSettings">
     <persistence-units>
-      <persistence-unit name="usersdb">
+      <persistence-unit name="criptop2pdb">
         <packages>
           <package value="ar.edu.unq.desapp.grupoL.criptop2p" />
           <package value="" />
