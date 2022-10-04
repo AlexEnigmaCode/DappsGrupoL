@@ -3,7 +3,6 @@ package ar.edu.unq.desapp.grupoL.criptop2p.model
 
 import javax.persistence.*
 
-
 @Entity
 @Table(name = "criptoactivos")
 class CriptoActivo {

@@ -53,6 +53,7 @@ data class PublicacionRegisterMapper(
    val accion: Accion?
 )
 
+
 data class CriptoActivoWalletMapper(
 val criptoactivo:String,
 val cotizacion: Double,
@@ -60,4 +61,7 @@ val cantidad: Long,
 val monto : Double)
 
 
-data class CriptoActivoRegisterMapper (val criptoactivo: String?, val cotizacion: String?, val fecha: String)
+data class CriptoActivoRegisterMapper(
+    val criptoactivo: String?,
+    val cotizacion: String?,
+    val fecha: String)

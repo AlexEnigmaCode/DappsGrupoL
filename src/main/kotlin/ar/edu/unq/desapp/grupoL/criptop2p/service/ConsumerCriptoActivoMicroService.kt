@@ -40,7 +40,6 @@ class ConsumerCriptoActivoMicroService {
             criptoActivos =  list.map { CriptoActivoRegisterMapper(it.symbol, it.price, fecha )}
         }
         //criptoActivoService?.saveAll(criptoActivos)
-
         return criptoActivos
 
     }
