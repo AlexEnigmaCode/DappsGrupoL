@@ -1,16 +1,13 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.service
 
 import ar.edu.unq.desapp.grupoL.criptop2p.*
-import ar.edu.unq.desapp.grupoL.criptop2p.model.CriptoActivoRegisterMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.PublicacionRepository
-import ar.edu.unq.desapp.grupoL.criptop2p.persistence.UserRepository
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
 import org.springframework.beans.factory.annotation.Autowired
-import java.time.LocalDate
 
 internal class PublisherServiceTest {
 
@@ -36,8 +33,8 @@ internal class PublisherServiceTest {
 
         user2 = UserRegisterMapper( "Ulises", "Lopez","ulisese@gmail.com", "address2","2", "234", "8" )
 
-      publicacion1= IntencionRegisterMapper( "A",5, 6,30, "Ale", "compra")
-      publicacion2= IntencionRegisterMapper ( "B",7, 10,70, "Uli", "venta")
+      publicacion1= IntencionRegisterMapper( "A",5, 6.0,30.0, "Ale", "compra")
+      publicacion2= IntencionRegisterMapper ( "B",7, 10.0,70.0, "Uli", "venta")
 
     }
 
@@ -52,7 +49,7 @@ internal class PublisherServiceTest {
         assertEquals( publicacion1.cotizacion, publi1.cotizacion,)
         assertEquals( publicacion1.monto,publi1.monto)
         assertEquals( "Ale Fariña",publi1.usuario)
-        assertEquals( 1,publi1.cantidadoperaciones)
+        assertEquals( 0,publi1.cantidadoperaciones)
 
 
     }
@@ -73,7 +70,7 @@ internal class PublisherServiceTest {
         assertEquals( publicacion1.cotizacion, publicaciones.get(0).cantidad)
         assertEquals( publicacion1.monto, publicaciones.get(0).monto)
         assertEquals( "Ale Fariña", publicaciones.get(0).usuario)
-        assertEquals(1, publicaciones.get(0).cantidadoperaciones)
+        assertEquals(0, publicaciones.get(0).cantidadoperaciones)
 
 
         assertEquals( publicacion1.criptoactivo, publicaciones.get(1).criptoactivo)
@@ -81,7 +78,7 @@ internal class PublisherServiceTest {
         assertEquals( publicacion1.cotizacion, publicaciones.get(1).cantidad)
         assertEquals( publicacion1.monto, publicaciones.get(1).monto)
         assertEquals( "Ulises Lopez", publicaciones.get(1).usuario)
-        assertEquals(1, publicaciones.get(1).cantidadoperaciones)
+        assertEquals(0, publicaciones.get(1).cantidadoperaciones)
     }
 
 

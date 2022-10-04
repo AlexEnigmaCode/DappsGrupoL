@@ -32,10 +32,10 @@ class Usuario {
     @Column
     var walletAddress: String? = null
 
-   // @Column
+   @Transient
     var cantidadOperaciones: Int? = null
 
-    // @Column
+   @Transient
     var reputacion: Int? = null
 
     constructor() : super() {}

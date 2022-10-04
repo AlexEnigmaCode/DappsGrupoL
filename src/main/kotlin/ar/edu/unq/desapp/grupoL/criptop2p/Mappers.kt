@@ -1,6 +1,8 @@
 package ar.edu.unq.desapp.grupoL.criptop2p
 
+import ar.edu.unq.desapp.grupoL.criptop2p.model.Accion
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Operacion
+import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
 
 data class UserRegisterMapper(
     val name: String? = null,
@@ -30,15 +32,30 @@ data class UserViewMapper(val id: Int?,
 
 data class Binance (val symbol:String?, val price: String?)
 
-data class IntencionRegisterMapper  (val criptoactivo: String?, val cantidad:Long?,val cotizacion: Long?, val monto: Long?, val usuario: String?, val operacion: String?)
+data class IntencionRegisterMapper(
+    val criptoactivo: String?, val cantidad:Long?,
+    val cotizacion: Double, val monto: Double, val usuario: String?, val operacion: String?)
+
+
+
 
 data class PublicacionRegisterMapper(
    val diahora: String?,
    val criptoactivo: String?,
    val cantidad: Long?,
-   val cotizacion: Long?,
-   val monto: Long?,
-   val usuario: String?,
+   val cotizacion: Double,
+   val monto: Double,
+   val usuario: Usuario?,
+   val operacion: String ?,
    val cantidadoperaciones: Int?,
-   val reputacion: String?
+   val reputacion: String?,
+   val cancelada : Boolean?,
+   val direccionEnvio: String?,
+   val accion: Accion?
 )
+
+data class CriptoActivoWalletMapper(
+val criptoactivo:String,
+val cotizacion: Double,
+val cantidad: Long,
+val monto : Double)

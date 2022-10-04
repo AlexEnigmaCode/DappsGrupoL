@@ -3,6 +3,7 @@ package ar.edu.unq.desapp.grupoL.criptop2p.model
 
 import java.time.LocalDate
 import javax.persistence.*
+import kotlin.jvm.Transient
 
 @Entity
 @Table(name = "criptoactivos")
@@ -21,6 +22,12 @@ class CriptoActivo {
 
     @Column
     var fecha: String? = null
+
+    @Transient
+    var cantidad: Long? = null
+
+    @Transient
+    var monto: Double = 0.0
 
 
     constructor() : super() {}
