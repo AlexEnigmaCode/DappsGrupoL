@@ -1,9 +1,8 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.model
 
 
-import java.time.LocalDate
 import javax.persistence.*
-import kotlin.jvm.Transient
+
 
 @Entity
 @Table(name = "criptoactivos")
@@ -23,7 +22,7 @@ class CriptoActivo {
     @Column
     var fecha: String? = null
 
-    @Transient
+     @Transient
     var cantidad: Long? = null
 
     @Transient
@@ -39,5 +38,5 @@ class CriptoActivo {
     }
 
 }
-data class CriptoActivoRegisterMapper (val criptoactivo: String?, val cotizacion: String?, val fecha: String)
+
 

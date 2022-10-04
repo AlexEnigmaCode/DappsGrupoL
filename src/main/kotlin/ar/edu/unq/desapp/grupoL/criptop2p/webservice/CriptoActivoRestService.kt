@@ -3,17 +3,12 @@ package ar.edu.unq.desapp.grupoL.criptop2p.webservice
 
 
 import ar.edu.unq.desapp.grupoL.criptop2p.Binance
-import ar.edu.unq.desapp.grupoL.criptop2p.UserViewMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.model.CriptoActivo
 import ar.edu.unq.desapp.grupoL.criptop2p.service.CriptoActivoService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
-import java.time.LocalDate
-import java.time.LocalDateTime
 import java.util.*
 
 

@@ -1,7 +1,6 @@
 package ar.edu.unq.desapp.grupoL.criptop2p
 
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Accion
-import ar.edu.unq.desapp.grupoL.criptop2p.model.Operacion
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
 
 data class UserRegisterMapper(
@@ -59,3 +58,6 @@ val criptoactivo:String,
 val cotizacion: Double,
 val cantidad: Long,
 val monto : Double)
+
+
+data class CriptoActivoRegisterMapper (val criptoactivo: String?, val cotizacion: String?, val fecha: String)

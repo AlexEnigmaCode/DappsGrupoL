@@ -2,9 +2,7 @@ package ar.edu.unq.desapp.grupoL.criptop2p.webservice
 
 
 import ar.edu.unq.desapp.grupoL.criptop2p.IntencionRegisterMapper
-import ar.edu.unq.desapp.grupoL.criptop2p.PublicacionRegisterMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.service.PublisherService
-import ar.edu.unq.desapp.grupoL.criptop2p.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.http.ResponseEntity

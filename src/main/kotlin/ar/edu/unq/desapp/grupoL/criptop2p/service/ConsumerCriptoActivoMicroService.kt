@@ -1,13 +1,8 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.service
 
-
-
-import ar.edu.unq.desapp.grupoL.criptop2p.service.CriptoActivoService
 import ar.edu.unq.desapp.grupoL.criptop2p.Binance
+import ar.edu.unq.desapp.grupoL.criptop2p.CriptoActivoRegisterMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.ItemNotFoundException
-import ar.edu.unq.desapp.grupoL.criptop2p.getresttemplate
-import ar.edu.unq.desapp.grupoL.criptop2p.model.CriptoActivo
-import ar.edu.unq.desapp.grupoL.criptop2p.persistence.CriptoActivoRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.http.ResponseEntity
@@ -33,8 +28,8 @@ class ConsumerCriptoActivoMicroService {
     private val criptoActivoService: CriptoActivoService? = null
 
 
-    fun consumeCriptoActivos(): List<CriptoActivo> {
-        var criptoActivos = listOf<CriptoActivo>()
+    fun consumeCriptoActivos(): List<CriptoActivoRegisterMapper> {
+        var criptoActivos = listOf<CriptoActivoRegisterMapper>()
         val response: ResponseEntity<Array<Binance>> = restTemplate?.getForEntity(
             "https://api1.binance.com/api/v3/ticker/price",
             Array<Binance>::class.java
@@ -42,7 +37,7 @@ class ConsumerCriptoActivoMicroService {
         val list = response.body?.asList()
         if (list != null) {
             val fecha:String = LocalDateTime.now().toString()
-            criptoActivos =  list.map { CriptoActivo(it.symbol, it.price, fecha )}
+            criptoActivos =  list.map { CriptoActivoRegisterMapper(it.symbol, it.price, fecha )}
         }
         //criptoActivoService?.saveAll(criptoActivos)
 
@@ -51,7 +46,7 @@ class ConsumerCriptoActivoMicroService {
     }
 
 
-    fun consumeBySymbol(symbol:String): CriptoActivo {
+    fun consumeBySymbol(symbol:String): CriptoActivoRegisterMapper {
         val response: ResponseEntity<Binance> = restTemplate?.getForEntity(
             "https://api1.binance.com/api/v3/ticker/price?symbol=$symbol",
             Binance::class.java
@@ -60,7 +55,7 @@ class ConsumerCriptoActivoMicroService {
         if (binance == null)
         {throw ItemNotFoundException ("Cripto Activo with symbol:  $symbol not found")}
         val fecha:String = LocalDateTime.now().toString()
-        val  criptoActivo = CriptoActivo(
+        val  criptoActivo = CriptoActivoRegisterMapper(
             binance.symbol,
             binance.price,
             fecha

@@ -1,13 +1,11 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.service
 
 import ar.edu.unq.desapp.grupoL.criptop2p.Binance
-import ar.edu.unq.desapp.grupoL.criptop2p.model.CriptoActivo
-import ar.edu.unq.desapp.grupoL.criptop2p.model.CriptoActivoRegisterMapper
+import ar.edu.unq.desapp.grupoL.criptop2p.CriptoActivoRegisterMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.CriptoActivoRepository
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-
 import org.junit.jupiter.api.Assertions.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest

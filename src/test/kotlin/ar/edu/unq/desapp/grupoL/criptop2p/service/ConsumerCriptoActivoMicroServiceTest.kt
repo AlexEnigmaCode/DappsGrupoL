@@ -1,16 +1,14 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.service
 
-import ar.edu.unq.desapp.grupoL.criptop2p.Binance
-import ar.edu.unq.desapp.grupoL.criptop2p.model.CriptoActivo
-import ar.edu.unq.desapp.grupoL.criptop2p.webservice.CriptoActivoRestService
+
+import ar.edu.unq.desapp.grupoL.criptop2p.CriptoActivoRegisterMapper
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
-
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import java.time.LocalDate
+
 
 @SpringBootTest
 internal class ConsumerCriptoActivoMicroServiceTest {
@@ -19,7 +17,7 @@ internal class ConsumerCriptoActivoMicroServiceTest {
     lateinit var  consumerService: ConsumerCriptoActivoMicroService
 
 
-    var  criptoActivos =listOf<CriptoActivo>()
+    var  criptoActivos =listOf<CriptoActivoRegisterMapper>()
     lateinit var symbol : String
 
     @BeforeEach
@@ -37,7 +35,7 @@ internal class ConsumerCriptoActivoMicroServiceTest {
 
     @Test
     fun consumeCriptoActivoBySymbol(){
-        val  criptoActivo: CriptoActivo = consumerService.consumeBySymbol(symbol)
+        val  criptoActivo: CriptoActivoRegisterMapper = consumerService.consumeBySymbol(symbol)
         System.out.println( "El cripto Activo es = $criptoActivo ")
         assertEquals (symbol,criptoActivo.criptoactivo)
     }

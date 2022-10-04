@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 @Service
 class MercadoPagoService {
 
-    // val usuarios = mutableListOf<Usuario>()
+
     val cuentas = mutableListOf<CuentaCVU>()
      val depositos = mutableListOf<Deposito>()
 
