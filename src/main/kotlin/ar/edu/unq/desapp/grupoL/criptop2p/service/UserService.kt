@@ -33,7 +33,7 @@ class UserService: UserDetailsService {
         }
         val password =encoder.encode(user.password)
        //val newUser = Usuario(++userId,user.name, user.surname, user.email,user.address,user.password,user.cvu,user.walletAddress)
-        val newUser = Usuario(++userId,user.name, user.surname, user.email,user.address,password,user.cvu,user.walletAddress)
+        val newUser = UserRegisterMapper(user.name, user.surname, user.email,user.address,password,user.cvu,user.walletAddress)
 
         val savedUser = repository.save(newUser)
 
@@ -64,7 +64,7 @@ class UserService: UserDetailsService {
     }
 
     @Transactional
-    fun findByID(id: Int): Usuario {
+    fun findByID(id: Long): Usuario {
        val user =  repository.findById(id)
        if ( ! (user.isPresent ))
        {throw ItemNotFoundException("User with Id:  $id not found") }
@@ -77,7 +77,7 @@ class UserService: UserDetailsService {
 
 
     @Transactional
-    fun deleteById(id: Int) {
+    fun deleteById(id: Long) {
         val user =  repository.findById(id)
         if ( ! (user.isPresent ))
         {throw ItemNotFoundException("User with Id:  $id not found") }
@@ -88,7 +88,7 @@ class UserService: UserDetailsService {
 
 
     @Transactional
-    fun update(id: Int , entity: UserUpdateMapper) : UserViewMapper {
+    fun update(id: Long , entity: UserUpdateMapper) : UserViewMapper {
        lateinit var   entityOptional:Optional<Usuario?>
         try {
               entityOptional = repository.findById(id)

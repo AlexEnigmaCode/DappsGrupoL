@@ -26,7 +26,7 @@ class PublisherService {
 
 
     @Transactional
-    fun publicar(id: Int, intencion: IntencionRegisterMapper): Publicacion {
+    fun publicar(id: Long, intencion: IntencionRegisterMapper): Publicacion {
         try {
             val usuario = userService.findByID(id)
             val diahora = LocalDate.now().toString()
