@@ -45,9 +45,11 @@ class Usuario {
 
     @Column(nullable = false)
     @Size(min = 22 , max = 22)
+    @Pattern (regexp= "^\\d{22}$", message="El CVU debe ser de 22 digitos")
     var cvu: String? = null
 
     @Column(nullable = false)
+    @Pattern (regexp= "^\\d{8}$", message="El CVU debe ser de 8 digitos")
     @Size(min = 8 , max = 8)
     var walletAddress: String? = null
 
