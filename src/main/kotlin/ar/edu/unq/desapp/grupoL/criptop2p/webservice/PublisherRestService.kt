@@ -27,7 +27,7 @@ class PublisherRestService {
         var response : ResponseEntity<*>?
         try {
 
-            val publicacion = publisherService!!.publicar(id,entity)
+            val publicacion = publisherService!!.publicar(id.toLong(),entity)
 
             ResponseEntity.status(200)
             response = ResponseEntity.ok().body(publicacion)

@@ -9,7 +9,7 @@ import javax.validation.constraints.*
 
 @Entity
 @Table(name = "users")
-class Usuario {
+class Usuario: EntidadValidable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,58 +18,70 @@ class Usuario {
 
 
     @Column(nullable = false)
-    @NotNull( message = "El nonbre es obligatorio")
-    @Size(min = 3 , max = 30, message = "el campo name debe contener un minimo de 3 y un máximo de 30 caracteres")
+    @NotNull(message = "El nonbre es obligatorio")
+    @Size(min = 3, max = 30, message = "el campo name debe contener un minimo de 3 y un máximo de 30 caracteres")
     var name: String? = null
 
     @Column(nullable = false)
     @NotNull(message = "el apellido es obligatorio")
-    @Size(min = 3 , max = 30, message = "el campo surname debe contener un minimo de 3 y un máximo de 30 caracteres")
+    @Size(min = 3, max = 30, message = "el campo surname debe contener un minimo de 3 y un máximo de 30 caracteres")
     var surname: String? = null
 
     @Column(nullable = false, unique = true)
-    @NotNull( message = "El mail es obligatorio")
+    @NotNull(message = "El mail es obligatorio")
     @Email
     @Pattern(regexp = "^[^@]+@[^@]+\\.[a-zA-Z] {2,}$", message = "El formato de mail no es válido")
     var email: String? = null
 
     @Column(nullable = false)
-    @NotNull( message = "La direccièn es obligatoria")
-    @Size(min = 10 , max = 30)
+    @NotNull(message = "La direccièn es obligatoria")
+    @Size(min = 10, max = 30)
     var address: String? = null
 
     @Column
     @Size(min = 6)
-     //al menos 1 minuscula, 1 mayuscula, 1 carac especial y min 6
+    //al menos 1 minuscula, 1 mayuscula, 1 carac especial y min 6
     var password: String? = null
 
     @Column(nullable = false)
-    @Size(min = 22 , max = 22)
-    @Pattern (regexp= "^\\d{22}$", message="El CVU debe ser de 22 digitos")
+    @Size(min = 22, max = 22)
+    @Pattern(regexp = "^\\d{22}$", message = "El CVU debe ser de 22 digitos")
     var cvu: String? = null
 
     @Column(nullable = false)
-    @Pattern (regexp= "^\\d{8}$", message="El CVU debe ser de 8 digitos")
-    @Size(min = 8 , max = 8)
+    @Pattern(regexp = "^\\d{8}$", message = "El CVU debe ser de 8 digitos")
+    @Size(min = 8, max = 8)
     var walletAddress: String? = null
 
-   @Transient
+    @Transient
     var cantidadOperaciones: Int? = null
 
-   @Transient
+    @Transient
     var reputacion: Int? = null
 
+    @Transient
+    var  notificacionesDeDeposito = mutableListOf<Deposito>()
+
     constructor() : super() {}
-    constructor(id: Long?, name: String?, surname: String?, email:String?,address:String?,password:String?,cvu:String?,walletAddress:String?/*,cantidadOperaciones: Int?*/  ) : super() {
+    constructor(
+        id: Long?,
+        name: String?,
+        surname: String?,
+        email: String?,
+        address: String?,
+        password: String?,
+        cvu: String?,
+        walletAddress: String?/*,cantidadOperaciones: Int?*/
+    ) : super() {
         this.id = id
         this.name = name
         this.surname = surname
         this.email = email
         this.address = address
         this.password = password
-        this.cvu= cvu
+        this.cvu = cvu
         this.walletAddress = walletAddress
-       // this.cantidadOperaciones = cantidadOperaciones
+        // this.cantidadOperaciones = cantidadOperaciones
     }
 
     fun getOperaciones(): Int {
@@ -77,7 +89,10 @@ class Usuario {
     }
 
     fun icrementarOperqaciones(): Int {
-       return   cantidadOperaciones!! + 1
+        return cantidadOperaciones!! + 1
     }
+
+
+
 
 }

@@ -4,6 +4,7 @@ import ar.edu.unq.desapp.grupoL.criptop2p.*
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
 import org.springframework.beans.factory.annotation.Autowired
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.UserRepository
+import org.springframework.http.ResponseEntity
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
@@ -27,7 +28,7 @@ class UserService: UserDetailsService {
 
     @Transactional
     fun register(user: UserRegisterMapper): UserViewMapper {
-
+      lateinit var userview: UserViewMapper
        if ( existUser(user) )  {
          throw UsernameExistException("User with email:  ${user.email} is used")
         }
@@ -35,25 +36,32 @@ class UserService: UserDetailsService {
        //val newUser = Usuario(++userId,user.name, user.surname, user.email,user.address,user.password,user.cvu,user.walletAddress)
         val newUser = UserRegisterMapper(user.name, user.surname, user.email,user.address,password,user.cvu,user.walletAddress)
 
-        val savedUser = repository.save(newUser)
+        try {
+            val savedUser = repository.save(newUser)
+            savedUser.validar()
 
-        val userview = UserViewMapper(
-            savedUser.id,
-            savedUser.name,
-            savedUser.surname,
-            savedUser.email,
-            savedUser.address,
-            savedUser.cvu,
-            savedUser.walletAddress
-        )
+             userview = UserViewMapper(
+                savedUser.id,
+                savedUser.name,
+                savedUser.surname,
+                savedUser.email,
+                savedUser.address,
+                savedUser.cvu,
+                savedUser.walletAddress
+            )
+        }
+        catch (e: Exception) {
+            val resultado: MutableMap<String, String> = HashMap()
+            resultado["Object invalid"] = e.message.toString()
 
+        }
         return  userview
       }
 
 
 
 
-
+    @Transactional
     fun login(email: String, password: String): UserViewMapper {
 
        val users = repository.findAll()

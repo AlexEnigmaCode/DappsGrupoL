@@ -88,13 +88,15 @@ class PublisherService {
 
           "compra" -> {
 
-                publicacion.direccionEnvio = publicacion.usuario!!.walletAddress!!
+               publicacion.direccionEnvio = publicacion.usuario!!.walletAddress!!
                publicacion.accion =  Accion.REALIZAR_TRANSFERENCIA
-               this.realizarTransferencia(publicacion,usuario) }
+               publicacion.usuarioSelector = usuario
+               this.realizarTransferencia(publicacion) }
             else -> {
                 publicacion.direccionEnvio  = publicacion.usuario!!.cvu!!
                 publicacion.accion =  Accion.CONFIRMAR_RECEPCION
-               this.confirmarRecepcion(publicacion,usuario)
+                publicacion.usuarioSelector = usuario
+               this.confirmarRecepcion(publicacion)
                 }
 
        }
@@ -102,22 +104,25 @@ class PublisherService {
         }
 
 
-    private fun realizarTransferencia(publicacion:Publicacion, usuario:Usuario) {
+    private fun realizarTransferencia(publicacion:Publicacion) {
 
-              enviarDinero(usuario,publicacion)
-              notificarPago (usuario)
+             val deposito =  enviarDinero(publicacion)
+              notificarPago (publicacion, deposito)
 
     }
 
-    private fun confirmarRecepcion(publicacion:Publicacion,usuario:Usuario) {
-        val  cuenta  = mercadoPagoService.getCuenta(publicacion.usuario!!)
-        val montoDepositado =  mercadoPagoService.consultarMonto(cuenta ,usuario)
+    private fun confirmarRecepcion(publicacion:Publicacion) {
+        val  cuenta  = mercadoPagoService.getCuenta(publicacion.direccionEnvio!!)
+        val montoDepositado =  mercadoPagoService.consultarMonto(cuenta ,publicacion.usuarioSelector!!)
         if  ( montoDepositado < publicacion.monto ) {
             throw Exception (" El monto depositado no es suficiente para realizar la transaccion" +
                     " o no se ha hecho el deposito en la cuenta  $cuenta")
         }
-         enviarCriptoActivo(usuario,publicacion)
+
+        enviarCriptoActivo(publicacion)
    }
+
+
 
 
     fun generarTransaccion(publicacion:Publicacion, usuario:Usuario): Publicacion {
@@ -138,29 +143,48 @@ class PublisherService {
             return  publisherRepository.save(newPublicacion)
     }
 
-    private fun enviarDinero(usuario:Usuario, publicacion:Publicacion){
-       val  cuenta  = mercadoPagoService.getCuenta(usuario)
-         mercadoPagoService.depositar(cuenta, publicacion.monto, publicacion.usuario!! )
-
+    private fun enviarDinero(publicacion:Publicacion) : Deposito{
+       val  cuenta  = mercadoPagoService.getCuenta(publicacion.usuarioSelector!!.cvu!!)
+       val deposito =   mercadoPagoService.depositar(cuenta, publicacion.monto, publicacion.usuario!! )
+     return deposito
     }
 
-    fun notificarPago (usuario:Usuario){
-
-    }
-
-
-    fun enviarCriptoActivo (usuario:Usuario,publicacion:Publicacion){
-           val wallet = getVirtualWallet(usuario)
-        guardarCriptoActivo(wallet,publicacion, usuario)
+    fun notificarPago (publicacion:Publicacion, deposito:Deposito){
+        val notificacionesDeDeposito =  publicacion.usuarioSelector!!.notificacionesDeDeposito
+        notificacionesDeDeposito.add(deposito)
     }
 
 
+    fun enviarCriptoActivo (publicacion:Publicacion){
+           val walletAddress = publicacion.usuarioSelector!!.walletAddress!!
+           val wallet = getVirtualWallet(walletAddress)
+        guardarCriptoActivo(wallet,publicacion)
+    }
 
-    fun guardarCriptoActivo(wallet:VirtualWallet,publicacion:Publicacion, usuario:Usuario){
+
+
+    fun guardarCriptoActivo(wallet:VirtualWallet,publicacion:Publicacion){
         val  criptoActivo = CriptoActivoWalletMapper(publicacion.criptoactivo!!, publicacion.cotizacion,publicacion.cantidad!!,publicacion.monto)
-        wallet.criptoactivos.add(criptoActivo)
+        agregarCriptoActivo(criptoActivo,wallet)
+    }
+
+
+    fun agregarCriptoActivo(criptoActivo: CriptoActivoWalletMapper, wallet: VirtualWallet) {
+        if (existeCriptoActivo(criptoActivo,wallet)) {
+            var criptoActivoGuardado = wallet.criptoactivos.find { it.criptoactivo == criptoActivo.criptoactivo }
+            criptoActivoGuardado!!.monto  += criptoActivo.monto
+
+           }
+        else { wallet.criptoactivos.add(criptoActivo)  }
+    }
+
+
+    fun existeCriptoActivo (criptoActivo: CriptoActivoWalletMapper,wallet: VirtualWallet):Boolean{
+       val criptoActivoGuardado = wallet.criptoactivos.find { it.criptoactivo == criptoActivo.criptoactivo }
+       return  (criptoActivoGuardado != null)
 
     }
+
 
 
 
@@ -169,8 +193,8 @@ class PublisherService {
         wallets.add(wallet)
     }
 
-    fun getVirtualWallet(usuario:Usuario): VirtualWallet{
-        return  wallets.find { it.usuario.walletAddress == usuario.walletAddress} ?:  throw ItemNotFoundException("User with Virtual Wallet: ${usuario.walletAddress} not found")
+    fun getVirtualWallet(walletAddress:String): VirtualWallet{
+        return  wallets.find { it.usuario.walletAddress == walletAddress} ?:  throw ItemNotFoundException("User with Virtual Wallet: $walletAddress not found")
     }
 
     fun wallets(): MutableList<VirtualWallet> {

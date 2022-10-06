@@ -55,10 +55,10 @@ data class PublicacionRegisterMapper(
 
 
 data class CriptoActivoWalletMapper(
-val criptoactivo:String,
-val cotizacion: Double,
-val cantidad: Long,
-val monto : Double)
+    val criptoactivo:String,
+    val cotizacion: Double,
+    val cantidad: Long,
+    var monto : Double)
 
 
 data class CriptoActivoRegisterMapper(

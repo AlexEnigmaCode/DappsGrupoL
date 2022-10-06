@@ -53,6 +53,9 @@ class Publicacion {
     @Transient
     var accion: Accion? = null
 
+    @Transient
+    var usuarioSelector: Usuario? = null
+
     constructor() : super() {}
     constructor(
         id: Long?,
@@ -68,6 +71,7 @@ class Publicacion {
         cancelada: Boolean?,
         direccionEnvio: String?,
         accion: Accion?
+
     ) : super() {
         this.id = id
         this.diahora = diahora

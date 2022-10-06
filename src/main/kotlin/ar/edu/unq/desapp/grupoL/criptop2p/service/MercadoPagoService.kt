@@ -21,29 +21,33 @@ class MercadoPagoService {
         cuentas.add(cuenta)
     }
 
-     fun getCuenta(usuario:Usuario): CuentaCVU{
-       return  cuentas.find { it.usuario.cvu == usuario.cvu} ?:  throw ItemNotFoundException("Client with CVUu: ${usuario.cvu} not found")
+     fun getCuenta(cvu:String): CuentaCVU{
+       return  cuentas.find { it.usuario.cvu == cvu} ?:  throw ItemNotFoundException("Client with CVUu: ${cvu} not found")
     }
 
      fun cuentas(): MutableList<CuentaCVU> {
        return  cuentas
     }
 
-    fun depositar(cuenta:CuentaCVU,monto:Double, usuario:Usuario){
+    fun depositar(cuenta:CuentaCVU,monto:Double, usuario:Usuario): Deposito{
        val  deposito = Deposito(usuario, monto)
-       actualizarDeposito(cuenta,deposito, usuario)
+      return  actualizarDeposito(cuenta,deposito, usuario)
 
     }
 
 
-    fun actualizarDeposito(cuenta:CuentaCVU,deposito:Deposito, usuario:Usuario){
+    fun actualizarDeposito(cuenta:CuentaCVU,deposito:Deposito, usuario:Usuario): Deposito{
+        lateinit var depositoActual :Deposito
         if ( cuenta.depositos.any{ it.usuario.cvu == usuario.cvu } ) {
            val  nuevodeposito = cuenta.depositos.find{ it.usuario.cvu == usuario.cvu  }
             nuevodeposito!!.monto  +=   deposito.monto
+            depositoActual = nuevodeposito!!
         }
         else {
             cuenta.depositos.add(deposito)
+            depositoActual = deposito
         }
+        return depositoActual
     }
 
 
