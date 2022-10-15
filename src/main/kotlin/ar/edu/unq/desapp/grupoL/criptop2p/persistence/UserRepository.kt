@@ -10,9 +10,9 @@ import java.util.*
 
 @Configuration
 @Repository
-interface UserRepository : CrudRepository<Usuario?, Long?> {
-    override fun findById(id: Long): Optional<Usuario?>
-    fun save(usuario: UserRegisterMapper): Usuario
+interface UserRepository : CrudRepository<Usuario?, Int?> {
+    override fun findById(id: Int): Optional<Usuario?>
+    fun save(usuario: Usuario): Usuario
      override fun findAll(): List<Usuario>
-     override fun deleteById(id: Long)
+     override fun deleteById(id: Int)
 }

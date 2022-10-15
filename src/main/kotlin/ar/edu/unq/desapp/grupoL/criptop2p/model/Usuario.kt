@@ -1,56 +1,56 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.model
 
 import javax.persistence.*
-import javax.validation.constraints.Email
-import javax.validation.constraints.NotNull
-import javax.validation.constraints.Size
 import kotlin.jvm.Transient
 import javax.validation.constraints.*
 
 @Entity
 @Table(name = "users")
-class Usuario: EntidadValidable {
+class Usuario:  EntidadValidable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_user")
-    var id: Long? = null
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @Column(name = "id_user")
+    var id: Int?= null
 
 
     @Column(nullable = false)
     @NotNull(message = "El nonbre es obligatorio")
-    @Size(min = 3, max = 30, message = "el campo name debe contener un minimo de 3 y un máximo de 30 caracteres")
+    @Size(min = 1, max = 30, message = "el campo name debe contener un minimo de 3 y un máximo de 30 caracteres")
     var name: String? = null
 
     @Column(nullable = false)
     @NotNull(message = "el apellido es obligatorio")
-    @Size(min = 3, max = 30, message = "el campo surname debe contener un minimo de 3 y un máximo de 30 caracteres")
+    @Size(min = 1, max = 30, message = "el campo surname debe contener un minimo de 3 y un máximo de 30 caracteres")
     var surname: String? = null
 
     @Column(nullable = false, unique = true)
     @NotNull(message = "El mail es obligatorio")
-    @Email
-    @Pattern(regexp = "^[^@]+@[^@]+\\.[a-zA-Z] {2,}$", message = "El formato de mail no es válido")
+    @Email(message = "El formato de mail no es válido")
+    // @Pattern(regexp = "^[^@]+@[^@]+\\.[a-zA-Z] {2,}$", message = "El formato de mail no es válido")
     var email: String? = null
 
     @Column(nullable = false)
     @NotNull(message = "La direccièn es obligatoria")
-    @Size(min = 10, max = 30)
+    @Size(min = 1, max = 30)
     var address: String? = null
 
     @Column
-    @Size(min = 6)
+    @NotNull(message = "El password es obligatorio")
+    //@Size(min = 6)
+    @Size(min = 1)
     //al menos 1 minuscula, 1 mayuscula, 1 carac especial y min 6
-    var password: String? = null
+    var password: String = ""
+
 
     @Column(nullable = false)
-    @Size(min = 22, max = 22)
-    @Pattern(regexp = "^\\d{22}$", message = "El CVU debe ser de 22 digitos")
+    @Size(min = 1, max = 22, message = "El CVU debe ser de 22 digitos")
+    // @Pattern(regexp = "^\\d{22}$", message = "El CVU debe ser de 22 digitos")
     var cvu: String? = null
 
     @Column(nullable = false)
-    @Pattern(regexp = "^\\d{8}$", message = "El CVU debe ser de 8 digitos")
-    @Size(min = 8, max = 8)
+    // @Pattern(regexp = "^\\d{8}$", message = "El Wallet Address debe ser de 8 digitos")
+    @Size(min = 1, max = 8, message = "ElWallet Address debe ser de 8 digitos")
     var walletAddress: String? = null
 
     @Transient
@@ -60,16 +60,17 @@ class Usuario: EntidadValidable {
     var reputacion: Int? = null
 
     @Transient
-    var  notificacionesDeDeposito = mutableListOf<Deposito>()
+    var notificacionesDeDeposito = mutableListOf<Deposito>()
+
 
     constructor() : super() {}
     constructor(
-        id: Long?,
+        id: Int?,
         name: String?,
         surname: String?,
         email: String?,
         address: String?,
-        password: String?,
+        password: String,
         cvu: String?,
         walletAddress: String?/*,cantidadOperaciones: Int?*/
     ) : super() {
@@ -83,6 +84,17 @@ class Usuario: EntidadValidable {
         this.walletAddress = walletAddress
         // this.cantidadOperaciones = cantidadOperaciones
     }
+
+
+
+    fun setpassword(password: String){
+       this.password = password
+}
+
+
+  fun getpassword ():String {
+     return password
+  }
 
     fun getOperaciones(): Int {
         return cantidadOperaciones!!

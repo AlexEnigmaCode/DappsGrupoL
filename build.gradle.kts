@@ -62,9 +62,10 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	//implementation ("org.postgresql:postgresql:42.2.12")
-	// https://mvnrepository.com/artifact/javax.validation/validation-api
 	implementation("javax.validation:validation-api:2.0.1.Final")
 	implementation("mysql:mysql-connector-java:8.0.30")
+	implementation("org.springframework.boot:spring-boot-starter-validation:2.7.4")
+
 	//runtimeOnly("com.mysql.cj.jdbc.Driver")
 	//runtimeOnly("org.postgresql")
 	runtimeOnly("com.h2database:h2")

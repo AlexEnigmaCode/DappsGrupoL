@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository
 @Repository
 interface CriptoActivoRepository :CrudRepository<CriptoActivo?, Int?> {
 
-    fun save(criptoActivo: CriptoActivoRegisterMapper): CriptoActivo
+    fun save(criptoActivo: CriptoActivo): CriptoActivo
     override fun findAll(): List<CriptoActivo>
 
 

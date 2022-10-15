@@ -21,7 +21,7 @@ data class UserUpdateMapper(val email:String,
                             val cvu:String,
                             val walletAddress:String)
 
-data class UserViewMapper(val id: Long?,
+data class UserViewMapper(val id: Int?,
                           val name: String?,
                           val surname: String?,
                           val email:String?,

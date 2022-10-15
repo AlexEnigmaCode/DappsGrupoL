@@ -4,12 +4,14 @@ import ar.edu.unq.desapp.grupoL.criptop2p.UserLoginMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.UserRegisterMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.UserUpdateMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.UserViewMapper
+import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.beans.factory.annotation.Autowired
 import ar.edu.unq.desapp.grupoL.criptop2p.service.UserService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.util.HashMap
+import javax.validation.Valid
 
 @RestController
 @EnableAutoConfiguration
@@ -28,7 +30,7 @@ class UserRestService {
 
     /**register a user*/
     @PostMapping("/api/register")
-    fun register(@RequestBody user: UserRegisterMapper): ResponseEntity<*> {
+    fun register(@Valid @RequestBody user: UserRegisterMapper): ResponseEntity<*> {
         var response : ResponseEntity<*>?
 
         try {
@@ -71,7 +73,7 @@ class UserRestService {
     fun userById(@PathVariable("id") id: Int): ResponseEntity<*> {
         var response : ResponseEntity<*>?
         try {
-            val newUser = userService.findByID(id.toLong())
+            val newUser = userService.findByID(id)
             val userView =   UserViewMapper(newUser.id, newUser.name, newUser.surname, newUser.email, newUser.address, newUser.cvu, newUser.walletAddress)
 
             ResponseEntity.status(200)
@@ -92,7 +94,7 @@ class UserRestService {
     fun update (@PathVariable("id") id: Int,@RequestBody entity: UserUpdateMapper): ResponseEntity<*> {
         var response : ResponseEntity<*>?
         try {
-            val userview = userService.update(id.toLong(),entity)
+            val userview = userService.update(id,entity)
 
             ResponseEntity.status(200)
             response = ResponseEntity.ok().body(userview)
@@ -111,9 +113,9 @@ class UserRestService {
     fun deleteUserById(@PathVariable("id") id: Int): ResponseEntity<*> {
         var response : ResponseEntity<*>?
         try {
-            userService!!.deleteById(id.toLong())
+            userService!!.deleteById(id)
             val resultado: MutableMap<String, Int> = HashMap()
-            resultado["succesfully user deleted with iD"] = id
+             resultado["succesfully user deleted with iD"] = id
             response = ResponseEntity.ok().body<Map<String, Int>>(resultado)
 
     } catch (e: Exception) {

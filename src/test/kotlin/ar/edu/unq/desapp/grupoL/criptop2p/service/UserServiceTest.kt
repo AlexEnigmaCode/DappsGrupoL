@@ -30,7 +30,7 @@ internal class UserServiceTest {
 
         user1 = UserRegisterMapper( "Ale", "Fariña", "ale@gmail.com", "address1","1", "123", "7"  )
 
-        user2 = UserRegisterMapper( "Ulises", "Lopez","ulisese@gmail.com", "address2","2", "234", "8" )
+        user2 = UserRegisterMapper( "Ulises", "Lopez","ulises@gmail.com", "address2","2", "234", "8" )
 
         updateUser = UserUpdateMapper( "ale@edu.unq.com", "another_address1","11", "1234", "9"  )
     }
