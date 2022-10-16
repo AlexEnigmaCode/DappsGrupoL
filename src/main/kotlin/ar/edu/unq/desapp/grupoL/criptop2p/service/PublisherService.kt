@@ -2,17 +2,12 @@ package ar.edu.unq.desapp.grupoL.criptop2p.service
 
 import ar.edu.unq.desapp.grupoL.criptop2p.*
 import ar.edu.unq.desapp.grupoL.criptop2p.model.*
-import ar.edu.unq.desapp.grupoL.criptop2p.persistence.CriptoActivoRepository
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.PublicacionRepository
-import ar.edu.unq.desapp.grupoL.criptop2p.persistence.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.Period
-import kotlin.properties.Delegates
+
 
 @Service
 class PublisherService {
@@ -38,6 +33,10 @@ class PublisherService {
 
     @Transactional
     fun publicar(id: Int, intencion: IntencionRegisterMapper): Publicacion {
+        if ( ! puedePublicarSegunCotizacionActual(intencion)) {
+            throw Exception("Error : No puede publicar, el precio de la publicación está por fuera del precio de referencia")
+        }
+
         try {
             val usuario = userService.findByID(id)
 
@@ -67,6 +66,12 @@ class PublisherService {
     }
 
 
+  private fun puedePublicarSegunCotizacionActual(intencion: IntencionRegisterMapper): Boolean {
+      val cotizacionActual = cotizacionActual(intencion.criptoactivo!!).toDouble()
+      val minRef =  cotizacionActual * 0.95
+      val maxRef =  cotizacionActual * 1.05
+      return  (intencion.cotizacion  >= minRef) && (intencion.cotizacion <= maxRef)
+  }
 
 
     @Transactional
