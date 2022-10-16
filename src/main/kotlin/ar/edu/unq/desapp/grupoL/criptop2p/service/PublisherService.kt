@@ -2,11 +2,17 @@ package ar.edu.unq.desapp.grupoL.criptop2p.service
 
 import ar.edu.unq.desapp.grupoL.criptop2p.*
 import ar.edu.unq.desapp.grupoL.criptop2p.model.*
+import ar.edu.unq.desapp.grupoL.criptop2p.persistence.CriptoActivoRepository
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.PublicacionRepository
+import ar.edu.unq.desapp.grupoL.criptop2p.persistence.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.Period
+import kotlin.properties.Delegates
 
 @Service
 class PublisherService {
@@ -25,11 +31,17 @@ class PublisherService {
     private lateinit var publisherRepository: PublicacionRepository
 
 
+
+    @Autowired
+    private  lateinit var consumer : ConsumerCriptoActivoMicroService
+
+
     @Transactional
-    fun publicar(id: Long, intencion: IntencionRegisterMapper): Publicacion {
+    fun publicar(id: Int, intencion: IntencionRegisterMapper): Publicacion {
         try {
             val usuario = userService.findByID(id)
-            val diahora = LocalDate.now().toString()
+
+            val diahora = LocalTime.now()
             val cantidadoperaciones = usuario.cantidadOperaciones
             val monto = intencion.cantidad!! * intencion.cotizacion!!
             val reputacion = usuario.reputacion.toString()
@@ -47,11 +59,35 @@ class PublisherService {
                 null,
                 null
             )
+
             return publisherRepository.save(publicacion)
         } catch (e: Exception) {
             throw ItemNotFoundException("User with Id:  $id not found")
         }
     }
+
+
+
+
+    @Transactional
+    fun selectByID(id: Int, usuario:Usuario): Publicacion {
+        val publicacion = publisherRepository.findById(id)
+        if ( ! (publicacion.isPresent ))
+        {throw ItemNotFoundException("Publicacion with Id:  $id not found") }
+        val newPublicacion=  publicacion.get()
+
+        if (usuario.id!!.toInt() == newPublicacion.usuario!!.id!!.toInt()) {
+            throw IntentionException ("Error: No puede selecconar su propia intención")
+        }
+         return newPublicacion
+    }
+
+    @Transactional
+    fun cancelar (publicacion:Publicacion,usuario:Usuario){
+       usuario.descontarReputacion(20)
+    }
+
+
 
 
     @Transactional
@@ -63,43 +99,49 @@ class PublisherService {
 
     @Transactional
     fun procesarTransaccion(publicacion: Publicacion,usuario: Usuario): Publicacion {
-       lateinit var  transaccion :Publicacion
-
-        try {
-
-            if (!publicacion.isCanceled()) {
-                transaccion = procesar(publicacion,usuario)
-
-            } else {
-                 // descontarPuntos
-            }
+       var  transaccion :Publicacion = publicacion
 
 
-        } catch (e: Exception) {
-            throw ItemNotFoundException("User with Id:  not found")
-        }
+                if (!isCanceled(publicacion)) {
+                    transaccion = procesar(publicacion,usuario)
+
+                }
+
+
            return transaccion
     }
 
    private  fun procesar(publicacion: Publicacion,usuario:Usuario): Publicacion{
 
-
+       publicacion.usuario!!.icrementarOperqaciones()
        when (publicacion.operacion) {
 
           "compra" -> {
-
                publicacion.direccionEnvio = publicacion.usuario!!.walletAddress!!
                publicacion.accion =  Accion.REALIZAR_TRANSFERENCIA
                publicacion.usuarioSelector = usuario
                this.realizarTransferencia(publicacion) }
-            else -> {
+           "venta" -> {
                 publicacion.direccionEnvio  = publicacion.usuario!!.cvu!!
                 publicacion.accion =  Accion.CONFIRMAR_RECEPCION
                 publicacion.usuarioSelector = usuario
                this.confirmarRecepcion(publicacion)
                 }
 
+
        }
+                 val fechaActual = LocalTime.now()
+
+                 if (fechaActual.isBefore(publicacion.diahora!!.plusMinutes(30)))
+
+                 {  publicacion.usuario!!.incrementarReputacion(10)
+                     publicacion.usuarioSelector!!.incrementarReputacion(10)
+                  }
+                else {
+                    publicacion.usuario!!.incrementarReputacion(5)
+                    publicacion.usuarioSelector!!.incrementarReputacion(5)
+                }
+
                  return  generarTransaccion(publicacion, usuario)
         }
 
@@ -199,6 +241,26 @@ class PublisherService {
 
     fun wallets(): MutableList<VirtualWallet> {
         return  wallets
+    }
+
+
+    private fun isCanceled(publicacion:Publicacion): Boolean {
+
+         return  when    (publicacion.operacion) {
+            "compra" -> {
+               cotizacionActual(publicacion.criptoactivo!!) > publicacion.cotizacion
+               }
+            else -> {
+               cotizacionActual (publicacion.criptoactivo!!)  < publicacion.cotizacion
+            }
+
+         }
+
+    }
+
+   private fun  cotizacionActual(symbol:String): Int{
+     val  criptoActivo = consumer.consumeBySymbol(symbol)
+        return  criptoActivo.cotizacion!!.toInt()
     }
 
 }

@@ -2,7 +2,6 @@ package ar.edu.unq.desapp.grupoL.criptop2p.service
 
 
 import ar.edu.unq.desapp.grupoL.criptop2p.Binance
-import ar.edu.unq.desapp.grupoL.criptop2p.CriptoActivoRegisterMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.ItemNotFoundException
 import ar.edu.unq.desapp.grupoL.criptop2p.model.CriptoActivo
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.CriptoActivoRepository
@@ -29,14 +28,16 @@ class CriptoActivoService {
     @Transactional
     fun save(binance: Binance): CriptoActivo {
         val fecha = LocalDateTime.now().toString()
-       val criptoActivo =  CriptoActivoRegisterMapper (binance.symbol,binance.price, fecha)
-        return  repository.save(criptoActivo)
+        val criptoActivo  =  CriptoActivo (0,binance.symbol,binance.price, fecha)
+       val criptoSaved =  repository.save(criptoActivo)
+        return criptoSaved
     }
 
 
     @Transactional
-    fun saveAll(criptoActivos: List<CriptoActivo>): MutableList<CriptoActivo> {
-
+    fun saveAll(binances: List<Binance>): MutableList<CriptoActivo> {
+        val fecha = LocalDateTime.now().toString()
+        val criptoActivos:List<CriptoActivo> = binances.map { CriptoActivo(0,it.symbol, it.price,fecha) }
         return repository.saveAll(criptoActivos.asIterable()).toMutableList()
     }
 
@@ -45,7 +46,7 @@ class CriptoActivoService {
     fun findByCriptoActivo(symbol:String): CriptoActivo {
         val criptoActivos = repository.findAll()
        return  criptoActivos.find { (it.criptoactivo == symbol)  } ?: throw ItemNotFoundException("Cripto Activo with oymbol $symbol Not found")
-       // var criptoActivp: CriptoActivo = repository.findBy
+
                 }
 
 

@@ -2,9 +2,9 @@ package ar.edu.unq.desapp.grupoL.criptop2p.service
 
 import ar.edu.unq.desapp.grupoL.criptop2p.*
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
+import ar.edu.unq.desapp.grupoL.criptop2p.model.UsuarioMapper
 import org.springframework.beans.factory.annotation.Autowired
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.UserRepository
-import org.springframework.http.ResponseEntity
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
@@ -18,7 +18,7 @@ import java.util.*
 
 @Service
 class UserService: UserDetailsService {
-    private var userId = 0
+   // private var userId :Int= 0
 
     @Autowired
     private  lateinit var repository: UserRepository
@@ -26,21 +26,28 @@ class UserService: UserDetailsService {
     @Autowired
     private lateinit var encoder: BCryptPasswordEncoder
 
+   @Autowired
+   private lateinit var usuarioMapper: UsuarioMapper
+   // private var usuarioMapper = UsuarioMapper.instancia()
+
+
     @Transactional
     fun register(user: UserRegisterMapper): UserViewMapper {
-      lateinit var userview: UserViewMapper
+
+        lateinit var  userview : UserViewMapper
        if ( existUser(user) )  {
          throw UsernameExistException("User with email:  ${user.email} is used")
         }
         val password =encoder.encode(user.password)
-       //val newUser = Usuario(++userId,user.name, user.surname, user.email,user.address,user.password,user.cvu,user.walletAddress)
-        val newUser = UserRegisterMapper(user.name, user.surname, user.email,user.address,password,user.cvu,user.walletAddress)
+       // val newuser = usuarioMapper.aModelo(user)
+       // val newUser = Usuario(++userId,user.name, user.surname, user.email,user.address,user.password,user.cvu,user.walletAddress)
+      val newUser = Usuario(0,user.name, user.surname, user.email,user.address,password,user.cvu,user.walletAddress)
 
-        try {
+      // try {
             val savedUser = repository.save(newUser)
-            savedUser.validar()
+           // savedUser.validar()
 
-             userview = UserViewMapper(
+                userview = UserViewMapper(
                 savedUser.id,
                 savedUser.name,
                 savedUser.surname,
@@ -49,12 +56,15 @@ class UserService: UserDetailsService {
                 savedUser.cvu,
                 savedUser.walletAddress
             )
-        }
+       // }
+/*
         catch (e: Exception) {
+
             val resultado: MutableMap<String, String> = HashMap()
             resultado["Object invalid"] = e.message.toString()
 
         }
+  */
         return  userview
       }
 
@@ -72,7 +82,7 @@ class UserService: UserDetailsService {
     }
 
     @Transactional
-    fun findByID(id: Long): Usuario {
+    fun findByID(id: Int): Usuario {
        val user =  repository.findById(id)
        if ( ! (user.isPresent ))
        {throw ItemNotFoundException("User with Id:  $id not found") }
@@ -85,7 +95,7 @@ class UserService: UserDetailsService {
 
 
     @Transactional
-    fun deleteById(id: Long) {
+    fun deleteById(id: Int) {
         val user =  repository.findById(id)
         if ( ! (user.isPresent ))
         {throw ItemNotFoundException("User with Id:  $id not found") }
@@ -96,7 +106,7 @@ class UserService: UserDetailsService {
 
 
     @Transactional
-    fun update(id: Long , entity: UserUpdateMapper) : UserViewMapper {
+    fun update(id: Int , entity: UserUpdateMapper) : UserViewMapper {
        lateinit var   entityOptional:Optional<Usuario?>
         try {
               entityOptional = repository.findById(id)

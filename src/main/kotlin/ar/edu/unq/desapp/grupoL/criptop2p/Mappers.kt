@@ -2,6 +2,7 @@ package ar.edu.unq.desapp.grupoL.criptop2p
 
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Accion
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
+import java.time.LocalTime
 
 data class UserRegisterMapper(
     val name: String? = null,
@@ -39,18 +40,18 @@ data class IntencionRegisterMapper(
 
 
 data class PublicacionRegisterMapper(
-   val diahora: String?,
-   val criptoactivo: String?,
-   val cantidad: Long?,
-   val cotizacion: Double,
-   val monto: Double,
-   val usuario: Usuario?,
-   val operacion: String ?,
-   val cantidadoperaciones: Int?,
-   val reputacion: String?,
-   val cancelada : Boolean?,
-   val direccionEnvio: String?,
-   val accion: Accion?
+    val diahora: LocalTime?,
+    val criptoactivo: String?,
+    val cantidad: Long?,
+    val cotizacion: Double,
+    val monto: Double,
+    val usuario: Usuario?,
+    val operacion: String ?,
+    val cantidadoperaciones: Int?,
+    val reputacion: String?,
+    val cancelada : Boolean?,
+    val direccionEnvio: String?,
+    val accion: Accion?
 )
 
 

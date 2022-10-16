@@ -7,7 +7,8 @@ enum class Operacion (val tipo: String) {
     },
     VENTA("venta") {
         //
-    },
+    }
+
 
 
 

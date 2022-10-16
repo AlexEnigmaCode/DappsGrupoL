@@ -1,5 +1,9 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.model
 
+
+
+import ar.edu.unq.desapp.grupoL.criptop2p.service.PublisherService
+import org.springframework.beans.factory.annotation.Autowired
 import javax.persistence.*
 import kotlin.jvm.Transient
 import javax.validation.constraints.*
@@ -8,7 +12,8 @@ import javax.validation.constraints.*
 @Table(name = "users")
 class Usuario:  EntidadValidable {
 
-    @Id
+
+   @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id_user")
     var id: Int?= null
@@ -54,10 +59,10 @@ class Usuario:  EntidadValidable {
     var walletAddress: String? = null
 
     @Transient
-    var cantidadOperaciones: Int? = null
+    var cantidadOperaciones: Int = 0
 
     @Transient
-    var reputacion: Int? = null
+    var reputacion: Int = 0
 
     @Transient
     var notificacionesDeDeposito = mutableListOf<Deposito>()
@@ -100,11 +105,26 @@ class Usuario:  EntidadValidable {
         return cantidadOperaciones!!
     }
 
-    fun icrementarOperqaciones(): Int {
-        return cantidadOperaciones!! + 1
+    fun icrementarOperqaciones(){
+         cantidadOperaciones += 1
+    }
+
+    fun descontarReputacion(numero :Int){
+        reputacion -= numero
+    }
+
+    fun incrementarReputacion(numero :Int){
+        reputacion += numero
     }
 
 
 
 
-}
+  }
+
+
+
+
+
+
+
