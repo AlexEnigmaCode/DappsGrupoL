@@ -3,7 +3,7 @@ name: Deployment Pipeline
 on:
   push:
     branches:
-      - dev
+      - main
 
 jobs:
   pipeline:
@@ -28,12 +28,12 @@ jobs:
       - name: Execute Gradle dependencies
         run: ./gradlew dependencies
 
-      #- uses: gradle/gradle-build-action@v2
-        #with:
-         #arguments: check
+      - uses: gradle/gradle-build-action@v2
+        with:
+         arguments: check
 
-      #- name: Execute Gradle build
-        #run: ./gradlew build
+      - name: Execute Gradle build
+        run: ./gradlew build
 
       #- name: Build with Gradle
         #uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
@@ -67,5 +67,5 @@ jobs:
           heroku_app_name: ${{secrets.HEROKU_APP}}
           heroku_email: ${{secrets.HEROKU_API_EMAIL}}
 
-      #- name: Run tests
-        #run: ./gradlew test -i
+      - name: Run tests
+        run: ./gradlew test -i
