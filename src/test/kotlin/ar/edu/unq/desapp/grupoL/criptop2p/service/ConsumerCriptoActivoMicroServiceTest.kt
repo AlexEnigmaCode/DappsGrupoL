@@ -1,6 +1,5 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.service
-
-
+/*
 import ar.edu.unq.desapp.grupoL.criptop2p.CriptoActivoRegisterMapper
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -44,4 +43,4 @@ internal class ConsumerCriptoActivoMicroServiceTest {
     @AfterEach
     fun tearDown() {
     }
-}
+} */

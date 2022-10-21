@@ -51,7 +51,15 @@ repositories {
 
 dependencies {
 
-	//implementation ("io.springfox:springfox-swagger2:2.9.2")
+	implementation ("io.springfox:springfox-swagger2:3.0.0")
+	implementation ("org.springframework.boot:spring-boot-starter-validation:2.7.4")
+	testImplementation ("org.springframework.boot:spring-boot-starter-test")
+	testImplementation ("org.springframework.security:spring-security-test")
+
+	//implementation("org.springdoc:springdoc-openapi-data-rest:1.6.12")
+	implementation("org.springdoc:springdoc-openapi-ui:1.6.11")
+	implementation("org.springdoc:springdoc-openapi-kotlin:1.6.12")
+
 	implementation ("io.springfox:springfox-boot-starter:3.0.0")
 	implementation ("io.springfox:springfox-swagger-ui:3.0.0")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")

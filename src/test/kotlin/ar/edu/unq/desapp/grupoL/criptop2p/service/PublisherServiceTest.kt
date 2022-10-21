@@ -1,5 +1,5 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.service
-
+/*
 import ar.edu.unq.desapp.grupoL.criptop2p.*
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.PublicacionRepository
 import org.junit.jupiter.api.AfterEach
@@ -91,4 +91,4 @@ internal class PublisherServiceTest {
         repository.deleteAll()
     }
 
-}
+}*/

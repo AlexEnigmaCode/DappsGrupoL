@@ -1,5 +1,5 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.service
-
+/*
 import ar.edu.unq.desapp.grupoL.criptop2p.Binance
 import ar.edu.unq.desapp.grupoL.criptop2p.CriptoActivoRegisterMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.model.CriptoActivo
@@ -102,4 +102,4 @@ internal class CriptoActivoServiceTest {
         repository.deleteAll()
     }
 
-}
+} */
