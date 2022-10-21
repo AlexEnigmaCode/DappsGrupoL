@@ -44,6 +44,7 @@ class PublisherService {
             val cantidadoperaciones = usuario.cantidadOperaciones
             val monto = intencion.cantidad!! * intencion.cotizacion!!
             val reputacion = usuario.reputacion.toString()
+            /*
             val publicacion = PublicacionRegisterMapper(
                 diahora,
                 intencion.criptoactivo,
@@ -58,7 +59,22 @@ class PublisherService {
                 null,
                 null
             )
-
+*/
+            val publicacion = Publicacion(
+                0,
+                diahora,
+                intencion.criptoactivo,
+                intencion.cantidad,
+                intencion.cotizacion,
+                monto,
+                usuario,
+                intencion.operacion,
+                cantidadoperaciones,
+                reputacion,
+                false,
+                null,
+                null ,
+             null)
             return publisherRepository.save(publicacion)
         } catch (e: Exception) {
             throw ItemNotFoundException("User with Id:  $id not found")
@@ -173,7 +189,8 @@ class PublisherService {
 
 
     fun generarTransaccion(publicacion:Publicacion, usuario:Usuario): Publicacion {
-           val newPublicacion =  PublicacionRegisterMapper(
+           val newPublicacion =  Publicacion(
+               publicacion.id,
                publicacion.diahora,
                publicacion.criptoactivo,
                publicacion.cantidad,
@@ -185,7 +202,8 @@ class PublisherService {
                publicacion.reputacion,
                publicacion.cancelada,
                publicacion.direccionEnvio,
-              publicacion.accion
+              publicacion.accion,
+              publicacion.usuarioSelector
            )
             return  publisherRepository.save(newPublicacion)
     }

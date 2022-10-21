@@ -71,7 +71,8 @@ class Publicacion {
         reputacion: String?,
         cancelada: Boolean?,
         direccionEnvio: String?,
-        accion: Accion?
+        accion: Accion?,
+        usuarioSelector:Usuario?
 
     ) : super() {
         this.id = id
@@ -87,6 +88,7 @@ class Publicacion {
         this.cancelada = cancelada
         this.direccionEnvio = direccionEnvio
         this.accion = accion
+        this.usuarioSelector= usuarioSelector
     }
 
     fun isCanceled():Boolean{

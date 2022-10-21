@@ -9,13 +9,13 @@ import kotlin.jvm.Transient
 import javax.validation.constraints.*
 
 @Entity
-@Table(name = "users")
+@Table(name = "usuarios")
 class Usuario:  EntidadValidable {
 
 
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Column(name = "id_user")
+   @Column(name = "id_usuario")
     var id: Int?= null
 
 

@@ -5,13 +5,13 @@ import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
 import java.time.LocalTime
 
 data class UserRegisterMapper(
-    val name: String? = null,
-    val surname: String? = null,
-    val email:String?= null,
-    val address:String?= null,
-    val password: String? = null,
-    val cvu:String?= null,
-    val walletAddress:String? = null
+    val name: String? ,
+    val surname: String?,
+    val email:String?,
+    val address:String?,
+    val password: String?,
+    val cvu:String?,
+    val walletAddress:String?
 )
 
 data class UserLoginMapper(val email: String, val password: String)
