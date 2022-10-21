@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service
 
 @Service
 data class UsuarioMapper(
-    var id: Int?,
+    var id: Long?,
     var name: String?,
     var surname: String?,
     var email: String?,

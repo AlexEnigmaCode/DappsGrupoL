@@ -16,7 +16,7 @@ class Usuario:  EntidadValidable {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id_usuario")
-    var id: Int?= null
+    var id: Long?= null
 
 
     @Column(nullable = false)
@@ -70,7 +70,7 @@ class Usuario:  EntidadValidable {
 
     constructor() : super() {}
     constructor(
-        id: Int?,
+        id: Long?,
         name: String?,
         surname: String?,
         email: String?,

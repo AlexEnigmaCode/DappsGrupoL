@@ -4,7 +4,6 @@ import ar.edu.unq.desapp.grupoL.criptop2p.UserLoginMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.UserRegisterMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.UserUpdateMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.UserViewMapper
-import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.beans.factory.annotation.Autowired
 import ar.edu.unq.desapp.grupoL.criptop2p.service.UserService
@@ -70,7 +69,7 @@ class UserRestService {
 
     /**get user by id**/
     @GetMapping("/api/users/{id}")
-    fun userById(@PathVariable("id") id: Int): ResponseEntity<*> {
+    fun userById(@PathVariable("id") id: Long): ResponseEntity<*> {
         var response : ResponseEntity<*>?
         try {
             val newUser = userService.findByID(id)
@@ -91,7 +90,7 @@ class UserRestService {
 
     /** Update*/
     @PutMapping("/api/users/{id}")
-    fun update (@PathVariable("id") id: Int,@RequestBody entity: UserUpdateMapper): ResponseEntity<*> {
+    fun update (@PathVariable("id") id: Long,@RequestBody entity: UserUpdateMapper): ResponseEntity<*> {
         var response : ResponseEntity<*>?
         try {
             val userview = userService.update(id,entity)
@@ -110,12 +109,12 @@ class UserRestService {
 
     /**Delete user by id*/
     @DeleteMapping("/api/users/{id}")
-    fun deleteUserById(@PathVariable("id") id: Int): ResponseEntity<*> {
+    fun deleteUserById(@PathVariable("id") id: Long): ResponseEntity<*> {
         var response : ResponseEntity<*>?
         try {
             userService!!.deleteById(id)
             val resultado: MutableMap<String, Int> = HashMap()
-             resultado["succesfully user deleted with iD"] = id
+             resultado["succesfully user deleted with iD"] = id.toInt()
             response = ResponseEntity.ok().body<Map<String, Int>>(resultado)
 
     } catch (e: Exception) {

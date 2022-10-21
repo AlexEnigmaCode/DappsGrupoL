@@ -32,7 +32,7 @@ class PublisherService {
 
 
     @Transactional
-    fun publicar(id: Int, intencion: IntencionRegisterMapper): Publicacion {
+    fun publicar(id: Long, intencion: IntencionRegisterMapper): Publicacion {
         if ( ! puedePublicarSegunCotizacionActual(intencion)) {
             throw Exception("Error : No puede publicar, el precio de la publicación está por fuera del precio de referencia")
         }
@@ -91,8 +91,8 @@ class PublisherService {
 
 
     @Transactional
-    fun selectByID(id: Int, usuario:Usuario): Publicacion {
-        val publicacion = publisherRepository.findById(id)
+    fun selectByID(id: Long, usuario:Usuario): Publicacion {
+        val publicacion = publisherRepository.findById(id.toInt())
         if ( ! (publicacion.isPresent ))
         {throw ItemNotFoundException("Publicacion with Id:  $id not found") }
         val newPublicacion=  publicacion.get()

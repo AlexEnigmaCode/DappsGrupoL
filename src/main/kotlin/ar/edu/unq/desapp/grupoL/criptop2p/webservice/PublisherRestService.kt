@@ -23,7 +23,7 @@ class PublisherRestService {
 
     /** Publish an intention for a user*/
     @PostMapping("/api/publicaciones/{id}")
-    fun publicar (@PathVariable("id") id: Int, @RequestBody entity: IntencionRegisterMapper): ResponseEntity<*> {
+    fun publicar (@PathVariable("id") id: Long, @RequestBody entity: IntencionRegisterMapper): ResponseEntity<*> {
         var response : ResponseEntity<*>?
         try {
 
