@@ -1,5 +1,5 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.service
-/*
+
 import ar.edu.unq.desapp.grupoL.criptop2p.*
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.PublicacionRepository
 import org.junit.jupiter.api.AfterEach
@@ -50,7 +50,9 @@ internal class PublisherServiceTest {
         assertEquals( publicacion1.cantidad, publi1.cantidad)
         assertEquals( publicacion1.cotizacion, publi1.cotizacion,)
         assertEquals( publicacion1.monto,publi1.monto)
-        assertEquals( "Ale Fariña",publi1.usuario)
+        assertEquals( newUser1.id!!,publi1.usuario!!.id!!)
+        assertEquals( "Ale",publi1.usuario!!.name)
+        assertEquals( "Fariña",publi1.usuario!!.surname)
         assertEquals( 0,publi1.cantidadoperaciones)
 
 
@@ -71,7 +73,9 @@ internal class PublisherServiceTest {
         assertEquals( publicacion1.cantidad, publicaciones.get(0).cantidad)
         assertEquals( publicacion1.cotizacion, publicaciones.get(0).cantidad)
         assertEquals( publicacion1.monto, publicaciones.get(0).monto)
-        assertEquals( "Ale Fariña", publicaciones.get(0).usuario)
+        assertEquals( newUser1.id!!, publicaciones.get(0).usuario!!.id)
+        assertEquals( "Ale", publicaciones.get(0).usuario!!.name)
+        assertEquals( "Fariña", publicaciones.get(0).usuario!!.surname)
         assertEquals(0, publicaciones.get(0).cantidadoperaciones)
 
 
@@ -79,7 +83,9 @@ internal class PublisherServiceTest {
         assertEquals( publicacion1.cantidad, publicaciones.get(1).cantidad)
         assertEquals( publicacion1.cotizacion, publicaciones.get(1).cantidad)
         assertEquals( publicacion1.monto, publicaciones.get(1).monto)
-        assertEquals( "Ulises Lopez", publicaciones.get(1).usuario)
+        assertEquals( newUser2.id!!, publicaciones.get(1).usuario!!.id)
+        assertEquals( "Ulises", publicaciones.get(1).usuario!!.name)
+        assertEquals( "Lopez", publicaciones.get(1).usuario!!.surname)
         assertEquals(0, publicaciones.get(1).cantidadoperaciones)
     }
 
@@ -91,4 +97,4 @@ internal class PublisherServiceTest {
         repository.deleteAll()
     }
 
-}*/
+}

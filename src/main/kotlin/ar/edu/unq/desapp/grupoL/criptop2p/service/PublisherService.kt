@@ -6,6 +6,7 @@ import ar.edu.unq.desapp.grupoL.criptop2p.persistence.PublicacionRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 
@@ -33,33 +34,18 @@ class PublisherService {
 
     @Transactional
     fun publicar(id: Long, intencion: IntencionRegisterMapper): Publicacion {
-        if ( ! puedePublicarSegunCotizacionActual(intencion)) {
+       /* if ( ! puedePublicarSegunCotizacionActual(intencion)) {
             throw Exception("Error : No puede publicar, el precio de la publicación está por fuera del precio de referencia")
         }
-
+*/
         try {
             val usuario = userService.findByID(id)
 
-            val diahora = LocalTime.now()
+            val diahora = LocalDateTime.now()
             val cantidadoperaciones = usuario.cantidadOperaciones
             val monto = intencion.cantidad!! * intencion.cotizacion!!
             val reputacion = usuario.reputacion.toString()
-            /*
-            val publicacion = PublicacionRegisterMapper(
-                diahora,
-                intencion.criptoactivo,
-                intencion.cantidad,
-                intencion.cotizacion,
-                monto,
-                usuario,
-                intencion.operacion,
-                cantidadoperaciones,
-                reputacion,
-                false,
-                null,
-                null
-            )
-*/
+
             val publicacion = Publicacion(
                 0,
                 diahora,
@@ -132,40 +118,56 @@ class PublisherService {
            return transaccion
     }
 
-   private  fun procesar(publicacion: Publicacion,usuario:Usuario): Publicacion{
+   private  fun procesar(publicacion: Publicacion,usuario:Usuario): Publicacion {
 
        publicacion.usuario!!.icrementarOperqaciones()
        when (publicacion.operacion) {
 
-          "compra" -> {
+           "compra" -> {
                publicacion.direccionEnvio = publicacion.usuario!!.walletAddress!!
-               publicacion.accion =  Accion.REALIZAR_TRANSFERENCIA
+               publicacion.accion = Accion.REALIZAR_TRANSFERENCIA
                publicacion.usuarioSelector = usuario
-               this.realizarTransferencia(publicacion) }
+               this.realizarTransferencia(publicacion)
+           }
            "venta" -> {
-                publicacion.direccionEnvio  = publicacion.usuario!!.cvu!!
-                publicacion.accion =  Accion.CONFIRMAR_RECEPCION
-                publicacion.usuarioSelector = usuario
+               publicacion.direccionEnvio = publicacion.usuario!!.cvu!!
+               publicacion.accion = Accion.CONFIRMAR_RECEPCION
+               publicacion.usuarioSelector = usuario
                this.confirmarRecepcion(publicacion)
-                }
+           }
 
 
        }
-                 val fechaActual = LocalTime.now()
 
-                 if (fechaActual.isBefore(publicacion.diahora!!.plusMinutes(30)))
+       val newPublicacion =  incrementarReputacionSegunTiempo(publicacion)
+       return  publisherRepository.save(newPublicacion)
 
-                 {  publicacion.usuario!!.incrementarReputacion(10)
-                     publicacion.usuarioSelector!!.incrementarReputacion(10)
-                  }
-                else {
-                    publicacion.usuario!!.incrementarReputacion(5)
-                    publicacion.usuarioSelector!!.incrementarReputacion(5)
-                }
+   }
 
-                 return  generarTransaccion(publicacion, usuario)
+
+
+
+    private fun  incrementarReputacionSegunTiempo(publicacion:Publicacion):Publicacion {
+
+       if (esFechaAnterior(LocalDateTime.now(), publicacion.diahora!!) ){
+
+         publicacion.usuario!!.incrementarReputacion(10)
+            publicacion.usuarioSelector!!.incrementarReputacion(10)
+        }
+        else {
+            publicacion.usuario!!.incrementarReputacion(5)
+            publicacion.usuarioSelector!!.incrementarReputacion(5)
         }
 
+       return publicacion
+    }
+
+
+
+    private fun  esFechaAnterior(fechaActual:LocalDateTime, fechaPublicacion:LocalDateTime):Boolean{
+       return  (fechaActual.isBefore(fechaPublicacion.plusMinutes(30)))
+
+    }
 
     private fun realizarTransferencia(publicacion:Publicacion) {
 
@@ -281,8 +283,8 @@ class PublisherService {
 
     }
 
-   private fun  cotizacionActual(symbol:String): Int{
-     val  criptoActivo = consumer.consumeBySymbol(symbol)
+      private fun  cotizacionActual(symbol:String): Int{
+      val  criptoActivo = consumer.consumeBySymbol(symbol)
         return  criptoActivo.cotizacion!!.toInt()
     }
 

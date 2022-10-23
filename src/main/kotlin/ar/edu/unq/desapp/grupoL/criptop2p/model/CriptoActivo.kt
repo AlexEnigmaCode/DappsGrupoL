@@ -1,6 +1,7 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.model
 
 
+import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
@@ -19,7 +20,7 @@ class CriptoActivo {
     var cotizacion: String? = null
 
     @Column
-    var fecha: String? = null
+    var diahora: LocalDateTime? = null
 
      @Transient
     var cantidad: Long? = null
@@ -29,11 +30,11 @@ class CriptoActivo {
 
 
     constructor() : super() {}
-    constructor(id: Long?,criptoactivo: String?, cotizacion: String?, fecha: String?) : super() {
+    constructor(id: Long?,criptoactivo: String?, cotizacion: String?, diahora: LocalDateTime?) : super() {
         this.id = id
         this.criptoactivo = criptoactivo
         this.cotizacion = cotizacion
-        this.fecha = fecha
+        this.diahora = diahora
     }
 
 }

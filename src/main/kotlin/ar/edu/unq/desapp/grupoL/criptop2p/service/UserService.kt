@@ -83,7 +83,7 @@ class UserService: UserDetailsService {
 
     @Transactional
     fun findByID(id: Long): Usuario {
-       val user =  repository.findById(id.toInt())
+       val user =  repository.findById(id)
        if ( ! (user.isPresent ))
        {throw ItemNotFoundException("User with Id:  $id not found") }
        val newUser=  user.get()
@@ -96,10 +96,10 @@ class UserService: UserDetailsService {
 
     @Transactional
     fun deleteById(id: Long) {
-        val user =  repository.findById(id.toInt())
+        val user =  repository.findById(id)
         if ( ! (user.isPresent ))
         {throw ItemNotFoundException("User with Id:  $id not found") }
-       repository.deleteById(id.toInt())
+       repository.deleteById(id)
 
     }
 
@@ -109,11 +109,11 @@ class UserService: UserDetailsService {
     fun update(id: Long, entity: UserUpdateMapper) : UserViewMapper {
        lateinit var   entityOptional:Optional<Usuario?>
         try {
-              entityOptional = repository.findById(id.toInt())
+              entityOptional = repository.findById(id)
              val  newUser:Usuario = entityOptional.get()
             val password =encoder.encode(entity.password)
             val user = Usuario(newUser.id,newUser.name, newUser.surname, entity.email,entity.address,password,entity.cvu,entity.walletAddress)
-            repository.deleteById(id.toInt())
+           // repository.deleteById(id)
             val savedUser = repository.save(user)
             val userView =   UserViewMapper(savedUser.id, savedUser.name, savedUser.surname, savedUser.email, savedUser.address, savedUser.cvu, savedUser.walletAddress)
              return userView

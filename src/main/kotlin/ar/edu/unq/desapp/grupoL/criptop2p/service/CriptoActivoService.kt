@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
 
+
 @Service
 class CriptoActivoService {
     @Autowired
@@ -27,8 +28,8 @@ class CriptoActivoService {
 
     @Transactional
     fun save(binance: Binance): CriptoActivo {
-        val fecha = LocalDateTime.now().toString()
-        val criptoActivo  =  CriptoActivo (0,binance.symbol,binance.price, fecha)
+        val diahora = LocalDateTime.now()
+        val criptoActivo  =  CriptoActivo (0,binance.symbol,binance.price, diahora)
        val criptoSaved =  repository.save(criptoActivo)
         return criptoSaved
     }
@@ -36,8 +37,8 @@ class CriptoActivoService {
 
     @Transactional
     fun saveAll(binances: List<Binance>): MutableList<CriptoActivo> {
-        val fecha = LocalDateTime.now().toString()
-        val criptoActivos:List<CriptoActivo> = binances.map { CriptoActivo(0,it.symbol, it.price,fecha) }
+        val diahora = LocalDateTime.now()
+        val criptoActivos:List<CriptoActivo> = binances.map { CriptoActivo(0,it.symbol, it.price,diahora) }
         return repository.saveAll(criptoActivos.asIterable()).toMutableList()
     }
 
