@@ -17,6 +17,11 @@ class TransactionerService {
     var transacciones = mutableListOf<Transaccion>()
     val wallets = mutableListOf<VirtualWallet>()
 
+
+    @Autowired
+    private lateinit var userService: UserService
+
+
     @Autowired
     private lateinit var mercadoPagoService: MercadoPagoService
 
@@ -28,59 +33,68 @@ class TransactionerService {
 
 
     @Transactional
-    fun procesarTransaccion(publicacion: Publicacion, usuario: Usuario): Transaccion {
+    fun procesarTransaccion(id: Long, publicacion: Publicacion,  cotizacionActual : Double  ): Transaccion {
 
-        if (!isCanceled(publicacion)) {
+        if (!isCanceled(publicacion, cotizacionActual)) {
             throw Exception ("transaccion ${publicacion.id}  cancelada, no cumple los requerimientos según la cotizacion actual ")
         }
 
-        return procesar(publicacion,usuario)
+        return procesar(id, publicacion)
     }
 
-    private  fun procesar(publicacion: Publicacion,usuario:Usuario): Transaccion {
+    private  fun procesar(id: Long,publicacion: Publicacion): Transaccion {
         lateinit var  direccionEnvio:String
         lateinit var accion :Accion
-        val cantidadOperaciones = publicacion.usuario!!.icrementarOperqaciones()
-        val reputacion =  incrementarReputacionSegunTiempo(publicacion.diahora!!)
 
-        publicacion.usuario!!.incrementarReputacion(reputacion)
-        usuario.incrementarReputacion(reputacion)
+       try {
 
+           val usuario = userService.findByID(id)
+           val cantidadOperaciones = publicacion.usuario!!.icrementarOperqaciones()
+           val reputacion = incrementarReputacionSegunTiempo(publicacion.diahora!!)
 
-        val transaccion = Transaccion(
-            0,
-            LocalDateTime.now(),
-            publicacion.criptoactivo,
-            publicacion.cantidad,
-            publicacion.cotizacion,
-            publicacion.monto,
-            publicacion.usuario,
-            publicacion.operacion,
-            cantidadOperaciones,
-            reputacion,
-            direccionEnvio,
-            accion,
-            usuario)
+           publicacion.usuario!!.incrementarReputacion(reputacion)
+           usuario.incrementarReputacion(reputacion)
 
 
-        when (publicacion.operacion) {
+           val transaccion = Transaccion(
+               0,
+               LocalDateTime.now(),
+               publicacion.criptoactivo,
+               publicacion.cantidad,
+               publicacion.cotizacion,
+               publicacion.monto,
+               publicacion.usuario,
+               publicacion.operacion,
+               cantidadOperaciones,
+               reputacion,
+               direccionEnvio,
+               accion,
+               usuario
+           )
 
-            "compra" -> {
-                transaccion.direccionEnvio =  publicacion.usuario!!.walletAddress!!
-                transaccion.accion = Accion.REALIZAR_TRANSFERENCIA
-                this.realizarTransferencia(transaccion)
-            }
-            "venta" -> {
-                transaccion.direccionEnvio = publicacion.usuario!!.cvu!!
-                transaccion.accion = Accion.CONFIRMAR_RECEPCION
-                this.confirmarRecepcion(transaccion)
-            }
 
-        }
+           when (publicacion.operacion) {
+
+               "compra" -> {
+                   transaccion.direccionEnvio = publicacion.usuario!!.walletAddress!!
+                   transaccion.accion = Accion.REALIZAR_TRANSFERENCIA
+                   this.realizarTransferencia(transaccion)
+               }
+               "venta" -> {
+                   transaccion.direccionEnvio = publicacion.usuario!!.cvu!!
+                   transaccion.accion = Accion.CONFIRMAR_RECEPCION
+                   this.confirmarRecepcion(transaccion)
+               }
+
+           }
+           return  transactionerRepository.save(transaccion)
+       }
+       catch (e: Exception) {
+           throw ItemNotFoundException("User with Id:  $id not found")
+       }
 
 
 
-        return  transactionerRepository.save(transaccion)
 
     }
 
@@ -110,23 +124,25 @@ class TransactionerService {
     }
 
 
-    private fun isCanceled(publicacion:Publicacion): Boolean {
+    private fun isCanceled(publicacion:Publicacion,cotizacionActual: Double): Boolean {
 
         return  when    (publicacion.operacion) {
             "compra" -> {
-                cotizacionActual(publicacion.criptoactivo!!) > publicacion.cotizacion
+               // cotizacionActual(publicacion.criptoactivo!!) > publicacion.cotizacion
+                cotizacionActual > publicacion.cotizacion
             }
             else -> {
-                cotizacionActual (publicacion.criptoactivo!!)  < publicacion.cotizacion
+               // cotizacionActual (publicacion.criptoactivo!!)  < publicacion.cotizacion
+                cotizacionActual  < publicacion.cotizacion
             }
 
         }
 
     }
 
-    private fun  cotizacionActual(symbol:String): Int{
+    private fun  cotizacionActual(symbol:String): Double{
         val  criptoActivo = consumer.consumeBySymbol(symbol)
-        return  criptoActivo.cotizacion!!.toInt()
+        return  criptoActivo.cotizacion!!.toDouble()
     }
 
 
