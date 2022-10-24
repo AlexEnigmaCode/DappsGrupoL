@@ -27,6 +27,8 @@ internal class PublisherServiceTest {
     var  publicaciones = mutableListOf<IntencionRegisterMapper>()
     lateinit var   publicacion1 : IntencionRegisterMapper
     lateinit var   publicacion2 : IntencionRegisterMapper
+     var cotizacionActual = 10.0
+
 
     @BeforeEach
     fun setUp() {
@@ -35,8 +37,8 @@ internal class PublisherServiceTest {
 
         user2 = UserRegisterMapper( "Ulises", "Lopez","ulisese@gmail.com", "address2","2", "234", "8" )
 
-      publicacion1= IntencionRegisterMapper( "A",5, 6.0,30.0, "Ale", "compra")
-      publicacion2= IntencionRegisterMapper ( "B",7, 10.0,70.0, "Uli", "venta")
+      publicacion1= IntencionRegisterMapper( "A",5, 9.6,48.0, "Ale", "compra")
+      publicacion2= IntencionRegisterMapper ( "B",7, 10.2,71.4, "Uli", "venta")
 
     }
 
@@ -45,7 +47,7 @@ internal class PublisherServiceTest {
     @Test
     fun publicar() {
        val newUser1 = userService.register(user1)
-       val publi1  =  publisherService.publicar(newUser1.id!!,publicacion1)
+       val publi1  =  publisherService.publicar(newUser1.id!!,publicacion1, cotizacionActual )
        assertEquals( publicacion1.criptoactivo, publi1.criptoactivo)
         assertEquals( publicacion1.cantidad, publi1.cantidad)
         assertEquals( publicacion1.cotizacion, publi1.cotizacion,)
@@ -62,8 +64,8 @@ internal class PublisherServiceTest {
     fun findAll() {
         val newUser1 = userService.register(user1)
         val newUser2 = userService.register(user2)
-         publisherService.publicar(newUser1.id!!,publicacion1)
-           publisherService.publicar(newUser2.id!!,publicacion2)
+         publisherService.publicar(newUser1.id!!,publicacion1,cotizacionActual)
+           publisherService.publicar(newUser2.id!!,publicacion2,cotizacionActual)
 
         val publicaciones =  publisherService.findAll().toMutableList()
         assertTrue { publicaciones.isNotEmpty() }

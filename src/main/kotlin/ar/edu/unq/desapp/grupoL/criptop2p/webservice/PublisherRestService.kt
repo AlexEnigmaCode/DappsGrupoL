@@ -2,6 +2,7 @@ package ar.edu.unq.desapp.grupoL.criptop2p.webservice
 
 
 import ar.edu.unq.desapp.grupoL.criptop2p.IntencionRegisterMapper
+import ar.edu.unq.desapp.grupoL.criptop2p.service.ConsumerCriptoActivoMicroService
 import ar.edu.unq.desapp.grupoL.criptop2p.service.PublisherService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
@@ -18,6 +19,10 @@ class PublisherRestService {
     @Autowired
     private lateinit var  publisherService: PublisherService
 
+    @Autowired
+    private  lateinit var consumer : ConsumerCriptoActivoMicroService
+
+
 
     /** Publish an intention for a user*/
     @PostMapping("/api/publicaciones/{id}")
@@ -25,7 +30,9 @@ class PublisherRestService {
         var response : ResponseEntity<*>?
         try {
 
-            val publicacion = publisherService!!.publicar(id,entity)
+            val  criptoActivo = consumer.consumeBySymbol(entity.criptoactivo!!)
+            val cotizacion =  criptoActivo.cotizacion!!.toDouble()
+            val publicacion = publisherService!!.publicar(id,entity,cotizacion)
 
             ResponseEntity.status(200)
             response = ResponseEntity.ok().body(publicacion)
