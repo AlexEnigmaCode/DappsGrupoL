@@ -132,6 +132,14 @@ class UserService: UserDetailsService {
      return users
     }
 
+    @Transactional
+    fun listadoInformeUsuarios(): List<InformeUsuarioMapper> {
+        val list =  repository.findAll()
+        val users =  list.map { InformeUsuarioMapper (it.name!!, it.surname!!,it.cantidadOperaciones, it.reputacion) }
+        return users
+    }
+
+
 
 
     private fun existUser(user: UserRegisterMapper): Boolean {

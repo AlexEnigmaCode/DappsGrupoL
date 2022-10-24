@@ -1,15 +1,15 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.model
 
 import java.time.LocalDateTime
-import java.time.LocalTime
 import javax.persistence.*
 
 @Entity
-@Table(name = "publicaciones")
-class Publicacion {
+@Table(name = "transacciones")
+class Transaccion {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_publicacion")
+    @Column(name = "id_transaccion")
     var id: Long? = null
 
 
@@ -36,15 +36,13 @@ class Publicacion {
 
     @Column
     var operacion: String? = null
-/*
-    @Column
-    var cantidadoperaciones: Int? = null
 
     @Column
-    var reputacion: String? = null
+    var cantidadoperaciones: Long? = null
 
     @Column
-    var cancelada: Boolean? = false
+    var reputacion: Double? = null
+
 
     @Transient
     var direccionEnvio: String? = null
@@ -54,7 +52,7 @@ class Publicacion {
 
     @Transient
     var usuarioSelector: Usuario? = null
-*/
+
     constructor() : super() {}
     constructor(
         id: Long?,
@@ -65,12 +63,11 @@ class Publicacion {
         monto: Double,
         usuario: Usuario?,
         operacion: String?,
-       // cantidadoperaciones: Int?,
-       // reputacion: String?,
-       // cancelada: Boolean?,
-       // direccionEnvio: String?,
-      //  accion: Accion?,
-      //  usuarioSelector:Usuario?
+        cantidadoperaciones: Long?,
+        reputacion: Double?,
+        direccionEnvio: String?,
+        accion: Accion?,
+        usuarioSelector:Usuario?
 
     ) : super() {
         this.id = id
@@ -81,15 +78,16 @@ class Publicacion {
         this.monto = monto
         this.usuario = usuario
         this.operacion = operacion
-      // this.cantidadoperaciones = cantidadoperaciones
-      //  this.reputacion = reputacion
-      //  this.cancelada = cancelada
-      //  this.direccionEnvio = direccionEnvio
-      //  this.accion = accion
-      //  this.usuarioSelector= usuarioSelector
+        this.cantidadoperaciones = cantidadoperaciones
+        this.reputacion = reputacion
+        this.direccionEnvio = direccionEnvio
+        this.accion = accion
+        this.usuarioSelector= usuarioSelector
     }
 
 
+
 }
+
 
 

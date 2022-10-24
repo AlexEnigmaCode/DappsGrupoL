@@ -53,7 +53,7 @@ class MercadoPagoService {
 
 
     fun consultarMonto(cuenta:CuentaCVU ,usuario:Usuario): Double {
-        val deposito:Deposito =  cuenta.depositos.find { it.usuario.cvu == usuario.cvu }  ?:  throw ItemNotFoundException("Client with CVUu: ${usuario.cvu} not found")
+        val deposito:Deposito =  cuenta.depositos.find { it.usuario.cvu == usuario.cvu }  ?:  throw ItemNotFoundException("Client with CVU: ${usuario.cvu} not found")
         return deposito.monto
     }
 

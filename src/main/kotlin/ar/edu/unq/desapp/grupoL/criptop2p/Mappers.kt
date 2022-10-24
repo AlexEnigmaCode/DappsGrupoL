@@ -1,7 +1,9 @@
 package ar.edu.unq.desapp.grupoL.criptop2p
 
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Accion
+import ar.edu.unq.desapp.grupoL.criptop2p.model.Transaccion
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 data class UserRegisterMapper(
@@ -29,7 +31,6 @@ data class UserViewMapper(val id: Long?,
                           val address:String?,
                           val cvu:String?,
                           val walletAddress:String?)
-
 data class Binance (val symbol:String?, val price: String?)
 
 data class IntencionRegisterMapper(
@@ -37,7 +38,12 @@ data class IntencionRegisterMapper(
     val cotizacion: Double, val monto: Double, val usuario: String?, val operacion: String?)
 
 
-
+data class InformeUsuarioMapper(
+    val name:String,
+    val surname:String,
+    val cantidadOperaciones: Long,
+    val Rewputacion: Double
+)
 
 data class PublicacionRegisterMapper(
     val diahora: LocalTime?,
@@ -66,3 +72,38 @@ data class CriptoActivoRegisterMapper(
     val criptoactivo: String?,
     val cotizacion: String?,
     val fecha: String)
+
+
+data class  TransaccionCriptoActivoMapper(
+    val criptoActivo :String,
+    val criptoActivos: MutableList<CriptoActivoWalletMapper>
+)
+
+data class VolumenCriptoActivoOperadoMapper(
+    val diahora: LocalDateTime,
+    val usuario :UserViewMapper,
+    val  valorTotalOperados:Double,
+    val criptoActivos: MutableList<CriptoActivoWalletMapper>
+
+)
+
+data class VolumenDataNapper(
+    val diahora: LocalDateTime,
+    val usuario :UserViewMapper,
+    val  valorTotalOperados:Double,
+    val transacciones: MutableList<Transaccion>
+)
+
+data class  VolumenPorOperacionesMapper(
+    val diahora: LocalDateTime,
+    val usuario :UserViewMapper,
+    val  valorTotalOperados:Double,
+    val compras: MutableList<CriptoActivoWalletMapper>,
+    val ventas : MutableList<CriptoActivoWalletMapper>
+
+)
+
+data class  BetweenDates(
+  val fecha1: LocalDateTime,
+  val fecha2: LocalDateTime
+)

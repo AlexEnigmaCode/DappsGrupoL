@@ -53,7 +53,7 @@ internal class PublisherServiceTest {
         assertEquals( newUser1.id!!,publi1.usuario!!.id!!)
         assertEquals( "Ale",publi1.usuario!!.name)
         assertEquals( "Fariña",publi1.usuario!!.surname)
-        assertEquals( 0,publi1.cantidadoperaciones)
+
 
 
     }
@@ -76,7 +76,7 @@ internal class PublisherServiceTest {
         assertEquals( newUser1.id!!, publicaciones.get(0).usuario!!.id)
         assertEquals( "Ale", publicaciones.get(0).usuario!!.name)
         assertEquals( "Fariña", publicaciones.get(0).usuario!!.surname)
-        assertEquals(0, publicaciones.get(0).cantidadoperaciones)
+
 
 
         assertEquals( publicacion1.criptoactivo, publicaciones.get(1).criptoactivo)
@@ -86,7 +86,7 @@ internal class PublisherServiceTest {
         assertEquals( newUser2.id!!, publicaciones.get(1).usuario!!.id)
         assertEquals( "Ulises", publicaciones.get(1).usuario!!.name)
         assertEquals( "Lopez", publicaciones.get(1).usuario!!.surname)
-        assertEquals(0, publicaciones.get(1).cantidadoperaciones)
+
     }
 
 

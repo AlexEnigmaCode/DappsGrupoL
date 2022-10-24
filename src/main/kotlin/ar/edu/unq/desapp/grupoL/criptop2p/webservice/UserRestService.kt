@@ -14,6 +14,7 @@ import javax.validation.Valid
 
 @RestController
 @EnableAutoConfiguration
+@CrossOrigin("*")
 class UserRestService {
     @Autowired
     private  lateinit var  userService: UserService

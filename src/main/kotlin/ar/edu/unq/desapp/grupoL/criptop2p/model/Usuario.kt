@@ -58,11 +58,11 @@ class Usuario:  EntidadValidable {
     @Size(min = 1, max = 8, message = "ElWallet Address debe ser de 8 digitos")
     var walletAddress: String? = null
 
-    @Transient
-    var cantidadOperaciones: Int = 0
+    @Column(nullable = false)
+    var cantidadOperaciones: Long = 0
 
-    @Transient
-    var reputacion: Int = 0
+    @Column(nullable = false)
+    var reputacion: Double = 0.0
 
     @Transient
     var notificacionesDeDeposito = mutableListOf<Deposito>()
@@ -101,19 +101,20 @@ class Usuario:  EntidadValidable {
      return password
   }
 
-    fun getOperaciones(): Int {
-        return cantidadOperaciones!!
+    fun getOperaciones(): Long {
+        return cantidadOperaciones
     }
 
-    fun icrementarOperqaciones(){
-         cantidadOperaciones += 1
+    fun icrementarOperqaciones():Long{
+        cantidadOperaciones += 1
+        return cantidadOperaciones
     }
 
-    fun descontarReputacion(numero :Int){
+    fun descontarReputacion(numero :Double){
         reputacion -= numero
     }
 
-    fun incrementarReputacion(numero :Int){
+    fun incrementarReputacion(numero :Double){
         reputacion += numero
     }
 

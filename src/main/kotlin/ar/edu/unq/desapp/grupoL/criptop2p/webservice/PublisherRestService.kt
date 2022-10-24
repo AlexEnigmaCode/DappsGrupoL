@@ -19,8 +19,6 @@ class PublisherRestService {
     private lateinit var  publisherService: PublisherService
 
 
-
-
     /** Publish an intention for a user*/
     @PostMapping("/api/publicaciones/{id}")
     fun publicar (@PathVariable("id") id: Long, @RequestBody entity: IntencionRegisterMapper): ResponseEntity<*> {
