@@ -4,6 +4,8 @@ enum class Accion {
     REALIZAR_TRANSFERENCIA
     ,
     CONFIRMAR_RECEPCION
+    ,
+    CANCELAR
 
 }
 

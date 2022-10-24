@@ -29,7 +29,10 @@ data class UserViewMapper(val id: Long?,
                           val email:String?,
                           val address:String?,
                           val cvu:String?,
-                          val walletAddress:String?)
+                          val walletAddress:String?,
+                          val cantidadOperaciones: Long,
+                          var reputacion: Double)
+
 data class Binance (val symbol:String?, val price: String?)
 
 data class IntencionRegisterMapper(

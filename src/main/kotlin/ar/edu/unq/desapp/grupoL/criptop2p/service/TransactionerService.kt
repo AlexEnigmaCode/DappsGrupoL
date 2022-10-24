@@ -42,7 +42,8 @@ class TransactionerService {
         return procesar(id, publicacion)
     }
 
-    private  fun procesar(id: Long,publicacion: Publicacion): Transaccion {
+    @Transactional
+     fun procesar(id: Long,publicacion: Publicacion): Transaccion {
         lateinit var  direccionEnvio:String
         lateinit var accion :Accion
 
@@ -100,8 +101,51 @@ class TransactionerService {
 
 
     @Transactional
-    fun cancelar (publicacion:Publicacion,usuario:Usuario){
-        usuario.descontarReputacion(20.0)
+    fun cancelar(id: Long,publicacion: Publicacion): Transaccion {
+        lateinit var direccionEnvio: String
+        lateinit var accion: Accion
+
+        try {
+
+            val usuario = userService.findByID(id)
+            usuario.descontarReputacion(20.0)
+            val cantidadOperaciones = publicacion.usuario!!.cantidadOperaciones
+            val reputacion = publicacion.usuario!!.reputacion
+
+            val transaccion = Transaccion(
+                0,
+                LocalDateTime.now(),
+                publicacion.criptoactivo,
+                publicacion.cantidad,
+                publicacion.cotizacion,
+                publicacion.monto,
+                publicacion.usuario,
+                publicacion.operacion,
+                cantidadOperaciones,
+                reputacion,
+               "",
+                Accion.CANCELAR,
+                usuario
+            )
+            return transaccion
+        } catch (e: Exception) {
+            throw ItemNotFoundException("User with Id:  $id not found")
+        }
+
+    }
+
+
+
+
+
+        @Transactional
+    fun findByID(id: Long): Transaccion {
+        val transaccion =  transactionerRepository.findById(id)
+        if ( ! (transaccion.isPresent ))
+        {throw ItemNotFoundException("Transaction with Id:  $id not found") }
+        val newTransaccion=  transaccion.get()
+        return newTransaccion
+
     }
 
     private fun  incrementarReputacionSegunTiempo(diahora:LocalDateTime):Double {
@@ -124,7 +168,7 @@ class TransactionerService {
     }
 
 
-    private fun isCanceled(publicacion:Publicacion,cotizacionActual: Double): Boolean {
+   fun isCanceled(publicacion:Publicacion,cotizacionActual: Double): Boolean {
 
         return  when    (publicacion.operacion) {
             "compra" -> {
@@ -250,7 +294,7 @@ class TransactionerService {
         val  transaccionesDeUsuarioEntreFechas =  transaccionesDeUnUsuarioEntreFechas(usuarioId,fecha1, fecha2)
         val  usuario = transaccionesDeUsuarioEntreFechas.first().usuario!!
         val diahora = transaccionesDeUsuarioEntreFechas.first().diahora!!
-        val usuarioView = UserViewMapper (usuario.id,usuario.name,usuario.surname,usuario.email,usuario.address,usuario.cvu,usuario.walletAddress)
+        val usuarioView = UserViewMapper (usuario.id,usuario.name,usuario.surname,usuario.email,usuario.address,usuario.cvu,usuario.walletAddress,usuario.cantidadOperaciones,usuario.reputacion)
         val  valorTotalOperado =  transaccionesDeUsuarioEntreFechas.sumOf { it.monto }
 
         return VolumenDataNapper(diahora,usuarioView,valorTotalOperado, transaccionesDeUsuarioEntreFechas )

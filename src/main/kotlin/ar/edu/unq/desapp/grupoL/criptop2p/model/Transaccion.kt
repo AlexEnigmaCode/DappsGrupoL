@@ -45,13 +45,14 @@ class Transaccion {
     var reputacion: Double? = null
 
 
-    @Transient
+    @Column
     var direccionEnvio: String? = null
 
-    @Transient
+    @Column
     var accion: Accion? = null
 
-    @Transient
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_usuarioselector", nullable = true)
     var usuarioSelector: Usuario? = null
 
     constructor() : super() {}

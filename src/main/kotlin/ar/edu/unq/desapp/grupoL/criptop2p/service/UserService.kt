@@ -52,8 +52,10 @@ class UserService: UserDetailsService {
                 savedUser.email,
                 savedUser.address,
                 savedUser.cvu,
-                savedUser.walletAddress
-            )
+                savedUser.walletAddress,
+                savedUser.cantidadOperaciones,
+                savedUser.reputacion)
+
        // }
 /*
         catch (e: Exception) {
@@ -75,7 +77,7 @@ class UserService: UserDetailsService {
        val users = repository.findAll()
        // return users.find { (it.email == email) && (it.password == password) } ?: throw UserNotFoundException("Not found user")
         val newUser = users.find { (it.email == email)  } ?: throw ItemNotFoundException("Not found user")
-        val userview = UserViewMapper(newUser.id,newUser.name,newUser.surname,newUser.email,newUser.address,newUser.cvu,newUser.walletAddress)
+        val userview = UserViewMapper(newUser.id,newUser.name,newUser.surname,newUser.email,newUser.address,newUser.cvu,newUser.walletAddress,newUser.cantidadOperaciones,newUser.reputacion)
         return userview
     }
 
@@ -111,9 +113,8 @@ class UserService: UserDetailsService {
              val  newUser:Usuario = entityOptional.get()
             val password =encoder.encode(entity.password)
             val user = Usuario(newUser.id,newUser.name, newUser.surname, entity.email,entity.address,password,entity.cvu,entity.walletAddress,0,0.0)
-
-            val savedUser = repository.save(user)
-            val userView =   UserViewMapper(savedUser.id, savedUser.name, savedUser.surname, savedUser.email, savedUser.address, savedUser.cvu, savedUser.walletAddress)
+             val savedUser = repository.save(user)
+            val userView =   UserViewMapper(savedUser.id, savedUser.name, savedUser.surname, savedUser.email, savedUser.address, savedUser.cvu, savedUser.walletAddress, savedUser.cantidadOperaciones, savedUser.reputacion)
              return userView
             }
         catch (e:Exception){
@@ -126,7 +127,7 @@ class UserService: UserDetailsService {
     @Transactional
     fun findAll(): List<UserViewMapper> {
      val list =  repository.findAll()
-     val users =  list.map { UserViewMapper(it.id, it.name, it.surname, it.email, it.address, it.cvu, it.walletAddress) }
+     val users =  list.map { UserViewMapper(it.id, it.name, it.surname, it.email, it.address, it.cvu, it.walletAddress, it.cantidadOperaciones, it.reputacion) }
      return users
     }
 
