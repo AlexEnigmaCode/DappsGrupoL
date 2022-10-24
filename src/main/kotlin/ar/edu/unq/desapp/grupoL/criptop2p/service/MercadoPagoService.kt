@@ -1,8 +1,8 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.service
 
+import ar.edu.unq.desapp.grupoL.criptop2p.CuentaCVU
+import ar.edu.unq.desapp.grupoL.criptop2p.Deposito
 import ar.edu.unq.desapp.grupoL.criptop2p.ItemNotFoundException
-import ar.edu.unq.desapp.grupoL.criptop2p.model.CuentaCVU
-import ar.edu.unq.desapp.grupoL.criptop2p.model.Deposito
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
 import org.springframework.stereotype.Service
 
@@ -16,8 +16,7 @@ class MercadoPagoService {
 
 
     fun crearCuentaParaCliente (usuario:Usuario){
-        //usuarios.add(usuario)
-       val cuenta =  CuentaCVU (usuario, depositos )
+        val cuenta =  CuentaCVU (usuario, depositos )
         cuentas.add(cuenta)
     }
 

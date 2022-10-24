@@ -1,6 +1,5 @@
 package ar.edu.unq.desapp.grupoL.criptop2p
 
-import ar.edu.unq.desapp.grupoL.criptop2p.model.Accion
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Transaccion
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
 import java.time.LocalDateTime
@@ -107,3 +106,9 @@ data class  BetweenDates(
   val fecha1: LocalDateTime,
   val fecha2: LocalDateTime
 )
+
+data class CuentaCVU (val usuario:Usuario,val depositos: MutableList<Deposito>)
+
+data class Deposito (val usuario:Usuario, var monto: Double )
+
+data  class VirtualWallet  (val usuario:Usuario, val criptoactivos: MutableList<CriptoActivoWalletMapper>)

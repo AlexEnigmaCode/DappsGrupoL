@@ -2,8 +2,7 @@ package ar.edu.unq.desapp.grupoL.criptop2p.model
 
 
 
-import ar.edu.unq.desapp.grupoL.criptop2p.service.PublisherService
-import org.springframework.beans.factory.annotation.Autowired
+import ar.edu.unq.desapp.grupoL.criptop2p.Deposito
 import javax.persistence.*
 import kotlin.jvm.Transient
 import javax.validation.constraints.*
@@ -77,7 +76,9 @@ class Usuario:  EntidadValidable {
         address: String?,
         password: String,
         cvu: String?,
-        walletAddress: String?/*,cantidadOperaciones: Int?*/
+        walletAddress: String?,
+        cantidadOperaciones: Long,
+        reputacion:Double
     ) : super() {
         this.id = id
         this.name = name
@@ -87,19 +88,10 @@ class Usuario:  EntidadValidable {
         this.password = password
         this.cvu = cvu
         this.walletAddress = walletAddress
-        // this.cantidadOperaciones = cantidadOperaciones
+        this.cantidadOperaciones = cantidadOperaciones
+        this.reputacion = reputacion
     }
 
-
-
-    fun setpassword(password: String){
-       this.password = password
-}
-
-
-  fun getpassword ():String {
-     return password
-  }
 
     fun getOperaciones(): Long {
         return cantidadOperaciones
@@ -110,8 +102,13 @@ class Usuario:  EntidadValidable {
         return cantidadOperaciones
     }
 
-    fun descontarReputacion(numero :Double){
+    fun descontarReputacion(numero :Double) {
         reputacion -= numero
+          if  (reputacion < 0.0) {
+         reputacion = 0.0
+
+        }
+
     }
 
     fun incrementarReputacion(numero :Double){

@@ -18,7 +18,6 @@ import java.util.*
 
 @Service
 class UserService: UserDetailsService {
-   // private var userId :Int= 0
 
     @Autowired
     private  lateinit var repository: UserRepository
@@ -40,9 +39,8 @@ class UserService: UserDetailsService {
         }
         val password =encoder.encode(user.password)
        // val newuser = usuarioMapper.aModelo(user)
-       // val newUser = Usuario(++userId,user.name, user.surname, user.email,user.address,user.password,user.cvu,user.walletAddress)
-      val newUser = Usuario(0,user.name, user.surname, user.email,user.address,password,user.cvu,user.walletAddress)
 
+      val newUser = Usuario(0,user.name, user.surname, user.email,user.address,password,user.cvu,user.walletAddress,0, 0.0)
       // try {
             val savedUser = repository.save(newUser)
            // savedUser.validar()
@@ -112,8 +110,8 @@ class UserService: UserDetailsService {
               entityOptional = repository.findById(id)
              val  newUser:Usuario = entityOptional.get()
             val password =encoder.encode(entity.password)
-            val user = Usuario(newUser.id,newUser.name, newUser.surname, entity.email,entity.address,password,entity.cvu,entity.walletAddress)
-           // repository.deleteById(id)
+            val user = Usuario(newUser.id,newUser.name, newUser.surname, entity.email,entity.address,password,entity.cvu,entity.walletAddress,0,0.0)
+
             val savedUser = repository.save(user)
             val userView =   UserViewMapper(savedUser.id, savedUser.name, savedUser.surname, savedUser.email, savedUser.address, savedUser.cvu, savedUser.walletAddress)
              return userView

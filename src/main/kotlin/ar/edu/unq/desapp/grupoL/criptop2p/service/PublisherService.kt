@@ -44,11 +44,8 @@ class PublisherService {
 */
         try {
             val usuario = userService.findByID(id)
-
             val diahora = LocalDateTime.now()
-            //val cantidadoperaciones = usuario.cantidadOperaciones
             val monto = intencion.cantidad!! * intencion.cotizacion!!
-            //val reputacion = usuario.reputacion.toString()
 
             val publicacion = Publicacion(
                 0,
