@@ -33,6 +33,7 @@ data class UserViewMapper(val id: Long?,
                           val cantidadOperaciones: Long,
                           var reputacion: Double)
 
+
 data class Binance (val symbol:String?, val price: String?)
 
 data class IntencionRegisterMapper(

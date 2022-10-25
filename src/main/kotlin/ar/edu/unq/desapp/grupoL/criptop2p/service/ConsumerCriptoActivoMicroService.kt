@@ -24,8 +24,6 @@ class ConsumerCriptoActivoMicroService {
     @Autowired
     private val restTemplate: RestTemplate? = null
 
-    @Autowired
-    private val criptoActivoService: CriptoActivoService? = null
 
 
     fun consumeCriptoActivos(): List<CriptoActivoRegisterMapper> {
@@ -39,7 +37,7 @@ class ConsumerCriptoActivoMicroService {
             val fecha:String = LocalDateTime.now().toString()
             criptoActivos =  list.map { CriptoActivoRegisterMapper(it.symbol, it.price, fecha )}
         }
-        //criptoActivoService?.saveAll(criptoActivos)
+
         return criptoActivos
 
     }

@@ -104,9 +104,8 @@ internal class UserServiceTest {
   /** findById*/
     @Test
     fun al_intentar_buscar_un_usuario_con_id_no_existente_Lanza_excepcion() {
-     val  saved = userService.register(user1)
-     //assertEquals (1 ,saved.id)
-     assertThrows<ItemNotFoundException> {  userService.findByID( 200) }
+       userService.register(user1)
+       assertThrows<ItemNotFoundException> {  userService.findByID( 200) }
     }
 
 
