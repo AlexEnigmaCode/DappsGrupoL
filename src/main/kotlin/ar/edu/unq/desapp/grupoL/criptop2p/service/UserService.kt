@@ -150,6 +150,7 @@ class UserService: UserDetailsService {
         return bool
     }
 
+
     override fun loadUserByUsername(username: String?): UserDetails {
        val  users : List<Usuario> = repository.findAll()
       val user : Usuario = users.find { (it.name == username)  } ?: throw ItemNotFoundException("Not found user")

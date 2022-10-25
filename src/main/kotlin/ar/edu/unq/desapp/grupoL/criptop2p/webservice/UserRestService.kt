@@ -21,10 +21,11 @@ class UserRestService {
     private val builder: ResponseEntity.BodyBuilder? = null
 
     @GetMapping("/api/users")
-    fun allUsers(): ResponseEntity<*> {
+    fun allUsers(): List<UserViewMapper>/*ResponseEntity<*> */{
         val users = userService.findAll()
+        return users
+      // return ResponseEntity.ok().body(users)
 
-         return ResponseEntity.ok().body(users)
     }
 
 
@@ -74,7 +75,7 @@ class UserRestService {
         var response : ResponseEntity<*>?
         try {
             val newUser = userService.findByID(id)
-            val userView =   UserViewMapper(newUser.id, newUser.name, newUser.surname, newUser.email, newUser.address, newUser.cvu, newUser.walletAddress)
+            val userView =   UserViewMapper(newUser.id, newUser.name, newUser.surname, newUser.email, newUser.address, newUser.cvu, newUser.walletAddress,newUser.cantidadOperaciones,newUser.reputacion)
 
             ResponseEntity.status(200)
             response = ResponseEntity.ok().body(userView)

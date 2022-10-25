@@ -110,9 +110,7 @@ internal class TransactionerServiceTest {
 
 
 
-    @Test
-    fun cancelar() {
-    }
+
 
     @Test
     fun notificarPago() {
