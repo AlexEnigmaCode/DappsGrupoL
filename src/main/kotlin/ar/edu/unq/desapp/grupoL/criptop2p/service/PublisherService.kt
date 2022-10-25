@@ -67,14 +67,14 @@ class PublisherService {
 
 
     @Transactional
-    fun selectByID(id: Long, usuario:Usuario): Publicacion {
+    fun selectByID(id: Long, usuarioId:Long): Publicacion {
         val publicacion = publisherRepository.findById(id.toInt())
         if ( ! (publicacion.isPresent ))
         {throw ItemNotFoundException("Publicacion with Id:  $id not found") }
         val newPublicacion=  publicacion.get()
 
-        if (usuario.id!!.toInt() == newPublicacion.usuario!!.id!!.toInt()) {
-            throw IntentionException ("Error: No puede selecconar su propia intención")
+        if (usuarioId == newPublicacion.usuario!!.id!!) {
+            throw PublicacionException ("Error: No puede selecconar su propia intención")
         }
          return newPublicacion
     }

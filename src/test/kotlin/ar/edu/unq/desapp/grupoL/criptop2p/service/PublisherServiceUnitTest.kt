@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
@@ -62,6 +63,32 @@ internal class PublisherServiceUnitTest {
     fun Si_EL_Precio_Del_CriptoActivo_Esta_Por_Encima_DelRango_De_Referencia_Por_CotizacionActual_Entonces_No_Puede_Publicar(){
         val  puedePublicar = publisherService.puedePublicarSegunCotizacionActual( publicacionDentro, cotizacionActual )
         assertTrue( puedePublicar)
+
+    }
+
+    @Test
+    fun Si_No_Existe_La_Publicacion_No_Se_Puede_Seleccionar_Y_Lanza_ItemNotFoundExcepcion(){
+        val newUser1 = userService.register(user1)
+       assertThrows<ItemNotFoundException>{ publisherService.selectByID(100, newUser1.id!!) }
+
+    }
+
+    @Test
+    fun  Si_Se_Intenta_Seleccionar_Una_Publicacion_Publicada_Por_el_Mismo_Usuario_Lanza_PublicacionExcepcion(){
+        val newUser1 = userService.register(user1)
+        val publicacion = publisherService.publicar(newUser1.id!!,publicacionDentro,cotizacionActual)
+        assertThrows<PublicacionException> { publisherService.selectByID(publicacion.id!!,newUser1.id!!) }
+
+    }
+
+    @Test
+    fun  Al_Seleccionar_Una_Publicacion_Existente_Me_Devuelve_Esa_Publicacion(){
+        val newUser1 = userService.register(user1)
+        val newUser2 = userService.register(user2)
+        val publicacion = publisherService.publicar(newUser1.id!!,publicacionDentro,cotizacionActual)
+        val newPublicacion = publisherService.selectByID(publicacion.id!!,newUser2.id!!)
+        assertEquals (publicacion.id, newPublicacion.id)
+        assertEquals (publicacion.criptoactivo, newPublicacion.criptoactivo)
 
     }
 
