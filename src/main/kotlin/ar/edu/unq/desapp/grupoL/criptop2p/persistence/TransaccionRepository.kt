@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository
 
 @Configuration
 @Repository
-interface TransaccionRepository: CrudRepository<Transaccion?, Int?> {
+interface TransaccionRepository: CrudRepository<Transaccion?, Long?> {
     override fun findAll(): List<Transaccion>
     fun save(transaccion: Transaccion): Transaccion
 

@@ -66,8 +66,6 @@ internal class TransactionerServiceTest {
         assertEquals( comprador.id,transaccion.usuarioSelector!!.id)
         assertEquals( comprador.name, transaccion.usuarioSelector!!.name)
 
-
-
     }
 
     @Test

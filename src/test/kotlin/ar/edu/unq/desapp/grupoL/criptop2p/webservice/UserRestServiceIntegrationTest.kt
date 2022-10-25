@@ -29,7 +29,7 @@ internal class UserRestServiceIntegrationTest {
 
      final val userService =  UserService()
 
-    lateinit var  repository: UserRepository
+
 
 
     var  usersMocks = mutableListOf<UserViewMapper>()
