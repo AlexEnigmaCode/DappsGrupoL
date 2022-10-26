@@ -7,13 +7,19 @@ import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
 import org.springframework.stereotype.Service
 
 @Service
+
 class MercadoPagoService {
 
+    var cuentas = mutableListOf<CuentaCVU>()
+    var depositos = mutableListOf<Deposito>()
 
-    val cuentas = mutableListOf<CuentaCVU>()
-     val depositos = mutableListOf<Deposito>()
+    fun setCuentasClientes(cuentas: MutableList<CuentaCVU>){
+     this.cuentas = cuentas
+    }
 
-
+    fun setDepositoCuentas(depositos : MutableList<Deposito>){
+        this.depositos = depositos
+    }
 
     fun crearCuentaParaCliente (usuario:Usuario){
         val cuenta =  CuentaCVU (usuario, depositos )
@@ -28,17 +34,22 @@ class MercadoPagoService {
        return  cuentas
     }
 
+
+    fun depositos(): MutableList<Deposito> {
+        return  depositos
+    }
+
     fun depositar(cuenta:CuentaCVU,monto:Double, usuario:Usuario): Deposito{
        val  deposito = Deposito(usuario, monto)
-      return  actualizarDeposito(cuenta,deposito, usuario)
+      return  actualizarDeposito(cuenta,deposito)
 
     }
 
 
-    fun actualizarDeposito(cuenta:CuentaCVU,deposito:Deposito, usuario:Usuario): Deposito{
+    fun actualizarDeposito(cuenta:CuentaCVU,deposito:Deposito): Deposito{
         lateinit var depositoActual :Deposito
-        if ( cuenta.depositos.any{ it.usuario.cvu == usuario.cvu } ) {
-           val  nuevodeposito = cuenta.depositos.find{ it.usuario.cvu == usuario.cvu  }
+        if ( cuenta.depositos.any{ it.usuario.cvu == deposito.usuario.cvu } ) {
+           val  nuevodeposito = cuenta.depositos.find{ it.usuario.cvu == deposito.usuario.cvu  }
             nuevodeposito!!.monto  +=   deposito.monto
             depositoActual = nuevodeposito!!
         }
