@@ -1,6 +1,8 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.service
 
+import ar.edu.unq.desapp.grupoL.criptop2p.CriptoActivoWalletMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.UserRegisterMapper
+import ar.edu.unq.desapp.grupoL.criptop2p.VirtualWallet
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Publicacion
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Transaccion
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
@@ -25,15 +27,20 @@ internal class TransactionerServiceTest {
     @Autowired
     lateinit var  repository: TransaccionRepository
 
-
-
+    var wallets = mutableListOf<VirtualWallet>()
     var  transacciones = mutableListOf<Transaccion>()
+    var criptoactivos = mutableListOf <CriptoActivoWalletMapper>()
     lateinit var   publicacionCompra : Publicacion
     lateinit var   publicacionVenta : Publicacion
     lateinit var usuarioComprador: UserRegisterMapper
     lateinit var usuarioVendedor: UserRegisterMapper
     lateinit var usuarioPublicacionCompra: Usuario
     lateinit var usuarioPublicacionVenta: Usuario
+
+    lateinit var criptoActivo1 : CriptoActivoWalletMapper
+    lateinit var criptoActivo2 : CriptoActivoWalletMapper
+    lateinit var criptoActivo3 : CriptoActivoWalletMapper
+
     var cotizacionActual = 10.0
 
 
@@ -47,6 +54,19 @@ internal class TransactionerServiceTest {
 
         publicacionCompra= Publicacion (1, LocalDateTime.now(), "A",5, 9.6,48.0,  usuarioPublicacionCompra, "compra")
         publicacionVenta = Publicacion (2,LocalDateTime.now(), "B",7, 10.2,71.4,        usuarioPublicacionVenta, "venta")
+
+        criptoActivo1 = CriptoActivoWalletMapper("cripto1", 10.0, 5,50.0)
+        criptoActivo2 = CriptoActivoWalletMapper( "cripto2", 10.0, 5,50.0)
+        criptoActivo3 =  CriptoActivoWalletMapper("cripto3", 10.0, 5,50.0)
+
+        criptoactivos.add(criptoActivo1)
+        criptoactivos.add(criptoActivo2)
+        criptoactivos.add(criptoActivo3)
+
+     val virtualWallet1 = VirtualWallet  (  usuarioPublicacionCompra ,criptoactivos )
+     val virtualWallet2 = VirtualWallet  (usuarioPublicacionVenta ,criptoactivos )
+      wallets.add(virtualWallet1)
+      wallets.add(virtualWallet2)
 
     }
 
@@ -107,7 +127,24 @@ internal class TransactionerServiceTest {
     }
 
 
+    @Test
+    fun Al_registrar_Una_Wallet_Para_Un_usuario_dicha_wallet_queda_asociada_a_ese_mismo_usuario() {
+      val wallet1 = transactionerService.createVirtualWallet(usuarioPublicacionCompra)
+        assertEquals (usuarioPublicacionCompra.id, wallet1.usuario.id)
 
+    }
+
+
+    @Test
+    fun Al_Consultar_por_las_wallets_Me_devuelve_todas_las_wallets_registradas() {
+      val wallet1 = transactionerService.createVirtualWallet(usuarioPublicacionCompra)
+      val wallet2 = transactionerService.createVirtualWallet(usuarioPublicacionVenta)
+      val wallets =   transactionerService.wallets()
+        assertEquals (2,wallets.size)
+        assertEquals (usuarioPublicacionCompra.id!!,wallets.get(0).usuario.id)
+        assertEquals (usuarioPublicacionCompra.id!!,wallets.get(1).usuario.id)
+
+    }
 
 
     @Test
@@ -130,13 +167,9 @@ internal class TransactionerServiceTest {
     fun existeCriptoActivo() {
     }
 
-    @Test
-    fun createVirtualWallet() {
-    }
 
-    @Test
-    fun getVirtualWallet() {
-    }
+
+
 
     @Test
     fun volumenOperadoEntreFechas() {

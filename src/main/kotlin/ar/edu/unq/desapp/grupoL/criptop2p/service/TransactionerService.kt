@@ -258,9 +258,10 @@ class TransactionerService {
 
 
 
-    fun createVirtualWallet (usuario:Usuario){
+    fun createVirtualWallet (usuario:Usuario): VirtualWallet{
         val wallet =  VirtualWallet (usuario, criptoActivos )
         wallets.add(wallet)
+        return wallet
     }
 
     fun getVirtualWallet(walletAddress:String): VirtualWallet{
