@@ -294,7 +294,10 @@ class TransactionerService {
 
     fun informeData(usuarioId:Long, fecha1: LocalDateTime, fecha2:LocalDateTime  ): VolumenDataNapper{
 
-        val  transaccionesDeUsuarioEntreFechas =  transaccionesDeUnUsuarioEntreFechas(usuarioId,fecha1, fecha2)
+        val transacciones = transacciones()
+        val transaccionesParaUnUsuario = transaccionesParaUnUsuario (usuarioId,transacciones)
+        val  transaccionesDeUsuarioEntreFechas =  transaccionesDeUnUsuarioEntreFechas(usuarioId,fecha1, fecha2,transaccionesParaUnUsuario)
+
         val  usuario = transaccionesDeUsuarioEntreFechas.first().usuario!!
         val diahora = transaccionesDeUsuarioEntreFechas.first().diahora!!
         val usuarioView = UserViewMapper (usuario.id,usuario.name,usuario.surname,usuario.email,usuario.address,usuario.cvu,usuario.walletAddress,usuario.cantidadOperaciones,usuario.reputacion)
@@ -309,21 +312,20 @@ class TransactionerService {
         return  transactionerRepository.findAll().toMutableList()
     }
 
-    fun transaccionesParaUnUsuario (usuarioId: Long): MutableList<Transaccion> {
-       val transacciones =   transacciones().filter{ it.usuario!!.id == usuarioId  }.toMutableList()
+    fun transaccionesParaUnUsuario (usuarioId: Long,transacciones: MutableList<Transaccion>): MutableList<Transaccion> {
+            transacciones.filter{ it.usuario!!.id == usuarioId  }.toMutableList()
            if (transacciones.isEmpty()){
                throw ItemNotFoundException ("No hay transacciones con el id de usuario $usuarioId ")
            }
         return transacciones
     }
 
-    fun transaccionesDeUnUsuarioEntreFechas(usuarioId: Long,fecha1:LocalDateTime, fecha2:LocalDateTime):MutableList<Transaccion>{
-        val transacciones = transaccionesParaUnUsuario (usuarioId)
-        val transaccionesEntreFechas = transacciones.filter { entreFechas(it.diahora!!,fecha1,fecha2) }.toMutableList()
-        if (transaccionesEntreFechas.isEmpty()){
+    fun transaccionesDeUnUsuarioEntreFechas(usuarioId: Long,fecha1:LocalDateTime, fecha2:LocalDateTime, transacciones: MutableList<Transaccion>):MutableList<Transaccion>{
+        transacciones.filter { entreFechas(it.diahora!!,fecha1,fecha2) }.toMutableList()
+        if (transacciones.isEmpty()){
             throw ItemNotFoundException ("No hay transacciones que se encuentre entre las fechas $fecha1 y $fecha2 ")
         }
-        return transaccionesEntreFechas
+        return transacciones
 
     }
 
@@ -363,7 +365,7 @@ class TransactionerService {
 
 
 
-    private fun entreFechas(fecha:LocalDateTime, fecha1:LocalDateTime, fecha2:LocalDateTime): Boolean{
+    fun entreFechas(fecha:LocalDateTime, fecha1:LocalDateTime, fecha2:LocalDateTime): Boolean{
         return (   fecha.isBefore(fecha2) || fecha.isEqual(fecha2)  )
                 &&  (fecha.isAfter(fecha2) || fecha.isEqual(fecha1))
     }

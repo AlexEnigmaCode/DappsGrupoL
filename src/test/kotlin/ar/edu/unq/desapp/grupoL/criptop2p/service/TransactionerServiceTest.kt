@@ -141,7 +141,7 @@ internal class TransactionerServiceTest {
     }
 
     @Test
-    fun Al_Finalizar_Una_Transaccion_Ya_No_estara_Incluida_Em_La_Base_De_Daytos_De_Transacciones() {
+    fun Al_Finalizar_Una_Transaccion_Ya_No_estara_Incluida_Em_La_Base_De_Datos_De_Transacciones() {
         val comprador = userService.register(usuarioComprador)
         val vendedor = userService.register(usuarioVendedor)
 
