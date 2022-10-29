@@ -35,9 +35,14 @@ class MercadoPagoService {
     }
 
 
-    fun depositos(): MutableList<Deposito> {
-        return  depositos
+
+    fun depositosDeLaCuentaDeUsuario(usuario:Usuario): MutableList <Deposito>{
+       val cuenta = getCuenta( usuario.cvu!!)
+       val depositos = cuenta.depositos
+       return depositos
     }
+
+
 
     fun depositar(cuenta:CuentaCVU,monto:Double, usuario:Usuario): Deposito{
        val  deposito = Deposito(usuario, monto)

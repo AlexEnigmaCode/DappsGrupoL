@@ -1,6 +1,7 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.service
 
 import ar.edu.unq.desapp.grupoL.criptop2p.*
+import ar.edu.unq.desapp.grupoL.criptop2p.model.CriptoActivo
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Publicacion
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Transaccion
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
@@ -78,17 +79,28 @@ class TransactionerService {
                "compra" -> {
                    transaccion.direccionEnvio = publicacion.usuario!!.walletAddress!!
                    transaccion.accion = Accion.REALIZAR_TRANSFERENCIA
-                   this.realizarTransferencia(transaccion)
+                  val deposito =  realizarTransferencia(transaccion)
+                   notificarPago (transaccion, deposito)
+
                }
                "venta" -> {
                    transaccion.direccionEnvio = publicacion.usuario!!.cvu!!
                    transaccion.accion = Accion.CONFIRMAR_RECEPCION
-                   this.confirmarRecepcion(transaccion)
-               }
+                   val  cuenta  = mercadoPagoService.getCuenta(transaccion.direccionEnvio!!)
+                   if  ( ! confirmarRecepcion(transaccion) ) {
+                       throw Exception (" El monto depositado no es suficiente para realizar la transaccion" +
+                               " o no se ha hecho el deposito en la cuenta  $cuenta")
+                   }
+                   enviarCriptoActivo(transaccion)
+                   finalizarTransaccion(transaccion)
+                   }
 
            }
+
            return  transactionerRepository.save(transaccion)
-       }
+
+           }
+
        catch (e: Exception) {
            throw ItemNotFoundException("User with Id:  $id not found")
        }
@@ -178,9 +190,7 @@ class TransactionerService {
                // cotizacionActual (publicacion.criptoactivo!!)  < publicacion.cotizacion
                 cotizacionActual  < publicacion.cotizacion
             }
-
         }
-
     }
 
     private fun  cotizacionActual(symbol:String): Double{
@@ -189,24 +199,14 @@ class TransactionerService {
     }
 
 
-    private fun realizarTransferencia(transaccion:Transaccion) {
-        val deposito =  enviarDinero(transaccion)
-        notificarPago (transaccion, deposito)
-    }
-
-    private fun confirmarRecepcion(transaccion:Transaccion) {
+       fun confirmarRecepcion(transaccion:Transaccion):Boolean {
         val  cuenta  = mercadoPagoService.getCuenta(transaccion.direccionEnvio!!)
         val montoDepositado =  mercadoPagoService.consultarMonto(cuenta ,transaccion.usuarioSelector!!)
-        if  ( montoDepositado < transaccion.monto ) {
-            throw Exception (" El monto depositado no es suficiente para realizar la transaccion" +
-                    " o no se ha hecho el deposito en la cuenta  $cuenta")
-        }
-        enviarCriptoActivo(transaccion)
-    }
+        return  ( montoDepositado >= transaccion.monto )
+       }
 
 
-
-    private fun enviarDinero(transaccion:Transaccion) : Deposito{
+     fun realizarTransferencia(transaccion:Transaccion) : Deposito{
         val  cuenta  = mercadoPagoService.getCuenta(transaccion.usuarioSelector!!.cvu!!)
         val deposito =   mercadoPagoService.depositar(cuenta, transaccion.monto, transaccion.usuario!! )
         return deposito
@@ -218,6 +218,12 @@ class TransactionerService {
    }
 
 
+    fun finalizarTransaccion(transaccion:Transaccion){
+        transactionerRepository.deleteById(transaccion.id!!)
+
+    }
+
+
     fun enviarCriptoActivo (transaccion:Transaccion){
         val walletAddress = transaccion.usuarioSelector!!.walletAddress!!
         val wallet = getVirtualWallet(walletAddress)
@@ -225,29 +231,23 @@ class TransactionerService {
     }
 
 
-
-    fun guardarCriptoActivo(wallet:VirtualWallet,transaccion:Transaccion){
-        val  criptoActivo = CriptoActivoWalletMapper(transaccion.criptoactivo!!, transaccion.cotizacion,transaccion.cantidad!!,transaccion.monto)
-        agregarCriptoActivo(criptoActivo,wallet)
-    }
-
-
-    fun agregarCriptoActivo(criptoActivo: CriptoActivoWalletMapper, wallet: VirtualWallet) {
-        if (existeCriptoActivo(criptoActivo,wallet)) {
-            var criptoActivoGuardado = wallet.criptoactivos.find { it.criptoactivo == criptoActivo.criptoactivo }
-            criptoActivoGuardado!!.monto  += criptoActivo.monto
+    fun guardarCriptoActivo(wallet:VirtualWallet,transaccion:Transaccion) {
+        if (existeCriptoActivo(transaccion.criptoactivo!!,wallet)) {
+            val criptoActivoGuardado = wallet.criptoactivos.find { it.criptoactivo == transaccion.criptoactivo!! }
+            criptoActivoGuardado!!.monto  += transaccion.monto
 
         }
-        else { wallet.criptoactivos.add(criptoActivo)  }
+        else {
+            val  criptoActivo = CriptoActivoWalletMapper(transaccion.criptoactivo!!, transaccion.cotizacion,transaccion.cantidad!!,transaccion.monto)
+            wallet.criptoactivos.add(criptoActivo)  }
     }
 
 
-    fun existeCriptoActivo (criptoActivo: CriptoActivoWalletMapper,wallet: VirtualWallet):Boolean{
-        val criptoActivoGuardado = wallet.criptoactivos.find { it.criptoactivo == criptoActivo.criptoactivo }
+    fun existeCriptoActivo (criptoActivo: String,wallet: VirtualWallet):Boolean{
+        val criptoActivoGuardado = wallet.criptoactivos.find { it.criptoactivo == criptoActivo }
         return  (criptoActivoGuardado != null)
 
     }
-
 
 
 
@@ -261,13 +261,23 @@ class TransactionerService {
         return  wallets.find { it.usuario.walletAddress == walletAddress} ?:  throw ItemNotFoundException("User with Virtual Wallet: $walletAddress not found")
     }
 
-    fun wallets(): MutableList<VirtualWallet> {
-        return  wallets
+
+    fun criptoActivosDeLaVirtualWalletDeUsuario(usuario:Usuario): MutableList<CriptoActivoWalletMapper> {
+        val wallet = getVirtualWallet( usuario.walletAddress!!)
+        val criptoActivos = wallet.criptoactivos
+        return criptoActivos
+    }
+
+    fun getCriptoActivoDeLaVirtualWalletDeUsuario(transaccion:Transaccion): CriptoActivoWalletMapper {
+      val usuario = transaccion.usuarioSelector!!
+      val criptoactivos = criptoActivosDeLaVirtualWalletDeUsuario(usuario)
+      return  criptoactivos.find { it.criptoactivo == transaccion.criptoactivo } ?:throw ItemNotFoundException("Not found criptoActivo")
     }
 
 
-
-
+    fun wallets(): MutableList<VirtualWallet> {
+        return  wallets
+    }
 
     @Transactional
     fun volumenOperadoEntreFechas(usuarioId:Long, fecha1: LocalDateTime, fecha2:LocalDateTime  ): VolumenCriptoActivoOperadoMapper{
@@ -278,7 +288,6 @@ class TransactionerService {
         val criptoActivos =  volumenCriptoActivos( transaccionesCriptoActivos )
 
         return VolumenCriptoActivoOperadoMapper(data.diahora,data.usuario, data.valorTotalOperados, criptoActivos )
-
 
     }
 

@@ -140,78 +140,17 @@ internal class TransactionerServiceTest {
 
     }
 
-
     @Test
-    fun Al_registrar_Una_Wallet_Para_Un_usuario_dicha_wallet_queda_asociada_a_ese_mismo_usuario() {
-      val wallet1 = transactionerService.createVirtualWallet(usuarioPublicacionCompra)
-        assertEquals (usuarioPublicacionCompra.id, wallet1.usuario.id)
+    fun Al_Finalizar_Una_Transaccion_Ya_No_estara_Incluida_Em_La_Base_De_Daytos_De_Transacciones() {
+        val comprador = userService.register(usuarioComprador)
+        val vendedor = userService.register(usuarioVendedor)
 
-    }
+        val transaccion1 = transactionerService.procesarTransaccion(comprador.id!!,publicacionVenta, cotizacionActual )
+        val transaccion2 = transactionerService.procesarTransaccion(vendedor.id!!,publicacionCompra, cotizacionActual )
 
-
-    @Test
-    fun Al_Consultar_por_las_wallets_Me_devuelve_todas_las_wallets_registradas() {
-       transactionerService.createVirtualWallet(usuarioPublicacionCompra)
-       transactionerService.createVirtualWallet(usuarioPublicacionVenta)
-      val wallets =   transactionerService.wallets()
-        assertEquals (2,wallets.size)
-        assertEquals (usuarioPublicacionCompra.id!!,wallets.get(0).usuario.id)
-        assertEquals (usuarioPublicacionCompra.id!!,wallets.get(1).usuario.id)
-    }
-
-
-    @Test
-    fun El_Vendedor_es_Notificado_con_el_Monto_Que_el_comprador_deposito() {
-        val deposito = Deposito  (usuarioPublicacionCompra ,300.0)
-         transactionerService.notificarPago(transaccionDeConpra,deposito)
-         val vendedor = transaccionDeConpra.getVendedor()
-        assertEquals ( deposito.monto, vendedor.notificacionesDeDeposito.get(0).monto )
-    }
-
-    @Test
-    fun enviarCriptoActivo() {
-    }
-
-    @Test
-    fun guardarCriptoActivo() {
-    }
-
-    @Test
-    fun agregarCriptoActivo() {
-    }
-
-    @Test
-    fun existeCriptoActivo() {
-    }
-
-
-
-
-
-    @Test
-    fun volumenOperadoEntreFechas() {
-    }
-
-    @Test
-    fun informeData() {
-    }
-
-
-
-    @Test
-    fun transaccionesParaUnUsuario() {
-    }
-
-    @Test
-    fun transaccionesDeUnUsuarioEntreFechas() {
-    }
-
-    @Test
-    fun transaccionesAgrupadoPorCriptoActivos() {
-    }
-
-    @Test
-    fun volumenCriptoActivos() {
+        val transacciones =   transactionerService.transacciones()
+        transactionerService.finalizarTransaccion(transaccion1)
+        assertFalse (transacciones.contains(transaccion1) )
     }
 
 
