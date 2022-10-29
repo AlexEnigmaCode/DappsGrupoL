@@ -75,7 +75,6 @@ class TransactionerService {
 
 
            when (publicacion.operacion) {
-
                "compra" -> {
                    transaccion.direccionEnvio = publicacion.usuario!!.walletAddress!!
                    transaccion.accion = Accion.REALIZAR_TRANSFERENCIA
@@ -191,10 +190,8 @@ class TransactionerService {
 
 
     private fun realizarTransferencia(transaccion:Transaccion) {
-
         val deposito =  enviarDinero(transaccion)
         notificarPago (transaccion, deposito)
-
     }
 
     private fun confirmarRecepcion(transaccion:Transaccion) {
@@ -204,12 +201,8 @@ class TransactionerService {
             throw Exception (" El monto depositado no es suficiente para realizar la transaccion" +
                     " o no se ha hecho el deposito en la cuenta  $cuenta")
         }
-
         enviarCriptoActivo(transaccion)
     }
-
-
-
 
 
 
@@ -220,9 +213,9 @@ class TransactionerService {
     }
 
     fun notificarPago (transaccion:Transaccion, deposito:Deposito){
-        val notificacionesDeDeposito =  transaccion.usuarioSelector!!.notificacionesDeDeposito
-        notificacionesDeDeposito.add(deposito)
-    }
+          transaccion.usuarioSelector!!.notificar(deposito)
+
+   }
 
 
     fun enviarCriptoActivo (transaccion:Transaccion){
@@ -233,8 +226,8 @@ class TransactionerService {
 
 
 
-    fun guardarCriptoActivo(wallet:VirtualWallet,publicacion:Transaccion){
-        val  criptoActivo = CriptoActivoWalletMapper(publicacion.criptoactivo!!, publicacion.cotizacion,publicacion.cantidad!!,publicacion.monto)
+    fun guardarCriptoActivo(wallet:VirtualWallet,transaccion:Transaccion){
+        val  criptoActivo = CriptoActivoWalletMapper(transaccion.criptoactivo!!, transaccion.cotizacion,transaccion.cantidad!!,transaccion.monto)
         agregarCriptoActivo(criptoActivo,wallet)
     }
 

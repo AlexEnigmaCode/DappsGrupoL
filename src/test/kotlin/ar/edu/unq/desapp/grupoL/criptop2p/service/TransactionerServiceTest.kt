@@ -1,8 +1,6 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.service
 
-import ar.edu.unq.desapp.grupoL.criptop2p.CriptoActivoWalletMapper
-import ar.edu.unq.desapp.grupoL.criptop2p.UserRegisterMapper
-import ar.edu.unq.desapp.grupoL.criptop2p.VirtualWallet
+import ar.edu.unq.desapp.grupoL.criptop2p.*
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Publicacion
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Transaccion
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
@@ -32,6 +30,8 @@ internal class TransactionerServiceTest {
     var criptoactivos = mutableListOf <CriptoActivoWalletMapper>()
     lateinit var   publicacionCompra : Publicacion
     lateinit var   publicacionVenta : Publicacion
+    lateinit var  transaccionDeConpra : Transaccion
+    lateinit var  transaccionDeVenta : Transaccion
     lateinit var usuarioComprador: UserRegisterMapper
     lateinit var usuarioVendedor: UserRegisterMapper
     lateinit var usuarioPublicacionCompra: Usuario
@@ -67,6 +67,20 @@ internal class TransactionerServiceTest {
      val virtualWallet2 = VirtualWallet  (usuarioPublicacionVenta ,criptoactivos )
       wallets.add(virtualWallet1)
       wallets.add(virtualWallet2)
+        transaccionDeConpra = Transaccion(
+          0,
+          LocalDateTime.now(),
+            publicacionCompra.criptoactivo,
+            publicacionCompra.cantidad,
+            publicacionCompra.cotizacion,
+            publicacionCompra.monto,
+            publicacionCompra.usuario,
+            publicacionCompra.operacion,
+          0,
+            publicacionCompra.usuario!!.reputacion!!,
+            publicacionCompra.usuario!!.walletAddress,
+            Accion.REALIZAR_TRANSFERENCIA,
+            usuarioPublicacionVenta)
 
     }
 
@@ -137,18 +151,21 @@ internal class TransactionerServiceTest {
 
     @Test
     fun Al_Consultar_por_las_wallets_Me_devuelve_todas_las_wallets_registradas() {
-      val wallet1 = transactionerService.createVirtualWallet(usuarioPublicacionCompra)
-      val wallet2 = transactionerService.createVirtualWallet(usuarioPublicacionVenta)
+       transactionerService.createVirtualWallet(usuarioPublicacionCompra)
+       transactionerService.createVirtualWallet(usuarioPublicacionVenta)
       val wallets =   transactionerService.wallets()
         assertEquals (2,wallets.size)
         assertEquals (usuarioPublicacionCompra.id!!,wallets.get(0).usuario.id)
         assertEquals (usuarioPublicacionCompra.id!!,wallets.get(1).usuario.id)
-
     }
 
 
     @Test
-    fun notificarPago() {
+    fun El_Vendedor_es_Notificado_con_el_Monto_Que_el_comprador_deposito() {
+        val deposito = Deposito  (usuarioPublicacionCompra ,300.0)
+         transactionerService.notificarPago(transaccionDeConpra,deposito)
+         val vendedor = transaccionDeConpra.getVendedor()
+        assertEquals ( deposito.monto, vendedor.notificacionesDeDeposito.get(0).monto )
     }
 
     @Test

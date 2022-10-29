@@ -87,7 +87,23 @@ class Transaccion {
         this.usuarioSelector= usuarioSelector
     }
 
+    fun getComprador(): Usuario {
+        var user = usuario!!
+        if (operacion != "compra"){
+           user = usuarioSelector!!
+        }
+    return user
+    }
 
+
+
+    fun getVendedor():Usuario{
+        var user = usuario!!
+        if (operacion != "venta"){
+            user = usuarioSelector!!
+        }
+        return user
+    }
 
 }
 

@@ -92,6 +92,13 @@ class Usuario:  EntidadValidable {
         this.reputacion = reputacion
     }
 
+    fun notificar(deposito: Deposito){
+        notificacionesDeDeposito.add(deposito)
+    }
+
+    fun getNotificaciones(): MutableList <Deposito> {
+        return notificacionesDeDeposito
+    }
 
     fun getOperaciones(): Long {
         return cantidadOperaciones
