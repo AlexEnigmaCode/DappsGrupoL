@@ -65,14 +65,14 @@ data class PublicacionRegisterMapper(
 
 
 data class CriptoActivoWalletMapper(
-    val criptoactivo:String,
+    val criptoActivo:String,
     val cotizacion: Double,
     val cantidad: Long,
     var monto : Double)
 
 
 data class CriptoActivoRegisterMapper(
-    val criptoactivo: String?,
+    val criptoActivo: String?,
     val cotizacion: String?,
     val fecha: String)
 
@@ -84,18 +84,11 @@ data class  TransaccionCriptoActivoMapper(
 
 data class VolumenCriptoActivoOperadoMapper(
     val diahora: LocalDateTime,
-    val usuario :UserViewMapper,
-    val  valorTotalOperados:Double,
+    val  valorTotalOperado:Double,
     val criptoActivos: MutableList<CriptoActivoWalletMapper>
 
 )
 
-data class VolumenDataNapper(
-    val diahora: LocalDateTime,
-    val usuario :UserViewMapper,
-    val  valorTotalOperados:Double,
-    val transacciones: MutableList<Transaccion>
-)
 
 data class  VolumenPorOperacionesMapper(
     val diahora: LocalDateTime,

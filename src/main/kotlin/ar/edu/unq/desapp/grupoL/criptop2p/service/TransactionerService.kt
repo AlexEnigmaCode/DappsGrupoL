@@ -74,7 +74,6 @@ class TransactionerService {
                usuario
            )
 
-
            when (publicacion.operacion) {
                "compra" -> {
                    transaccion.direccionEnvio = publicacion.usuario!!.walletAddress!!
@@ -104,10 +103,6 @@ class TransactionerService {
        catch (e: Exception) {
            throw ItemNotFoundException("User with Id:  $id not found")
        }
-
-
-
-
     }
 
 
@@ -147,10 +142,8 @@ class TransactionerService {
 
 
 
-
-
         @Transactional
-    fun findByID(id: Long): Transaccion {
+        fun findByID(id: Long): Transaccion {
         val transaccion =  transactionerRepository.findById(id)
         if ( ! (transaccion.isPresent ))
         {throw ItemNotFoundException("Transaction with Id:  $id not found") }
@@ -171,8 +164,6 @@ class TransactionerService {
 
 
 
-
-
     private fun  esFechaAnterior(fechaActual:LocalDateTime, fechaPublicacion:LocalDateTime):Boolean{
         return  (fechaActual.isBefore(fechaPublicacion.plusMinutes(30)))
 
@@ -180,7 +171,6 @@ class TransactionerService {
 
 
    fun isCanceled(publicacion:Publicacion,cotizacionActual: Double): Boolean {
-
         return  when    (publicacion.operacion) {
             "compra" -> {
                // cotizacionActual(publicacion.criptoactivo!!) > publicacion.cotizacion
@@ -233,7 +223,7 @@ class TransactionerService {
 
     fun guardarCriptoActivo(wallet:VirtualWallet,transaccion:Transaccion) {
         if (existeCriptoActivo(transaccion.criptoactivo!!,wallet)) {
-            val criptoActivoGuardado = wallet.criptoactivos.find { it.criptoactivo == transaccion.criptoactivo!! }
+            val criptoActivoGuardado = wallet.criptoactivos.find { it.criptoActivo == transaccion.criptoactivo!! }
             criptoActivoGuardado!!.monto  += transaccion.monto
 
         }
@@ -244,7 +234,7 @@ class TransactionerService {
 
 
     fun existeCriptoActivo (criptoActivo: String,wallet: VirtualWallet):Boolean{
-        val criptoActivoGuardado = wallet.criptoactivos.find { it.criptoactivo == criptoActivo }
+        val criptoActivoGuardado = wallet.criptoactivos.find { it.criptoActivo == criptoActivo }
         return  (criptoActivoGuardado != null)
 
     }
@@ -271,7 +261,7 @@ class TransactionerService {
     fun getCriptoActivoDeLaVirtualWalletDeUsuario(transaccion:Transaccion): CriptoActivoWalletMapper {
       val usuario = transaccion.usuarioSelector!!
       val criptoactivos = criptoActivosDeLaVirtualWalletDeUsuario(usuario)
-      return  criptoactivos.find { it.criptoactivo == transaccion.criptoactivo } ?:throw ItemNotFoundException("Not found criptoActivo")
+      return  criptoactivos.find { it.criptoActivo == transaccion.criptoactivo } ?:throw ItemNotFoundException("Not found criptoActivo")
     }
 
 
@@ -280,32 +270,16 @@ class TransactionerService {
     }
 
     @Transactional
-    fun volumenOperadoEntreFechas(usuarioId:Long, fecha1: LocalDateTime, fecha2:LocalDateTime  ): VolumenCriptoActivoOperadoMapper{
-
-         val data =  informeData(usuarioId, fecha1, fecha2 )
-        val transaccionesDeUsuarioEntreFechas = data.transacciones
-        val transaccionesCriptoActivos =  transaccionesAgrupadoPorCriptoActivos(transaccionesDeUsuarioEntreFechas)
-        val criptoActivos =  volumenCriptoActivos( transaccionesCriptoActivos )
-
-        return VolumenCriptoActivoOperadoMapper(data.diahora,data.usuario, data.valorTotalOperados, criptoActivos )
-
-    }
-
-
-    fun informeData(usuarioId:Long, fecha1: LocalDateTime, fecha2:LocalDateTime  ): VolumenDataNapper{
-
+    fun volumenOperadoEntreFechas(usuarioId:Long, fecha1: LocalDateTime, fecha2:LocalDateTime): VolumenCriptoActivoOperadoMapper{
         val transacciones = transacciones()
         val transaccionesParaUnUsuario = transaccionesParaUnUsuario (usuarioId,transacciones)
         val  transaccionesDeUsuarioEntreFechas =  transaccionesDeUnUsuarioEntreFechas(usuarioId,fecha1, fecha2,transaccionesParaUnUsuario)
-
-        val  usuario = transaccionesDeUsuarioEntreFechas.first().usuario!!
-        val diahora = transaccionesDeUsuarioEntreFechas.first().diahora!!
-        val usuarioView = UserViewMapper (usuario.id,usuario.name,usuario.surname,usuario.email,usuario.address,usuario.cvu,usuario.walletAddress,usuario.cantidadOperaciones,usuario.reputacion)
         val  valorTotalOperado =  transaccionesDeUsuarioEntreFechas.sumOf { it.monto }
+        val transaccionesCriptoActivos =  transaccionesAgrupadoPorCriptoActivos(transaccionesDeUsuarioEntreFechas)
+        val criptoActivos =  volumenCriptoActivos( transaccionesCriptoActivos )
 
-        return VolumenDataNapper(diahora,usuarioView,valorTotalOperado, transaccionesDeUsuarioEntreFechas )
+        return  VolumenCriptoActivoOperadoMapper(LocalDateTime.now(), valorTotalOperado, criptoActivos )
     }
-
 
 
     fun transacciones(): MutableList<Transaccion> {
@@ -326,7 +300,6 @@ class TransactionerService {
             throw ItemNotFoundException ("No hay transacciones que se encuentre entre las fechas $fecha1 y $fecha2 ")
         }
         return transacciones
-
     }
 
     fun transaccionesAgrupadoPorCriptoActivos(transacciones : MutableList<Transaccion>): MutableList<TransaccionCriptoActivoMapper> {
@@ -339,11 +312,8 @@ class TransactionerService {
             val listacripto =  listaTransacciones.map {CriptoActivoWalletMapper (it.criptoactivo!!,it.cotizacion,it.cantidad!!,it.monto)}.toMutableList()
             val transaccionCriptoActivo =  TransaccionCriptoActivoMapper ( criptoActivo!!, listacripto)
             transaccionesCriptoActivos.add( transaccionCriptoActivo)
-
         }
-
-         return transaccionesCriptoActivos
-
+         return transaccionesCriptoActivos.sortedBy { it.criptoActivo }.toMutableList()
     }
 
 
@@ -353,12 +323,13 @@ class TransactionerService {
 
        for (cripto in transaccionesCriptoActivos){
           val cantidad = cripto.criptoActivos.sumOf { it.cantidad }
-         val  cotizacion = 100.0
-         val monto =  cantidad * cotizacion
-          criptoActivo =  CriptoActivoWalletMapper(cripto.criptoActivo,cotizacion, cantidad,monto)
+         val  cotizacionActual = 100.0
+         val monto =  cantidad * cotizacionActual
+          criptoActivo =  CriptoActivoWalletMapper(cripto.criptoActivo,cotizacionActual, cantidad,monto)
           criptoActivos.add(criptoActivo)
         }
-           return  criptoActivos
+          return  criptoActivos.sortedBy { it.criptoActivo }.toMutableList()
+
 
     }
 
@@ -369,7 +340,4 @@ class TransactionerService {
         return (   fecha.isBefore(fecha2) || fecha.isEqual(fecha2)  )
                 &&  (fecha.isAfter(fecha2) || fecha.isEqual(fecha1))
     }
-
-
-
 }

@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
@@ -53,6 +52,8 @@ class TransactionerServiceUnitTest {
     lateinit var transaccion3: Transaccion
     lateinit var transaccion4: Transaccion
     lateinit var transaccion5: Transaccion
+    lateinit var transaccion6: Transaccion
+    lateinit var transaccion7: Transaccion
 
     lateinit var fechaMinima: LocalDateTime
     lateinit var fechaMaxima: LocalDateTime
@@ -62,6 +63,8 @@ class TransactionerServiceUnitTest {
     lateinit var fecha3: LocalDateTime
     lateinit var fecha4: LocalDateTime
     lateinit var fecha5: LocalDateTime
+    lateinit var fecha6: LocalDateTime
+    lateinit var fecha7: LocalDateTime
 
 
     lateinit var criptoActivo1: CriptoActivoWalletMapper
@@ -74,12 +77,14 @@ class TransactionerServiceUnitTest {
     @BeforeEach
     fun setUp() {
         val fechaCadenaminima = "5-10-2022"
-        val fechaCadenaMaxima = "25-11-2022"
+        val fechaCadenaMaxima = "30-11-2022"
         val fechaCadena1 = "10-10-2022"
         val fechaCadena2 = "15-10-2022"
-        val fechaCadena3 = "22-11-2022"
-        val fechaCadena4 = "15-12-2022"
-        val fechaCadena5 = "18-12-2022"
+        val fechaCadena3 = "22-10-2022"
+        val fechaCadena4 = "15-11-2022"
+        val fechaCadena5 = "20-11-2022"
+        val fechaCadena6 = "15-12-2022"
+        val fechaCadena7 = "18-12-2022"
 
         val formateador: DateTimeFormatter =
             DateTimeFormatterBuilder().parseCaseInsensitive().append(DateTimeFormatter.ofPattern("dd-MM-yyyy")).toFormatter()
@@ -88,6 +93,8 @@ class TransactionerServiceUnitTest {
          fecha3 = LocalDateTime.parse(fechaCadena3, formateador)
          fecha4 = LocalDateTime.parse(fechaCadena4, formateador)
          fecha5 = LocalDateTime.parse(fechaCadena5, formateador)
+         fecha6 = LocalDateTime.parse(fechaCadena6, formateador)
+         fecha7 = LocalDateTime.parse(fechaCadena7, formateador)
 
         fechaMinima = LocalDateTime.parse(fechaCadenaminima, formateador);
         fechaMaxima = LocalDateTime.parse(fechaCadenaMaxima, formateador);
@@ -129,7 +136,7 @@ class TransactionerServiceUnitTest {
         wallets.add(virtualWallet1)
         wallets.add(virtualWallet2)
         transaccionDeConpra = Transaccion(
-            0,
+            11,
             LocalDateTime.now(),
             publicacionCompra.criptoactivo,
             publicacionCompra.cantidad,
@@ -138,14 +145,14 @@ class TransactionerServiceUnitTest {
             usuarioPublicacionCompra,
             publicacionCompra.operacion,
             0,
-            publicacionCompra.usuario!!.reputacion!!,
+            publicacionCompra.usuario!!.reputacion,
             publicacionCompra.usuario!!.walletAddress,
             Accion.REALIZAR_TRANSFERENCIA,
             usuarioPublicacionVenta
         )
 
         transaccionDeVenta = Transaccion(
-            0,
+            12,
             LocalDateTime.now(),
             publicacionVenta.criptoactivo,
             publicacionVenta.cantidad,
@@ -154,7 +161,7 @@ class TransactionerServiceUnitTest {
             usuarioPublicacionVenta,
             publicacionVenta.operacion,
             0,
-            publicacionVenta.usuario!!.reputacion!!,
+            publicacionVenta.usuario!!.reputacion,
             publicacionVenta.usuario!!.cvu,
             Accion.CONFIRMAR_RECEPCION,
             usuarioPublicacionCompra
@@ -166,14 +173,14 @@ class TransactionerServiceUnitTest {
         transaccion1 = Transaccion(
             1,
             fecha1,
-            publicacionCompra.criptoactivo,
-            publicacionCompra.cantidad,
-            publicacionCompra.cotizacion,
-            publicacionCompra.monto,
+            "B",
+            2,
+            50.0,
+           100.0,
             usuarioPublicacionCompra,
-            publicacionCompra.operacion,
+            Operacion.COMPRA.tipo,
             0,
-            publicacionCompra.usuario!!.reputacion!!,
+            publicacionCompra.usuario!!.reputacion,
             publicacionCompra.usuario!!.walletAddress,
             Accion.REALIZAR_TRANSFERENCIA,
             usuarioPublicacionVenta
@@ -182,14 +189,14 @@ class TransactionerServiceUnitTest {
         transaccion1 = Transaccion(
             2,
             fecha2,
-            publicacionCompra.criptoactivo,
-            publicacionCompra.cantidad,
-            publicacionCompra.cotizacion,
-            publicacionCompra.monto,
+           "A",
+            10,
+            20.0,
+            200.0,
             usuarioPublicacionCompra,
-            publicacionCompra.operacion,
+            Operacion.COMPRA.tipo,
             0,
-            publicacionCompra.usuario!!.reputacion!!,
+            publicacionCompra.usuario!!.reputacion,
             publicacionCompra.usuario!!.walletAddress,
             Accion.REALIZAR_TRANSFERENCIA,
             usuarioPublicacionVenta
@@ -198,22 +205,52 @@ class TransactionerServiceUnitTest {
         transaccion3 = Transaccion(
             3,
             fecha3,
-            publicacionVenta.criptoactivo,
-            publicacionVenta.cantidad,
-            publicacionVenta.cotizacion,
-            publicacionVenta.monto,
+            "A",
+            10,
+            30.0,
+            300.0,
             usuarioPublicacionCompra,
             Operacion.COMPRA.tipo,
             0,
-            publicacionVenta.usuario!!.reputacion!!,
+            publicacionVenta.usuario!!.reputacion,
+            publicacionVenta.usuario!!.cvu,
+            Accion.CONFIRMAR_RECEPCION,
+            usuarioPublicacionVenta
+        )
+        transaccion4 = Transaccion(
+            4,
+            fecha4,
+           "B",
+            2,
+            200.0,
+           400.0,
+            usuarioPublicacionCompra,
+            Operacion.COMPRA.tipo,
+            0,
+            publicacionVenta.usuario!!.reputacion,
+            publicacionVenta.usuario!!.cvu,
+            Accion.CONFIRMAR_RECEPCION,
+            usuarioPublicacionVenta
+        )
+        transaccion5 = Transaccion(
+            5,
+            fecha5,
+            "B",
+            2,
+            250.0,
+            500.0,
+            usuarioPublicacionCompra,
+            Operacion.VENTA.tipo,
+            0,
+            publicacionVenta.usuario!!.reputacion,
             publicacionVenta.usuario!!.cvu,
             Accion.CONFIRMAR_RECEPCION,
             usuarioPublicacionCompra
         )
 
-        transaccion4 = Transaccion(
-            4,
-            fecha4,
+        transaccion6 = Transaccion(
+            6,
+            fecha6,
             publicacionVenta.criptoactivo,
             publicacionVenta.cantidad,
             publicacionVenta.cotizacion,
@@ -221,15 +258,15 @@ class TransactionerServiceUnitTest {
             usuarioPublicacionCompra,
             publicacionVenta.operacion,
             0,
-            publicacionVenta.usuario!!.reputacion!!,
+            publicacionVenta.usuario!!.reputacion,
             publicacionVenta.usuario!!.cvu,
             Accion.CONFIRMAR_RECEPCION,
             usuarioPublicacionCompra
         )
 
-        transaccion5 = Transaccion(
-            5,
-            fecha5,
+        transaccion7 = Transaccion(
+            7,
+            fecha7,
             publicacionVenta.criptoactivo,
             publicacionVenta.cantidad,
             publicacionVenta.cotizacion,
@@ -237,7 +274,7 @@ class TransactionerServiceUnitTest {
             usuarioPublicacionVenta,
             publicacionVenta.operacion,
             0,
-            publicacionVenta.usuario!!.reputacion!!,
+            publicacionVenta.usuario!!.reputacion,
             publicacionVenta.usuario!!.cvu,
             Accion.CONFIRMAR_RECEPCION,
             usuarioPublicacionCompra
@@ -354,7 +391,7 @@ class TransactionerServiceUnitTest {
         transactionerService.enviarCriptoActivo(transaccionDeVenta)
         val criptoActivoDelComprador =
             transactionerService.getCriptoActivoDeLaVirtualWalletDeUsuario(transaccionDeVenta)
-        assertEquals(criptoActivoExpected, criptoActivoDelComprador.criptoactivo)
+        assertEquals(criptoActivoExpected, criptoActivoDelComprador.criptoActivo)
     }
 
 
@@ -384,7 +421,7 @@ class TransactionerServiceUnitTest {
 
     @Test
     fun Si_ExisteCriptoActivo_devuelve_True() {
-        val criptoActivo = criptoActivo1.criptoactivo
+        val criptoActivo = criptoActivo1.criptoActivo
         val walletDelComprador = transactionerService.getVirtualWallet(transaccionDeVenta.direccionEnvio!!)
         val criptoActivos = walletDelComprador.criptoactivos
         criptoActivos.add(criptoActivo1)
@@ -397,7 +434,7 @@ class TransactionerServiceUnitTest {
     @Test
     fun Si_NO_ExisteCriptoActivo_devuelve_False() {
         val walletDelComprador = transactionerService.getVirtualWallet(transaccionDeVenta.direccionEnvio!!)
-        val existe = transactionerService.existeCriptoActivo(criptoActivo1.criptoactivo, walletDelComprador)
+        val existe = transactionerService.existeCriptoActivo(criptoActivo1.criptoActivo, walletDelComprador)
         assertFalse(existe)
     }
 
@@ -406,7 +443,7 @@ class TransactionerServiceUnitTest {
     fun Cuando_consulto_transaccionesParaUnUsuario_Me_devuelve_LasTransacciones_Que_Tienen_A_Ese_Usuario() {
         val transacciones =
             transactionerService.transaccionesParaUnUsuario(usuarioPublicacionCompra.id!!, transacciones2)
-        assertEquals(4, transacciones.size)
+        assertEquals(6, transacciones.size)
     }
 
     // transacciones para entre fechas
@@ -418,9 +455,8 @@ class TransactionerServiceUnitTest {
             fechaMaxima,
             transacciones2
         )
-        assertEquals(3, transacciones.size)
+        assertEquals(5, transacciones.size)
     }
-
 
     // Entre Fechas
     @Test
@@ -431,32 +467,41 @@ class TransactionerServiceUnitTest {
 
     @Test
     fun La_fecha_Al_No_Estar_dentro_Del_Rango_De_La_Fecha_Ninina_Y_la_fecha_Maxima_Devuelve_False(){
-        val dentroDelRango = transactionerService.entreFechas(fecha5, fechaMinima,fechaMaxima)
+        val dentroDelRango = transactionerService.entreFechas(fecha7, fechaMinima,fechaMaxima)
        assertFalse (dentroDelRango )
     }
 
     @Test
     fun volumenOperadoEntreFechas() {
+    val volumen =  transactionerService.volumenOperadoEntreFechas( usuarioPublicacionCompra.id!!, fechaMinima,fechaMaxima)
+     assertEquals (1600.00, volumen.valorTotalOperado)
+     assertEquals (2 , volumen.criptoActivos.size)
+     assertEquals ( "A" , volumen.criptoActivos.get(0).criptoActivo)
+     assertEquals ( "B" , volumen.criptoActivos.get(1).criptoActivo)
     }
-
-    @Test
-    fun informeData() {
-    }
-
-
-
 
 
     @Test
     fun transaccionesAgrupadoPorCriptoActivos() {
+      val transacciones =  transactionerService.transaccionesAgrupadoPorCriptoActivos( transacciones2,)
+       assertEquals (2, transacciones.size)
+       assertEquals ( "A" , transacciones.get(0).criptoActivo )
+       assertEquals ( 2 , transacciones.get(1).criptoActivos.size )
+       assertEquals ( "B" , transacciones.get(1).criptoActivo )
+       assertEquals ( 3 , transacciones.get(1).criptoActivos.size )
     }
+
 
     @Test
     fun volumenCriptoActivos() {
+     val transacciones =  transactionerService.transaccionesAgrupadoPorCriptoActivos( transacciones2,)
+     val volumenCriptos = transactionerService.volumenCriptoActivos(transacciones)
+     assertEquals (2, volumenCriptos.size)
+     assertEquals ( "A" , volumenCriptos.get(0).criptoActivo )
+     assertEquals ( 20 , volumenCriptos.get(0).cantidad )
+     assertEquals ( "B" , volumenCriptos.get(1).criptoActivo )
+     assertEquals ( 6 , volumenCriptos.get(1).cantidad)
     }
-
-
-
 
 
     @AfterEach
