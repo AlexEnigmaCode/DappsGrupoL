@@ -11,7 +11,6 @@ import javax.validation.constraints.*
 @Table(name = "usuarios")
 class Usuario:  EntidadValidable {
 
-
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id_usuario")

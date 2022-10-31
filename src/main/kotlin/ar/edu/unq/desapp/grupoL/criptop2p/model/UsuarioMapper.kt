@@ -60,7 +60,9 @@ data class UsuarioMapper(
             user.address,
             user.password!!,
             user.cvu,
-            user.walletAddress
+            user.walletAddress,
+            0,
+            0.0
         )
         return usuario
     }
