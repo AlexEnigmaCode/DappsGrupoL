@@ -117,6 +117,8 @@ class Usuario:  EntidadValidable {
 
     }
 
+
+
     fun incrementarReputacion(numero :Double){
         reputacion += numero
     }

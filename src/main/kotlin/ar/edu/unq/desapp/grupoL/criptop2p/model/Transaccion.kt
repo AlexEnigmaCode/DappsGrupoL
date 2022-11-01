@@ -69,7 +69,7 @@ class Transaccion {
         reputacion: Double?,
         direccionEnvio: String?,
         accion: Accion?,
-        usuarioSelector:Usuario?
+        usuarioSelector: Usuario?
 
     ) : super() {
         this.id = id
@@ -84,28 +84,27 @@ class Transaccion {
         this.reputacion = reputacion
         this.direccionEnvio = direccionEnvio
         this.accion = accion
-        this.usuarioSelector= usuarioSelector
+        this.usuarioSelector = usuarioSelector
     }
 
     fun getComprador(): Usuario {
-        var user = usuario!!
-        if (operacion != "compra"){
-           user = usuarioSelector!!
+        if (operacion == "compra") {
+            return usuario!!
+        } else {
+            return usuarioSelector!!
         }
-    return user
+
     }
 
 
-
-    fun getVendedor():Usuario{
-        var user = usuario!!
-        if (operacion != "venta"){
-            user = usuarioSelector!!
+    fun getVendedor(): Usuario {
+        if (operacion == "venta") {
+            return usuario!!
+        } else {
+            return usuarioSelector!!
         }
-        return user
+
     }
+
 
 }
-
-
-

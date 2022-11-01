@@ -21,11 +21,17 @@ class MercadoPagoService {
         this.depositos = depositos
     }
 
+    fun cleanAll(){
+        cuentas.removeAll(cuentas)
+        depositos.removeAll(depositos)
+    }
+
     fun depositos():MutableList<Deposito>{
        return depositos
     }
 
     fun crearCuentaParaCliente (usuario:Usuario){
+        val depositos = mutableListOf<Deposito>()
         val cuenta =  CuentaCVU (usuario, depositos )
         cuentas.add(cuenta)
     }

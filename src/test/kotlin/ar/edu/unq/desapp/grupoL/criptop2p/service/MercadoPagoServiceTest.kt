@@ -76,6 +76,18 @@ internal class MercadoPagoServiceTest {
      assertEquals (deposito2.usuario.name, depositos.get(1).usuario.name )
     }
 
+
+    @Test
+    fun cleanAll(){
+        mercadoPagoService.setCuentasClientes(cuentas)
+        mercadoPagoService.setDepositoCuentas(depositosusuario1)
+        mercadoPagoService.cleanAll()
+        val cuentas = mercadoPagoService.cuentas()
+        val depositos = mercadoPagoService.depositos()
+        assertEquals (0, cuentas.size)
+        assertEquals (0, depositos.size)
+
+    }
     @Test
     fun Al_crear_una_cuenta_para_Un_Nuevo_cliente_Se_registra_una_nueva_cuenta_MercadoPago() {
      mercadoPagoService.crearCuentaParaCliente(usuario1)
@@ -106,7 +118,7 @@ internal class MercadoPagoServiceTest {
        val  cuenta = mercadoPagoService.getCuenta(usuario1.cvu!!)
        val deposito = mercadoPagoService.depositar(cuenta,300.0,usuario2)
        assertEquals( 1,cuenta.depositos.size)
-       assertEquals (300, deposito.monto)
+       assertEquals (300.0, deposito.monto)
 
 
 
@@ -146,12 +158,13 @@ internal class MercadoPagoServiceTest {
 
     @Test
     fun Si_el_usuario_No_deposito_en_La_cuenta_Lanza_ItemNotFoundException_Al_hacer_La_consulta() {
-        mercadoPagoService.crearCuentaParaCliente(usuario1)
+       mercadoPagoService.crearCuentaParaCliente(usuario1)
         val  cuenta = mercadoPagoService.getCuenta(usuario1.cvu!!)
        assertThrows<ItemNotFoundException> { mercadoPagoService.consultarMonto(cuenta,usuario2) }
     }
 
     @AfterEach
     fun tearDown() {
+        mercadoPagoService.cleanAll()
     }
 }
