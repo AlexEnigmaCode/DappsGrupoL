@@ -5,6 +5,7 @@ import ar.edu.unq.desapp.grupoL.criptop2p.model.CriptoActivo
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Publicacion
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Transaccion
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
+import ar.edu.unq.desapp.grupoL.criptop2p.persistence.PublicacionRepository
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.TransaccionRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -32,11 +33,14 @@ class TransactionerService {
     @Autowired
     private lateinit var transactionerRepository: TransaccionRepository
 
+    @Autowired
+    lateinit var  publisherService: PublisherService
+
 
     @Transactional
     fun procesarTransaccion(id: Long, publicacion: Publicacion,  cotizacionActual : Double  ): Transaccion {
 
-        if (!isCanceled(publicacion, cotizacionActual)) {
+        if (isCanceled(publicacion, cotizacionActual)) {
             throw Exception ("transaccion ${publicacion.id}  cancelada, no cumple los requerimientos según la cotizacion actual ")
         }
 
@@ -91,9 +95,9 @@ class TransactionerService {
                                " o no se ha hecho el deposito en la cuenta  $cuenta")
                    }
                    enviarCriptoActivo(transaccion)
-                   finalizarTransaccion(transaccion)
+                  // finalizarTransaccion(transaccion)
+                  finalizarTransaccion(publicacion)
                    }
-
            }
 
            return  transactionerRepository.save(transaccion)
@@ -152,6 +156,16 @@ class TransactionerService {
 
     }
 
+
+
+    @Transactional
+    fun deleteById(id: Long) {
+        val transaccion =   transactionerRepository.findById(id)
+        if ( ! (transaccion.isPresent ))
+        {throw ItemNotFoundException("Transacción with Id:  $id not found") }
+        transactionerRepository.deleteById(id)
+    }
+
     private fun  incrementarReputacionSegunTiempo(diahora:LocalDateTime):Double {
 
         if (esFechaAnterior(LocalDateTime.now(), diahora)) {
@@ -208,8 +222,10 @@ class TransactionerService {
    }
 
 
-    fun finalizarTransaccion(transaccion:Transaccion){
-        transactionerRepository.deleteById(transaccion.id!!)
+   // fun finalizarTransaccion(transaccion:Transaccion){
+       fun finalizarTransaccion(publicacion:Publicacion){
+       // transactionerRepository.deleteById(transaccion.id!!)
+        publisherService.deleteById(publicacion.id!!)
 
     }
 

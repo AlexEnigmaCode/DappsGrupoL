@@ -26,7 +26,6 @@ class PublisherService {
     private lateinit var transactionerRepository: TransaccionRepository
 
 
-
     @Autowired
     private  lateinit var consumer : ConsumerCriptoActivoMicroService
 
@@ -77,6 +76,16 @@ class PublisherService {
             throw PublicacionException ("Error: No puede selecconar su propia intención")
         }
          return newPublicacion
+    }
+
+
+    @Transactional
+    fun deleteById(id: Long) {
+        val publicacion =   publisherRepository.findById(id)
+        if ( ! (publicacion.isPresent ))
+        {throw ItemNotFoundException("Publicacion with Id:  $id not found") }
+        publisherRepository.deleteById(id)
+
     }
 
 

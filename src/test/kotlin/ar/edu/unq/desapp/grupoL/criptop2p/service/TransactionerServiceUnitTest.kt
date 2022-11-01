@@ -304,14 +304,14 @@ class TransactionerServiceUnitTest {
 
     @Test
     fun Si_La_Publicacion_De_Compra_Tiene_Precio_Mayor_A_CotizacionActual_No_Se_Cancela() {
-        val fueCancelada = transactionerService.isCanceled(publicacionCompra, cotizacionActual)
+        val fueCancelada = transactionerService.isCanceled(publicacionCompra2, cotizacionActual)
         assertFalse(fueCancelada)
     }
 
 
     @Test
     fun Si_La_Publicacion_De_Venta_Tiene_Precio_Menor_A_CotizacionActual_No_Se_Cancela() {
-        val fueCancelada = transactionerService.isCanceled(publicacionVenta, cotizacionActual)
+        val fueCancelada = transactionerService.isCanceled(publicacionVenta2, cotizacionActual)
         assertFalse(fueCancelada)
     }
 
