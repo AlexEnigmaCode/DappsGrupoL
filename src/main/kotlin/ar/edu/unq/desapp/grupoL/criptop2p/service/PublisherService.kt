@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+import kotlin.math.roundToLong
 
 
 @Service
@@ -39,8 +40,7 @@ class PublisherService {
         try {
             val usuario = userService.findByID(id)
             val diahora = LocalDateTime.now()
-            val monto = intencion.cantidad!! * intencion.cotizacion!!
-
+            val monto = (intencion.cantidad!! * intencion.cotizacion)
             val publicacion = Publicacion(
                 0,
                 diahora,
@@ -68,7 +68,7 @@ class PublisherService {
 
     @Transactional
     fun selectByID(id: Long, usuarioId:Long): Publicacion {
-        val publicacion = publisherRepository.findById(id.toInt())
+        val publicacion = publisherRepository.findById(id)
         if ( ! (publicacion.isPresent ))
         {throw ItemNotFoundException("Publicacion with Id:  $id not found") }
         val newPublicacion=  publicacion.get()

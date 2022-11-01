@@ -2,6 +2,7 @@ package ar.edu.unq.desapp.grupoL.criptop2p.service
 
 import ar.edu.unq.desapp.grupoL.criptop2p.*
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.PublicacionRepository
+import ar.edu.unq.desapp.grupoL.criptop2p.persistence.UserRepository
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import kotlin.math.roundToLong
 
 @SpringBootTest
 internal class PublisherServiceTest {
@@ -19,6 +21,9 @@ internal class PublisherServiceTest {
     lateinit var   publisherService: PublisherService
     @Autowired
     lateinit var  repository: PublicacionRepository
+
+    @Autowired
+    lateinit var  userRepository: UserRepository
 
 
     lateinit var user1: UserRegisterMapper
@@ -65,26 +70,26 @@ internal class PublisherServiceTest {
         val newUser1 = userService.register(user1)
         val newUser2 = userService.register(user2)
          publisherService.publicar(newUser1.id!!,publicacion1,cotizacionActual)
-           publisherService.publicar(newUser2.id!!,publicacion2,cotizacionActual)
+         publisherService.publicar(newUser2.id!!,publicacion2,cotizacionActual)
 
-        val publicaciones =  publisherService.findAll().toMutableList()
+        val publicaciones =  publisherService.findAll().toMutableList().sortedBy { it.criptoactivo }
         assertTrue { publicaciones.isNotEmpty() }
         assertEquals (2, publicaciones.size)
 
         assertEquals( publicacion1.criptoactivo, publicaciones.get(0).criptoactivo)
         assertEquals( publicacion1.cantidad, publicaciones.get(0).cantidad)
-        assertEquals( publicacion1.cotizacion, publicaciones.get(0).cantidad)
-        assertEquals( publicacion1.monto, publicaciones.get(0).monto)
+        assertEquals( publicacion1.cotizacion, publicaciones.get(0).cotizacion)
+        assertEquals( publicacion1.monto.roundToLong(), publicaciones.get(0).monto.roundToLong())
         assertEquals( newUser1.id!!, publicaciones.get(0).usuario!!.id)
         assertEquals( "Ale", publicaciones.get(0).usuario!!.name)
         assertEquals( "Fariña", publicaciones.get(0).usuario!!.surname)
 
 
 
-        assertEquals( publicacion1.criptoactivo, publicaciones.get(1).criptoactivo)
-        assertEquals( publicacion1.cantidad, publicaciones.get(1).cantidad)
-        assertEquals( publicacion1.cotizacion, publicaciones.get(1).cantidad)
-        assertEquals( publicacion1.monto, publicaciones.get(1).monto)
+        assertEquals( publicacion2.criptoactivo, publicaciones.get(1).criptoactivo)
+        assertEquals( publicacion2.cantidad, publicaciones.get(1).cantidad)
+        assertEquals( publicacion2.cotizacion, publicaciones.get(1).cotizacion)
+        assertEquals( publicacion2.monto.roundToLong(), publicaciones.get(1).monto.roundToLong())
         assertEquals( newUser2.id!!, publicaciones.get(1).usuario!!.id)
         assertEquals( "Ulises", publicaciones.get(1).usuario!!.name)
         assertEquals( "Lopez", publicaciones.get(1).usuario!!.surname)
@@ -97,6 +102,7 @@ internal class PublisherServiceTest {
     @AfterEach
     fun tearDown() {
         repository.deleteAll()
+        userRepository.deleteAll()
     }
 
 }

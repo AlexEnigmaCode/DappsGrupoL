@@ -2,6 +2,7 @@ package ar.edu.unq.desapp.grupoL.criptop2p.service
 
 import ar.edu.unq.desapp.grupoL.criptop2p.*
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.PublicacionRepository
+import ar.edu.unq.desapp.grupoL.criptop2p.persistence.UserRepository
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -20,6 +21,10 @@ internal class PublisherServiceUnitTest {
     lateinit var   publisherService: PublisherService
     @Autowired
     lateinit var  repository: PublicacionRepository
+
+    @Autowired
+    lateinit var  userRepository: UserRepository
+
 
 
     lateinit var user1: UserRegisterMapper
@@ -54,15 +59,15 @@ internal class PublisherServiceUnitTest {
 
     @Test
     fun Si_EL_Precio_Del_CriptoActivo_Esta_Por_Debajo_DelRango_De_Referencia_Por_CotizacionActual_Entonces_No_Puede_Publicar(){
-        val  puedePublicar = publisherService.puedePublicarSegunCotizacionActual( publicacionPorEncima, cotizacionActual )
-        assertTrue( puedePublicar)
+        val  puedePublicar = publisherService.puedePublicarSegunCotizacionActual(  publicacionPorDebajo, cotizacionActual )
+        assertFalse( puedePublicar)
 
     }
 
     @Test
     fun Si_EL_Precio_Del_CriptoActivo_Esta_Por_Encima_DelRango_De_Referencia_Por_CotizacionActual_Entonces_No_Puede_Publicar(){
-        val  puedePublicar = publisherService.puedePublicarSegunCotizacionActual( publicacionDentro, cotizacionActual )
-        assertTrue( puedePublicar)
+        val  puedePublicar = publisherService.puedePublicarSegunCotizacionActual( publicacionPorEncima, cotizacionActual )
+        assertFalse( puedePublicar)
 
     }
 
@@ -70,7 +75,6 @@ internal class PublisherServiceUnitTest {
     fun Si_No_Existe_La_Publicacion_No_Se_Puede_Seleccionar_Y_Lanza_ItemNotFoundExcepcion(){
         val newUser1 = userService.register(user1)
        assertThrows<ItemNotFoundException>{ publisherService.selectByID(100, newUser1.id!!) }
-
     }
 
     @Test
@@ -97,6 +101,8 @@ internal class PublisherServiceUnitTest {
     @AfterEach
     fun tearDown() {
         repository.deleteAll()
+        userRepository.deleteAll()
+
     }
 
 }
