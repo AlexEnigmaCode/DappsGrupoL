@@ -12,10 +12,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.mock
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.ResponseEntity
-import java.lang.Class
 import java.util.*
 
 @SpringBootTest
@@ -28,8 +26,6 @@ internal class UserRestServiceIntegrationTest {
 
 
      final val userService =  UserService()
-
-
 
 
     var  usersMocks = mutableListOf<UserViewMapper>()
@@ -80,26 +76,24 @@ internal class UserRestServiceIntegrationTest {
 
     @Test
     fun allUsers() {
-       val  responseService : ResponseEntity<MutableList<UserViewMapper>>
-       val users: List<UserViewMapper> = userRestService.allUsers()
-       assertEquals (2 , users.size)
-       assertEquals (1, users.get(0).id)
-        assertEquals ("Ale", users.get(0).name)
-        assertEquals (2, users.get(1).id)
-        assertEquals ("Ulises", users.get(1).name)
+        val response: ResponseEntity<List<UserViewMapper>> = userRestService.allUsers() as ResponseEntity<List<UserViewMapper>>
+        assertEquals (2 , response.body!!.size)
+        assertEquals (1, response.body!!.get(0).id)
+        assertEquals ("Ale", response.body!!.get(0).name)
+        assertEquals (2, response.body!!.get(1).id)
+        assertEquals ("Ulises", response.body!!.get(1).name)
         }
 
 
     @Test
     fun userById() {
-
-        val newUser = userService.findByID(userFound.id!!)
-        assertEquals(  userFound.id, newUser.id)
-        assertEquals(  userFound.name, newUser.name)
-        assertEquals(  userFound.surname, newUser.surname)
-        assertEquals(  userFound.email,newUser.email)
-        assertEquals(  userFound.cvu ,newUser.cvu)
-        assertEquals(  userFound.walletAddress, newUser.walletAddress)
+        val response: ResponseEntity<Usuario> = userRestService.userById(userFound.id!!) as ResponseEntity<Usuario>
+        assertEquals(  userFound.id, response.body!!.id)
+        assertEquals(  userFound.name, response.body!!.name)
+        assertEquals(  userFound.surname, response.body!!.surname)
+        assertEquals(  userFound.email,response.body!!.email)
+        assertEquals(  userFound.cvu ,response.body!!.cvu)
+        assertEquals(  userFound.walletAddress, response.body!!.walletAddress)
     }
 
 

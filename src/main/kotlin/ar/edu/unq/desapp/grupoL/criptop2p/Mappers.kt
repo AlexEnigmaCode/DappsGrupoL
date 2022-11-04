@@ -109,3 +109,5 @@ data class CuentaCVU (val usuario:Usuario,val depositos: MutableList<Deposito>)
 data class Deposito (val usuario:Usuario, var monto: Double )
 
 data  class VirtualWallet  (val usuario:Usuario, val criptoactivos: MutableList<CriptoActivoWalletMapper>)
+
+data class Transferencia (val direccionEnvio:String, val monto:Double)

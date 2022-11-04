@@ -21,10 +21,10 @@ class UserRestService {
     private val builder: ResponseEntity.BodyBuilder? = null
 
     @GetMapping("/api/users")
-    fun allUsers(): List<UserViewMapper>/*ResponseEntity<*> */{
-        val users = userService.findAll()
-        return users
-      // return ResponseEntity.ok().body(users)
+    fun allUsers(): /*List<UserViewMapper>*/ResponseEntity<*>{
+       val users = userService.findAll()
+      //  return users
+      return ResponseEntity.ok().body(users)
 
     }
 
@@ -33,9 +33,7 @@ class UserRestService {
     @PostMapping("/api/register")
     fun register(@Valid @RequestBody user: UserRegisterMapper): ResponseEntity<*> {
         var response : ResponseEntity<*>?
-
         try {
-
            val  userview = userService.register(user)
             ResponseEntity.status(201)
            response =  ResponseEntity.ok().body(userview)

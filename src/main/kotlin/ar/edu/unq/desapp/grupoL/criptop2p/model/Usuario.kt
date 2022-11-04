@@ -9,7 +9,7 @@ import javax.validation.constraints.*
 
 @Entity
 @Table(name = "usuarios")
-class Usuario:  EntidadValidable {
+class Usuario/*:  EntidadValidable*/ {
 
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)

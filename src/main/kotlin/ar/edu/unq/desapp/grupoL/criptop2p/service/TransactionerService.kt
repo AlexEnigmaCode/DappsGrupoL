@@ -1,11 +1,7 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.service
 
 import ar.edu.unq.desapp.grupoL.criptop2p.*
-import ar.edu.unq.desapp.grupoL.criptop2p.model.CriptoActivo
-import ar.edu.unq.desapp.grupoL.criptop2p.model.Publicacion
-import ar.edu.unq.desapp.grupoL.criptop2p.model.Transaccion
-import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
-import ar.edu.unq.desapp.grupoL.criptop2p.persistence.PublicacionRepository
+import ar.edu.unq.desapp.grupoL.criptop2p.model.*
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.TransaccionRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -15,7 +11,7 @@ import java.time.LocalDateTime
 @Service
 class TransactionerService {
 
-    var  criptoActivos = mutableListOf<CriptoActivoWalletMapper>()
+     var  criptoActivos = mutableListOf<CriptoActivoWalletMapper>()
     var transacciones = mutableListOf<Transaccion>()
     val wallets = mutableListOf<VirtualWallet>()
 
@@ -38,89 +34,36 @@ class TransactionerService {
 
 
     @Transactional
-    fun procesarTransaccion(id: Long, publicacion: Publicacion,  cotizacionActual : Double  ): Transaccion {
-
-        if (isCanceled(publicacion, cotizacionActual)) {
-            throw Exception ("transaccion ${publicacion.id}  cancelada, no cumple los requerimientos según la cotizacion actual ")
+    fun procesarTransaccion(usuario: Usuario, transaccion: Transaccion, cotizacionActual : Double  ): Transaccion {
+       if (isCanceled(transaccion, cotizacionActual)) {
+           transaccion.state = Cancelado()
+           throw Exception ("transaccion ${transaccion.id}  cancelada, no cumple los requerimientos según la cotizacion actual ")
         }
-
-        return procesar(id, publicacion)
+        return procesar(usuario, transaccion)
     }
 
     @Transactional
-     fun procesar(id: Long,publicacion: Publicacion): Transaccion {
+    fun generateTransaction(usuario: Usuario,publicacion: Publicacion): Transaccion {
         lateinit var  direccionEnvio:String
         lateinit var accion :Accion
 
-       try {
+            val cantidadOperaciones = publicacion.usuario!!.icrementarOperqaciones()
+            val reputacion = incrementarReputacionSegunTiempo(publicacion.diahora!!)
 
-           val usuario = userService.findByID(id)
-           val cantidadOperaciones = publicacion.usuario!!.icrementarOperqaciones()
-           val reputacion = incrementarReputacionSegunTiempo(publicacion.diahora!!)
+            publicacion.usuario!!.incrementarReputacion(reputacion)
+            usuario.incrementarReputacion(reputacion)
 
-           publicacion.usuario!!.incrementarReputacion(reputacion)
-           usuario.incrementarReputacion(reputacion)
+        when (publicacion.operacion) {
+            "compra" -> {
+                direccionEnvio = publicacion.usuario!!.walletAddress!!
+                accion = Accion.REALIZAR_TRANSFERENCIA
 
-
-           val transaccion = Transaccion(
-               0,
-               LocalDateTime.now(),
-               publicacion.criptoactivo,
-               publicacion.cantidad,
-               publicacion.cotizacion,
-               publicacion.monto,
-               publicacion.usuario,
-               publicacion.operacion,
-               cantidadOperaciones,
-               reputacion,
-               direccionEnvio,
-               accion,
-               usuario
-           )
-
-           when (publicacion.operacion) {
-               "compra" -> {
-                   transaccion.direccionEnvio = publicacion.usuario!!.walletAddress!!
-                   transaccion.accion = Accion.REALIZAR_TRANSFERENCIA
-                  val deposito =  realizarTransferencia(transaccion)
-                   notificarPago (transaccion, deposito)
-
-               }
-               "venta" -> {
-                   transaccion.direccionEnvio = publicacion.usuario!!.cvu!!
-                   transaccion.accion = Accion.CONFIRMAR_RECEPCION
-                   val  cuenta  = mercadoPagoService.getCuenta(transaccion.direccionEnvio!!)
-                   if  ( ! confirmarRecepcion(transaccion) ) {
-                       throw Exception (" El monto depositado no es suficiente para realizar la transaccion" +
-                               " o no se ha hecho el deposito en la cuenta  $cuenta")
-                   }
-                   enviarCriptoActivo(transaccion)
-                  // finalizarTransaccion(transaccion)
-                  finalizarTransaccion(publicacion)
-                   }
-           }
-
-           return  transactionerRepository.save(transaccion)
-
-           }
-
-       catch (e: Exception) {
-           throw ItemNotFoundException("User with Id:  $id not found")
-       }
-    }
-
-
-    @Transactional
-    fun cancelar(id: Long,publicacion: Publicacion): Transaccion {
-        lateinit var direccionEnvio: String
-        lateinit var accion: Accion
-
-        try {
-
-            val usuario = userService.findByID(id)
-            usuario.descontarReputacion(20.0)
-            val cantidadOperaciones = publicacion.usuario!!.cantidadOperaciones
-            val reputacion = publicacion.usuario!!.reputacion
+            }
+            "venta" -> {
+                direccionEnvio = publicacion.usuario!!.cvu!!
+                accion = Accion.CONFIRMAR_RECEPCION
+            }
+        }
 
             val transaccion = Transaccion(
                 0,
@@ -133,20 +76,41 @@ class TransactionerService {
                 publicacion.operacion,
                 cantidadOperaciones,
                 reputacion,
-               "",
-                Accion.CANCELAR,
+                direccionEnvio,
+                accion,
                 usuario
             )
-            return transaccion
-        } catch (e: Exception) {
-            throw ItemNotFoundException("User with Id:  $id not found")
-        }
+
+            return  transactionerRepository.save(transaccion)
 
     }
 
 
+    @Transactional
+     fun procesar(usuario: Usuario, transaccion: Transaccion): Transaccion {
+        lateinit var  direccionEnvio:String
+        lateinit var accion :Accion
 
-        @Transactional
+           transaccion.usuario!!.icrementarOperqaciones()
+           val reputacion = incrementarReputacionSegunTiempo(transaccion.diahora!!)
+
+          transaccion.usuario!!.incrementarReputacion(reputacion)
+          usuario.incrementarReputacion(reputacion)
+          transaccion.state = EstadoInicial()
+             return  transactionerRepository.save(transaccion)
+
+           }
+
+   @Transactional
+    fun cancelar(usuario: Usuario,transaccion: Transaccion): Transaccion {
+            transaccion.state = Cancelado()
+            usuario.descontarReputacion(20.0)
+            return transactionerRepository.save(transaccion)
+
+    }
+
+
+       @Transactional
         fun findByID(id: Long): Transaccion {
         val transaccion =  transactionerRepository.findById(id)
         if ( ! (transaccion.isPresent ))
@@ -184,15 +148,15 @@ class TransactionerService {
     }
 
 
-   fun isCanceled(publicacion:Publicacion,cotizacionActual: Double): Boolean {
-        return  when    (publicacion.operacion) {
+   fun isCanceled(transaccion:Transaccion,cotizacionActual: Double): Boolean {
+        return  when    (transaccion.operacion) {
             "compra" -> {
                // cotizacionActual(publicacion.criptoactivo!!) > publicacion.cotizacion
-                cotizacionActual > publicacion.cotizacion
+                cotizacionActual > transaccion.cotizacion
             }
             else -> {
                // cotizacionActual (publicacion.criptoactivo!!)  < publicacion.cotizacion
-                cotizacionActual  < publicacion.cotizacion
+                cotizacionActual  < transaccion.cotizacion
             }
         }
     }
@@ -204,40 +168,41 @@ class TransactionerService {
 
 
        fun confirmarRecepcion(transaccion:Transaccion):Boolean {
-        val  cuenta  = mercadoPagoService.getCuenta(transaccion.direccionEnvio!!)
+        val  cuenta  = getCuenta(transaccion.direccionEnvio!!)
         val montoDepositado =  mercadoPagoService.consultarMonto(cuenta ,transaccion.usuarioSelector!!)
         return  ( montoDepositado >= transaccion.monto )
        }
 
 
-     fun realizarTransferencia(transaccion:Transaccion) : Deposito{
-        val  cuenta  = mercadoPagoService.getCuenta(transaccion.usuarioSelector!!.cvu!!)
-        val deposito =   mercadoPagoService.depositar(cuenta, transaccion.monto, transaccion.usuario!! )
+    @Transactional
+     fun realizarTransferencia(direccionEnvio: String, monto:Double,comprador:Usuario) : Deposito{
+        val  cuenta  = getCuenta(direccionEnvio)
+        val deposito =   mercadoPagoService.depositar(cuenta, monto, comprador )
         return deposito
     }
 
-    fun notificarPago (transaccion:Transaccion, deposito:Deposito){
+
+    @Transactional
+    fun notificarPago (transaccion:Transaccion,deposito:Deposito){
           transaccion.usuarioSelector!!.notificar(deposito)
 
    }
 
 
-   // fun finalizarTransaccion(transaccion:Transaccion){
-       fun finalizarTransaccion(publicacion:Publicacion){
-       // transactionerRepository.deleteById(transaccion.id!!)
-        publisherService.deleteById(publicacion.id!!)
-
-    }
+       @Transactional
+       fun finalizarTransaccion(transaccion:Transaccion){
+          deleteById(transaccion.id!!)
+        }
 
 
-    fun enviarCriptoActivo (transaccion:Transaccion){
+    fun enviarCriptoActivo ( transaccion:Transaccion){
         val walletAddress = transaccion.usuarioSelector!!.walletAddress!!
         val wallet = getVirtualWallet(walletAddress)
-        guardarCriptoActivo(wallet,transaccion)
+        guardarCriptoActivo(transaccion,wallet)
     }
 
 
-    fun guardarCriptoActivo(wallet:VirtualWallet,transaccion:Transaccion) {
+    fun guardarCriptoActivo(transaccion:Transaccion,wallet:VirtualWallet) {
         if (existeCriptoActivo(transaccion.criptoactivo!!,wallet)) {
             val criptoActivoGuardado = wallet.criptoactivos.find { it.criptoActivo == transaccion.criptoactivo!! }
             criptoActivoGuardado!!.monto  += transaccion.monto
@@ -280,12 +245,20 @@ class TransactionerService {
       return  criptoactivos.find { it.criptoActivo == transaccion.criptoactivo } ?:throw ItemNotFoundException("Not found criptoActivo")
     }
 
+    fun depositar(cuenta:CuentaCVU,monto:Double, usuario:Usuario): Deposito{
+        return mercadoPagoService.depositar(cuenta,monto,usuario)
+    }
+
 
     fun wallets(): MutableList<VirtualWallet> {
         return  wallets
     }
 
-    @Transactional
+    fun cuentas(): MutableList<CuentaCVU> {
+        return  mercadoPagoService.cuentas()
+    }
+
+   @Transactional
     fun volumenOperadoEntreFechas(usuarioId:Long, fecha1: LocalDateTime, fecha2:LocalDateTime): VolumenCriptoActivoOperadoMapper{
         val transacciones = transacciones()
         val transaccionesParaUnUsuario = transaccionesParaUnUsuario (usuarioId,transacciones)
@@ -345,15 +318,14 @@ class TransactionerService {
           criptoActivos.add(criptoActivo)
         }
           return  criptoActivos.sortedBy { it.criptoActivo }.toMutableList()
-
-
     }
-
-
-
 
     fun entreFechas(fecha:LocalDateTime, fecha1:LocalDateTime, fecha2:LocalDateTime): Boolean{
         return (   fecha.isBefore(fecha2) || fecha.isEqual(fecha2)  )
                 &&  (fecha.isAfter(fecha2) || fecha.isEqual(fecha1))
+    }
+
+    fun getCuenta(cvu:String): CuentaCVU{
+      return   mercadoPagoService.getCuenta(cvu)
     }
 }

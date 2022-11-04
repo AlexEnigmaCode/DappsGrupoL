@@ -94,13 +94,13 @@ internal class TransactionerServiceTest {
 
       walletDelComprador = VirtualWallet  ( usuarioPublicacionCompra ,criptoactivos )
       walletDelVendedor = VirtualWallet  (usuarioPublicacionVenta ,criptoactivos )
-      wallets.add(walletDelComprador )
-      wallets.add(walletDelVendedor)
+     // wallets.add(walletDelComprador )
+     // wallets.add(walletDelVendedor)
 
       depositos.add(depositoComprador)
 
        cuentaDelVendedor = CuentaCVU (usuarioPublicacionVenta, depositos )
-       cuentas.add(cuentaDelVendedor)
+      // cuentas.add(cuentaDelVendedor)
 
         transaccionDeConpra = Transaccion(
           0,
@@ -117,16 +117,37 @@ internal class TransactionerServiceTest {
             Accion.REALIZAR_TRANSFERENCIA,
             usuarioPublicacionVenta)
 
+        transaccionDeVenta = Transaccion(
+            0,
+            LocalDateTime.now(),
+            publicacionVenta.criptoactivo,
+            publicacionVenta.cantidad,
+            publicacionVenta.cotizacion,
+            publicacionVenta.monto,
+            publicacionVenta.usuario,
+            publicacionVenta.operacion,
+            0,
+            publicacionVenta.usuario!!.reputacion,
+            publicacionVenta.usuario!!.walletAddress,
+            Accion.CONFIRMAR_RECEPCION,
+            usuarioPublicacionCompra)
     }
+
+
+
+
+
 
 
     @Test
     fun procesarTransaccion() {
-        val wallets = transactionerService.wallets().addAll(wallets)
-       val cuentas = mercadoPagoService.cuentas().addAll(cuentas)
+       val comprador = userService.register(usuarioComprador)
+       val newComprqador = userService.findByID(comprador.id!!)
+        transactionerService.wallets().add(walletDelComprador)
+       transactionerService.cuentas().add(cuentaDelVendedor)
+      val deposito =  transactionerService.depositar(cuentaDelVendedor, 300.0, newComprqador)
 
-        val transaccion  =  transactionerService.procesarTransaccion(usuarioPublicacionCompra.id!!,publicacionVenta, cotizacionActual )
-
+       val transaccion  =  transactionerService.procesarTransaccion(newComprqador,transaccionDeVenta, cotizacionActual )
 
         assertEquals( publicacionVenta.criptoactivo, transaccion.criptoactivo)
         assertEquals(  publicacionVenta.cantidad, transaccion.cantidad)
@@ -146,8 +167,11 @@ internal class TransactionerServiceTest {
         val comprador = userService.register(usuarioComprador)
         val vendedor = userService.register(usuarioVendedor)
 
-        val transaccion1 = transactionerService.procesarTransaccion(comprador.id!!,publicacionVenta, cotizacionActual )
-        val transaccion2 = transactionerService.procesarTransaccion(vendedor.id!!,publicacionCompra, cotizacionActual )
+        val newComprqador = userService.findByID(comprador.id!!)
+        val newVendedor = userService.findByID(vendedor.id!!)
+
+        val transaccion1 = transactionerService.procesarTransaccion(newComprqador,transaccionDeVenta, cotizacionActual )
+        val transaccion2 = transactionerService.procesarTransaccion(newVendedor,transaccionDeConpra, cotizacionActual )
 
 
         val transacciones =   transactionerService.transacciones()
@@ -182,14 +206,13 @@ internal class TransactionerServiceTest {
     @Test
     fun Al_Finalizar_Una_Transaccion_Ya_No_estara_Incluida_Em_La_Base_De_Datos_De_Transacciones() {
         val comprador = userService.register(usuarioComprador)
-        val vendedor = userService.register(usuarioVendedor)
 
-        val transaccion1 = transactionerService.procesarTransaccion(comprador.id!!,publicacionVenta, cotizacionActual )
-        val transaccion2 = transactionerService.procesarTransaccion(vendedor.id!!,publicacionCompra, cotizacionActual )
+        val newComprqador = userService.findByID(comprador.id!!)
+        val transaccion = transactionerService.generateTransaction(newComprqador,publicacionVenta )
 
-        val publicaciones =   publisherService.publicaciones
-        transactionerService.finalizarTransaccion(publicacionVenta)
-        assertFalse (publicaciones.contains(publicacionVenta) )
+        val transacciones =   transactionerService.transacciones
+        transactionerService.finalizarTransaccion(transaccion)
+        assertFalse (transacciones.contains(transaccion) )
     }
 
 

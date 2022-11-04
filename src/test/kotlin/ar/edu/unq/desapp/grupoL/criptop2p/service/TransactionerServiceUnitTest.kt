@@ -35,6 +35,7 @@ class TransactionerServiceUnitTest {
     var wallets = mutableListOf<VirtualWallet>()
     var criptoactivos = mutableListOf<CriptoActivoWalletMapper>()
     var transacciones = mutableListOf<Transaccion>()
+    var nuevastransacciones = mutableListOf<Transaccion>()
     var transacciones2 = mutableListOf<Transaccion>()
     lateinit var publicacionCompra: Publicacion
     lateinit var publicacionVenta: Publicacion
@@ -46,6 +47,9 @@ class TransactionerServiceUnitTest {
     lateinit var usuarioPublicacionVenta: Usuario
     lateinit var transaccionDeConpra: Transaccion
     lateinit var transaccionDeVenta: Transaccion
+    lateinit var transaccionDeConpra2: Transaccion
+    lateinit var transaccionDeVenta2: Transaccion
+
 
     lateinit var transaccion1: Transaccion
     lateinit var transaccion2: Transaccion
@@ -76,19 +80,23 @@ class TransactionerServiceUnitTest {
 
     @BeforeEach
     fun setUp() {
-        val fechaCadenaminima = "5-10-2022"
-        val fechaCadenaMaxima = "30-11-2022"
-        val fechaCadena1 = "10-10-2022"
-        val fechaCadena2 = "15-10-2022"
-        val fechaCadena3 = "22-10-2022"
-        val fechaCadena4 = "15-11-2022"
-        val fechaCadena5 = "20-11-2022"
-        val fechaCadena6 = "15-12-2022"
-        val fechaCadena7 = "18-12-2022"
+        val fechaCadenaminima = "2022-05-10 10:10:10"
+        val fechaCadenaMaxima = "2022-30-11 10:10:10"
+        val fechaCadena1 = "2022-10-10 10:10:10"
+        val fechaCadena2 = "2022-10-15 10:10:10"
+        val fechaCadena3 = "2022-10-22 10:10:10"
+        val fechaCadena4 = "2022-11-15 10:10:10"
+        val fechaCadena5 = "2022-11-22 10:10:10"
+        val fechaCadena6 = "2022-12-15 10:10:10"
+        val fechaCadena7 = "2022-12-18 10:10:10"
 
-        val formateador: DateTimeFormatter =
-            DateTimeFormatterBuilder().parseCaseInsensitive().append(DateTimeFormatter.ofPattern("dd-MM-yyyy")).toFormatter()
-         fecha1 = LocalDateTime.parse(fechaCadena1, formateador)
+       // val formateador: DateTimeFormatter =
+         //   DateTimeFormatterBuilder().parseCaseInsensitive().append(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")).toFormatter()
+
+        val formateador : DateTimeFormatter =  DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+
+
+        fecha1 = LocalDateTime.parse(fechaCadena1, formateador)
          fecha2 = LocalDateTime.parse(fechaCadena2, formateador)
          fecha3 = LocalDateTime.parse(fechaCadena3, formateador)
          fecha4 = LocalDateTime.parse(fechaCadena4, formateador)
@@ -96,8 +104,8 @@ class TransactionerServiceUnitTest {
          fecha6 = LocalDateTime.parse(fechaCadena6, formateador)
          fecha7 = LocalDateTime.parse(fechaCadena7, formateador)
 
-        fechaMinima = LocalDateTime.parse(fechaCadenaminima, formateador);
-        fechaMaxima = LocalDateTime.parse(fechaCadenaMaxima, formateador);
+        fechaMinima = LocalDateTime.parse(fechaCadenaminima, formateador)
+        fechaMaxima = LocalDateTime.parse(fechaCadenaMaxima, formateador)
 
 
         usuarioPublicacionCompra = Usuario(1, "Ale", "Fariña", "ale@gmail.com", "address1", "1", "123", "7", 0, 0.0)
@@ -170,7 +178,42 @@ class TransactionerServiceUnitTest {
         transacciones.add(transaccionDeConpra)
         transacciones.add(transaccionDeVenta)
 
-        transaccion1 = Transaccion(
+        transaccionDeConpra2 = Transaccion(
+                11,
+            LocalDateTime.now(),
+            publicacionCompra2.criptoactivo,
+            publicacionCompra2.cantidad,
+            publicacionCompra2.cotizacion,
+            publicacionCompra2.monto,
+            usuarioPublicacionCompra,
+            publicacionCompra2.operacion,
+            0,
+            publicacionCompra2.usuario!!.reputacion,
+            publicacionCompra2.usuario!!.walletAddress,
+            Accion.REALIZAR_TRANSFERENCIA,
+            usuarioPublicacionVenta
+        )
+
+        transaccionDeVenta2 = Transaccion(
+            12,
+            LocalDateTime.now(),
+            publicacionVenta2.criptoactivo,
+            publicacionVenta2.cantidad,
+            publicacionVenta2.cotizacion,
+            publicacionVenta2.monto,
+            usuarioPublicacionVenta,
+            publicacionVenta2.operacion,
+            0,
+            publicacionVenta2.usuario!!.reputacion,
+            publicacionVenta2.usuario!!.cvu,
+            Accion.CONFIRMAR_RECEPCION,
+            usuarioPublicacionCompra
+        )
+
+        nuevastransacciones.add(transaccionDeConpra2)
+        nuevastransacciones.add(transaccionDeVenta2)
+
+           transaccion1  = Transaccion(
             1,
             fecha1,
             "B",
@@ -186,7 +229,7 @@ class TransactionerServiceUnitTest {
             usuarioPublicacionVenta
         )
 
-        transaccion1 = Transaccion(
+        transaccion2 = Transaccion(
             2,
             fecha2,
            "A",
@@ -286,32 +329,31 @@ class TransactionerServiceUnitTest {
         transacciones2.add(transaccion4)
         transacciones2.add(transaccion5)
 
-
     }
 
 
     @Test
-    fun Si_La_Publicacion_De_Compra_Tiene_Precio_Menor_A_CotizacionActual_Se_Cancela() {
-        val fueCancelada = transactionerService.isCanceled(publicacionCompra, cotizacionActual)
+    fun Si_La_Transaccion_De_Compra_Tiene_Precio_Menor_A_CotizacionActual_Se_Cancela() {
+        val fueCancelada = transactionerService.isCanceled(transaccionDeConpra, cotizacionActual)
         assertTrue(fueCancelada)
     }
 
     @Test
-    fun Si_La_Publicacion_De_Venta_Tiene_Precio_Mayor_A_CotizacionActual_Se_Cancela() {
-        val fueCancelada = transactionerService.isCanceled(publicacionVenta, cotizacionActual)
+    fun Si_La_Transaccion_De_Venta_Tiene_Precio_Mayor_A_CotizacionActual_Se_Cancela() {
+        val fueCancelada = transactionerService.isCanceled(transaccionDeVenta, cotizacionActual)
         assertTrue(fueCancelada)
     }
 
     @Test
-    fun Si_La_Publicacion_De_Compra_Tiene_Precio_Mayor_A_CotizacionActual_No_Se_Cancela() {
-        val fueCancelada = transactionerService.isCanceled(publicacionCompra2, cotizacionActual)
+    fun Si_La_Transaccion_De_Compra_Tiene_Precio_Mayor_A_CotizacionActual_No_Se_Cancela() {
+        val fueCancelada = transactionerService.isCanceled(transaccion1, cotizacionActual)
         assertFalse(fueCancelada)
     }
 
 
     @Test
-    fun Si_La_Publicacion_De_Venta_Tiene_Precio_Menor_A_CotizacionActual_No_Se_Cancela() {
-        val fueCancelada = transactionerService.isCanceled(publicacionVenta2, cotizacionActual)
+    fun Si_La_Transaccion_De_Venta_Tiene_Precio_Menor_A_CotizacionActual_No_Se_Cancela() {
+        val fueCancelada = transactionerService.isCanceled(transaccion5, cotizacionActual)
         assertFalse(fueCancelada)
     }
 
@@ -319,14 +361,15 @@ class TransactionerServiceUnitTest {
     fun Si_La_Transaccion_Fue_CanceladaPorEl_Usuario_Se_Le_Descuenta_20_De_Reputacion() {
         var comprador = userService.register(usuarioComprador)
         comprador.reputacion = 100.0
-        val transaccion = transactionerService.cancelar(usuarioPublicacionCompra.id!!, publicacionVenta)
+        val transaccion = transactionerService.cancelar(usuarioPublicacionCompra, transaccionDeVenta)
         assertEquals(20, transaccion.usuarioSelector!!.reputacion)
     }
 
     @Test
     fun Si_La_Transaccion_Fue_CanceladaPorEl_Usuario_No_se_Guuarda_En_La_BaseDatos_De_Transacciones() {
         val comprador = userService.register(usuarioComprador)
-        transactionerService.cancelar(comprador.id!!, publicacionVenta)
+        val newComprador =  userService.findByID(comprador.id!!)
+        transactionerService.cancelar(newComprador, transaccionDeVenta)
         val transacciones = transactionerService.transacciones()
         assertTrue(transacciones.isEmpty())
     }
@@ -354,7 +397,7 @@ class TransactionerServiceUnitTest {
     @Test
     fun El_Vendedor_es_Notificado_con_el_Monto_Que_el_comprador_deposito() {
         val deposito = Deposito(usuarioPublicacionCompra, 300.0)
-        transactionerService.notificarPago(transaccionDeConpra, deposito)
+        transactionerService.notificarPago(transaccionDeVenta,deposito)
         val vendedor = transaccionDeConpra.getVendedor()
         assertEquals(deposito.monto, vendedor.notificacionesDeDeposito.get(0).monto)
     }
@@ -363,7 +406,9 @@ class TransactionerServiceUnitTest {
     //Realizar transferencia
     @Test
     fun Al_realizarTransferencia_En_La_cuenta_del_Vendedor_queda_registrado_El_Deposito_Hecho_Por_el_Comprador() {
-        val deposito = transactionerService.realizarTransferencia(transaccionDeVenta)
+        val comprador =  transaccionDeVenta.getComprador()
+        val direccionEnvio = transaccionDeVenta.usuario!!.cvu!!
+        val deposito = transactionerService.realizarTransferencia(direccionEnvio,500.0,comprador)
         val vendedor = transaccionDeConpra.getVendedor()
         val depositos = mercadoPagoService.depositosDeLaCuentaDeUsuario(vendedor)
         assertTrue(depositos.contains(deposito))
@@ -372,8 +417,10 @@ class TransactionerServiceUnitTest {
     //  Confirmar recepcion
     @Test
     fun Si_El_comprador_Realizo_La_Transferencia_Devuelve_True() {
-        transactionerService.realizarTransferencia(transaccionDeVenta)
-        val confirmado = transactionerService.confirmarRecepcion(transaccionDeVenta)
+        val comprador = transaccionDeVenta.getComprador()
+        val direccionEnvio = transaccionDeVenta.usuario!!.cvu!!
+        transactionerService.realizarTransferencia(direccionEnvio,300.0,comprador )
+        val confirmado = transactionerService.confirmarRecepcion(transaccionDeVenta, )
         assertTrue(confirmado)
     }
 
@@ -397,9 +444,8 @@ class TransactionerServiceUnitTest {
 
     @Test
     fun Si_El_CriptoActivo_No_Esta_En_La_WalletDelComprador_Entonces_El_MontoAcumulado_Sera_IgualQue_El_Monto_de_laTransaccion() {
-
         val walletDelComrador = transactionerService.getVirtualWallet(transaccionDeVenta.direccionEnvio!!)
-        transactionerService.guardarCriptoActivo(walletDelComrador, transaccionDeVenta)
+        transactionerService.guardarCriptoActivo( transaccionDeVenta,walletDelComrador)
         val criptoActivoDelComprador =
             transactionerService.getCriptoActivoDeLaVirtualWalletDeUsuario(transaccionDeVenta)
         assertNotEquals(criptoActivoDelComprador.monto, transaccionDeVenta.monto)
@@ -409,9 +455,9 @@ class TransactionerServiceUnitTest {
     fun Si_El_CriptoActivo_Ya_Esta_En_La_WalletDelComprador_Entonces_El_MontoAcumulado_Sera_LaCantidadDelMontoAcumulado_Mas_el_Monto_de_laTransaccion() {
 
         val walletDelComrador = transactionerService.getVirtualWallet(transaccionDeVenta.direccionEnvio!!)
-        transactionerService.guardarCriptoActivo(walletDelComrador, transaccionDeVenta)
+        transactionerService.guardarCriptoActivo( transaccionDeVenta,walletDelComrador,)
         val monto = transactionerService.getCriptoActivoDeLaVirtualWalletDeUsuario(transaccionDeVenta).monto
-        transactionerService.guardarCriptoActivo(walletDelComrador, transaccionDeVenta)
+        transactionerService.guardarCriptoActivo( transaccionDeVenta,walletDelComrador,)
 
         val criptoActivoDelComprador =
             transactionerService.getCriptoActivoDeLaVirtualWalletDeUsuario(transaccionDeVenta)

@@ -55,6 +55,9 @@ class Transaccion {
     @JoinColumn(name = "id_usuarioselector", nullable = true)
     var usuarioSelector: Usuario? = null
 
+    @Transient
+    var state: EstadoTransaccion? = null
+
     constructor() : super() {}
     constructor(
         id: Long?,

@@ -23,6 +23,9 @@ class PublisherService {
     private lateinit var publisherRepository: PublicacionRepository
 
     @Autowired
+    private lateinit var transactioneServicee: TransactionerService
+
+    @Autowired
     private lateinit var transactionerRepository: TransaccionRepository
 
 
@@ -96,6 +99,15 @@ class PublisherService {
         val publicaciones = publisherRepository.findAll()
         return publicaciones
     }
+
+
+    @Transactional
+    fun confirm(usuario:Usuario, publicacion:Publicacion):Transaccion{
+    val transaction = transactioneServicee.generateTransaction(usuario,publicacion)
+    deleteById(publicacion.id!!)
+    return  transaction
+    }
+
 
 /*
       private fun  cotizacionActual(symbol:String): Long{

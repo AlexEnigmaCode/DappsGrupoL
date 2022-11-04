@@ -1,3 +1,4 @@
+/*
 package ar.edu.unq.desapp.grupoL.criptop2p
 
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -11,7 +12,8 @@ import kotlin.Throws
 import java.lang.Exception
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
-
+*/
+/*
 @Configuration
 @EnableWebSecurity
 class SecurityConfig : WebSecurityConfigurerAdapter() {
@@ -40,4 +42,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .and()
             .httpBasic()
     }
+
 }
+
+ */
