@@ -1,6 +1,5 @@
-/*
 package ar.edu.unq.desapp.grupoL.criptop2p
-
+/*
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.beans.factory.annotation.Autowired
@@ -30,9 +29,9 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     @Throws(Exception::class)
     override fun configure(auth: AuthenticationManagerBuilder) {
         // auth.userDetailsService(auth.getDefaultUserDetailsService())
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCrypt)
+      //  auth.userDetailsService(userDetailsService).passwordEncoder(bCrypt)
     }
-
+*//*
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
         http
@@ -45,4 +44,4 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
 }
 
- */
+*/

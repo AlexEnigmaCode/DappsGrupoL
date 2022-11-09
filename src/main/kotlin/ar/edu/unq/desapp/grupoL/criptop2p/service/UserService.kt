@@ -5,19 +5,22 @@ import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
 import ar.edu.unq.desapp.grupoL.criptop2p.model.UsuarioMapper
 import org.springframework.beans.factory.annotation.Autowired
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.UserRepository
+/*
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+
+*/
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 
 @Service
-class UserService: UserDetailsService {
+class UserService/*: UserDetailsService */{
 
     @Autowired
     private  lateinit var repository: UserRepository
@@ -152,7 +155,7 @@ class UserService: UserDetailsService {
         return bool
     }
 
-
+/*
     override fun loadUserByUsername(username: String?): UserDetails {
        val  users : List<Usuario> = repository.findAll()
       val user : Usuario = users.find { (it.name == username)  } ?: throw ItemNotFoundException("Not found user")
@@ -163,5 +166,5 @@ class UserService: UserDetailsService {
        return userDet
             
     }
-
+*/
 }

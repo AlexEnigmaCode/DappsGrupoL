@@ -52,10 +52,9 @@ repositories {
 dependencies {
 
 	implementation ("io.springfox:springfox-swagger2:3.0.0")
-	implementation ("org.springframework.boot:spring-boot-starter-validation:2.7.4")
+
     implementation("org.projectlombok:lombok:1.18.20")
-    testImplementation ("org.springframework.boot:spring-boot-starter-test")
-	testImplementation ("org.springframework.security:spring-security-test")
+
 
 	//implementation("org.springdoc:springdoc-openapi-data-rest:1.6.12")
 	implementation("org.springdoc:springdoc-openapi-ui:1.6.11")

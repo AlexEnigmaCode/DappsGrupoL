@@ -1,5 +1,5 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.webservice
-/*
+
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -47,4 +47,4 @@ internal class UserRestServiceTest {
     }
 
 
-} */
+}

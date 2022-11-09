@@ -1,6 +1,5 @@
 package ar.edu.unq.desapp.grupoL.criptop2p
 
-import ar.edu.unq.desapp.grupoL.criptop2p.model.Transaccion
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
 import java.time.LocalDateTime
 import java.time.LocalTime
