@@ -54,15 +54,13 @@ dependencies {
 	implementation ("io.springfox:springfox-swagger2:3.0.0")
 
     implementation("org.projectlombok:lombok:1.18.20")
-
-
 	//implementation("org.springdoc:springdoc-openapi-data-rest:1.6.12")
 	implementation("org.springdoc:springdoc-openapi-ui:1.6.11")
 	implementation("org.springdoc:springdoc-openapi-kotlin:1.6.12")
-
 	implementation ("io.springfox:springfox-boot-starter:3.0.0")
 	implementation ("io.springfox:springfox-swagger-ui:3.0.0")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -80,6 +78,7 @@ dependencies {
 	providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
+	//testImplementation("redis.embedded:embedded-redis:0.5")
 
 
 }

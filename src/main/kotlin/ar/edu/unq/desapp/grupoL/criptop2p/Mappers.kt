@@ -102,7 +102,7 @@ data class CriptoActivoWalletMapper(
 data class CriptoActivoRegisterMapper(
     val criptoActivo: String?,
     val cotizacion: String?,
-    val fecha: String)
+    val fecha: LocalDateTime)
 
 
 data class  TransaccionCriptoActivoMapper(

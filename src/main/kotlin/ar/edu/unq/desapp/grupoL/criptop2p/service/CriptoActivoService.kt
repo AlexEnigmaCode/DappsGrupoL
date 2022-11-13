@@ -4,6 +4,7 @@ package ar.edu.unq.desapp.grupoL.criptop2p.service
 import ar.edu.unq.desapp.grupoL.criptop2p.Binance
 import ar.edu.unq.desapp.grupoL.criptop2p.ItemNotFoundException
 import ar.edu.unq.desapp.grupoL.criptop2p.model.CriptoActivo
+import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.CriptoActivoRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -20,9 +21,12 @@ class CriptoActivoService {
 
     @Transactional
     fun findAll(): List<CriptoActivo> {
-
         return repository.findAll()
+    }
 
+    @Transactional
+    fun count(): Long {
+        return repository.count()
     }
 
 
@@ -42,6 +46,15 @@ class CriptoActivoService {
         return repository.saveAll(criptoActivos.asIterable()).toMutableList()
     }
 
+
+    @Transactional
+    fun findByID(id: Long): CriptoActivo {
+        val criptoActivo =  repository.findById(id)
+        if ( ! (criptoActivo.isPresent ))
+        {throw ItemNotFoundException("CriptoActivo with Id:  $id not found") }
+        val newCriptoActivo=  criptoActivo.get()
+        return newCriptoActivo
+    }
 
     @Transactional
     fun findByCriptoActivo(symbol:String): CriptoActivo {

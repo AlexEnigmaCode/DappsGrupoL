@@ -1,6 +1,7 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.service
 
 import ar.edu.unq.desapp.grupoL.criptop2p.*
+import ar.edu.unq.desapp.grupoL.criptop2p.model.CriptoActivo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.http.ResponseEntity
@@ -30,8 +31,8 @@ class ConsumerCriptoActivoMicroService {
         )!!
         val list = response.body?.asList()
         if (list != null) {
-            val fecha:String = LocalDateTime.now().toString()
-            criptoActivos =  list.map { CriptoActivoRegisterMapper(it.symbol, it.price, fecha )}
+            val fecha:LocalDateTime = LocalDateTime.now()
+            criptoActivos =  list.map { CriptoActivoRegisterMapper ( it.symbol, it.price, fecha)}
         }
         return criptoActivos
     }
@@ -46,7 +47,7 @@ class ConsumerCriptoActivoMicroService {
         val binance = response.body
         if (binance == null)
         {throw ItemNotFoundException ("Cripto Activo with symbol:  $symbol not found")}
-        val fecha:String = LocalDateTime.now().toString()
+        val fecha:LocalDateTime = LocalDateTime.now()
         val  criptoActivo = CriptoActivoRegisterMapper(
             binance.symbol,
             binance.price,

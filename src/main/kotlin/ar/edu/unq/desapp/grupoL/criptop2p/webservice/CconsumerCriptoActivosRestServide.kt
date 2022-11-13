@@ -4,6 +4,7 @@ import ar.edu.unq.desapp.grupoL.criptop2p.CriptoActivoRegisterMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.HistoricoCotizaciones24hs
 import ar.edu.unq.desapp.grupoL.criptop2p.service.ConsumerCriptoActivoMicroService
 import ar.edu.unq.desapp.grupoL.criptop2p.service.CriptoActivoService
+import ar.edu.unq.desapp.grupoL.criptop2p.service.SchedulerService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.http.ResponseEntity
@@ -21,11 +22,17 @@ class CconsumerCriptoActivosRestServide {
 
     @Autowired
     lateinit var consumerService: ConsumerCriptoActivoMicroService
+
+
+
     private val builder: ResponseEntity.BodyBuilder? = null
 
 
     @Autowired
     private  lateinit var criptoActivoService: CriptoActivoService
+
+
+
 
 
     @GetMapping("/api/consumecriptoactivos")
@@ -54,7 +61,7 @@ class CconsumerCriptoActivosRestServide {
         return response !!
     }
 
-    @GetMapping("/api/consumecriptoactivos")
+    @GetMapping("/api/consumecriptoactivos/24hs")
     fun consumeAllCriptoActivos24hs(): List<HistoricoCotizaciones24hs> {
         return consumerService.consumeCriptoActivos24hs()
 
@@ -62,7 +69,7 @@ class CconsumerCriptoActivosRestServide {
 
 
     /**consume criptoActivo  by symbol*/
-    @GetMapping("/api/consumecriptoactivos/{symbol}")
+    @GetMapping("/api/consumecriptoactivos/24hs/{symbol}")
     fun consumeCriptoActivoBySymbol24hs(@PathVariable("symbol") symbol: String): ResponseEntity<*> {
         var response : ResponseEntity<*>?
         try {
