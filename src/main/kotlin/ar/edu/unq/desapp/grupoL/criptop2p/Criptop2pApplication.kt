@@ -1,7 +1,7 @@
 package ar.edu.unq.desapp.grupoL.criptop2p
 
-import ar.edu.unq.desapp.grupoL.criptop2p.persistence.CriptoActivoRepository
-import ar.edu.unq.desapp.grupoL.criptop2p.service.CriptoActivoService
+
+import ar.edu.unq.desapp.grupoL.criptop2p.persistence.RedisRepository
 import org.apache.commons.logging.LogFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
@@ -10,6 +10,7 @@ import org.springframework.boot.runApplication
 import org.springframework.cache.annotation.EnableCaching
 import org.springframework.context.annotation.Bean
 import org.springframework.web.client.RestTemplate
+import java.time.LocalDateTime
 
 
 @SpringBootApplication
@@ -18,12 +19,12 @@ class Criptop2pApplication : CommandLineRunner {
 
 
 	private val LOG = LogFactory.getLog(javaClass)
-	private var criptoService: CriptoActivoService? = null
+	lateinit var redisRepository: RedisRepository
 
 
 	@Autowired
-	fun Criptop2pApplicationc(criptoActivoService: CriptoActivoService) {
-		criptoService = criptoActivoService
+	fun Criptop2pApplicationc(redisRepository: RedisRepository) {
+		this.redisRepository = redisRepository
 	}
 
 
@@ -38,15 +39,16 @@ class Criptop2pApplication : CommandLineRunner {
 
 	override fun run(vararg args: String?) {
 
-		LOG.info("Saving cripto activos. Current cripto activos count is  ${criptoService?.count()} " )
-		val cripto1 = Binance("A", "100")
-		val cripto2 = Binance("B", "200")
-		val cripto3 = Binance("C", "300)")
+		LOG.info("Saving cripto activos. Current cripto activos count is  ${redisRepository.count()} " )
+		val fecha = LocalDateTime.now()
+		val cripto1 = CriptoActivoRegisterMapper("A", "100", fecha)
+		val cripto2 = CriptoActivoRegisterMapper("B", "200",fecha)
+		val cripto3 = CriptoActivoRegisterMapper("C", "300)",fecha)
 
-		criptoService!!.save(cripto1)
-		criptoService!!.save(cripto2)
-		criptoService!!.save(cripto3)
-		LOG.info("Done saving cripto Activos. ${criptoService?.findAll()} ")
+		redisRepository!!.save(cripto1)
+		redisRepository!!.save(cripto2)
+		redisRepository!!.save(cripto3)
+		LOG.info("Done saving cripto Activos. ${redisRepository.findAll()} ")
 	}
 
 }

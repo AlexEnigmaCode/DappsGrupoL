@@ -18,21 +18,16 @@ import java.util.HashMap
 @RestController
 @EnableAutoConfiguration
 @CrossOrigin("*")
-class CconsumerCriptoActivosRestServide {
+class ConsumerCriptoActivosRestServide {
 
     @Autowired
     lateinit var consumerService: ConsumerCriptoActivoMicroService
-
-
 
     private val builder: ResponseEntity.BodyBuilder? = null
 
 
     @Autowired
     private  lateinit var criptoActivoService: CriptoActivoService
-
-
-
 
 
     @GetMapping("/api/consumecriptoactivos")

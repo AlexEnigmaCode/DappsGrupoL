@@ -50,6 +50,9 @@ repositories {
 }
 
 dependencies {
+		implementation("redis.clients:jedis:4.3.1")
+	    implementation("org.apache.commons:commons-pool2:2.11.1")
+
 
 	implementation ("io.springfox:springfox-swagger2:3.0.0")
 

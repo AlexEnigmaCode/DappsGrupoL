@@ -3,7 +3,6 @@ package ar.edu.unq.desapp.grupoL.criptop2p.persistence
 
 
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Publicacion
-import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository

@@ -4,7 +4,6 @@ package ar.edu.unq.desapp.grupoL.criptop2p.service
 import ar.edu.unq.desapp.grupoL.criptop2p.Binance
 import ar.edu.unq.desapp.grupoL.criptop2p.ItemNotFoundException
 import ar.edu.unq.desapp.grupoL.criptop2p.model.CriptoActivo
-import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.CriptoActivoRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service

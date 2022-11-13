@@ -10,11 +10,9 @@ import org.springframework.stereotype.Repository
 
 @Configuration
 @Repository
-interface CriptoActivoRepository :JpaRepository<CriptoActivo?, Long?> {
+interface CriptoActivoRepository :CrudRepository<CriptoActivo?, Long?> {
 
     fun save(criptoActivo: CriptoActivo): CriptoActivo
     override fun findAll(): List<CriptoActivo>
-
-
 
 }
