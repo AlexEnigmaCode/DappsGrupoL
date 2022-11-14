@@ -52,10 +52,10 @@ repositories {
 dependencies {
 		implementation("redis.clients:jedis:4.3.1")
 	    implementation("org.apache.commons:commons-pool2:2.11.1")
-
+    	implementation("io.jsonwebtoken:jjwt:0.9.1")
+	    implementation("javax.xml.bind:jaxb-api:2.4.0-b180830.0359")
 
 	implementation ("io.springfox:springfox-swagger2:3.0.0")
-
     implementation("org.projectlombok:lombok:1.18.20")
 	//implementation("org.springdoc:springdoc-openapi-data-rest:1.6.12")
 	implementation("org.springdoc:springdoc-openapi-ui:1.6.11")

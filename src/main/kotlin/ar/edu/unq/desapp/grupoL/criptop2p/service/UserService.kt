@@ -5,6 +5,8 @@ import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
 import ar.edu.unq.desapp.grupoL.criptop2p.model.UsuarioMapper
 import org.springframework.beans.factory.annotation.Autowired
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.UserRepository
+import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 /*
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -24,13 +26,13 @@ class UserService/*: UserDetailsService */{
 
     @Autowired
     private  lateinit var repository: UserRepository
-/*
-    @Autowired
-    private lateinit var encoder: BCryptPasswordEncoder
-*/
-   @Autowired
-   private lateinit var usuarioMapper: UsuarioMapper
-   // private var usuarioMapper = UsuarioMapper.instancia()
+
+   // @Autowired
+    private  var encoder : BCryptPasswordEncoder = BCryptPasswordEncoder()
+
+ // @Autowired
+ // private lateinit var usuarioMapper: UsuarioMapper
+    private var usuarioMapper = UsuarioMapper.instancia()
 
 
     @Transactional
@@ -40,8 +42,8 @@ class UserService/*: UserDetailsService */{
        if ( existUser(user) )  {
          throw UsernameExistException("User with email:  ${user.email} is used")
         }
-        val  password = user.password!!
-  //      val password =encoder.encode(user.password)
+  //      val  password = user.password!!
+        val password =encoder.encode(user.password)
        // val newuser = usuarioMapper.aModelo(user)
 
       val newUser = Usuario(0,user.name, user.surname, user.email,user.address,password,user.cvu,user.walletAddress,0, 0.0)
@@ -115,8 +117,8 @@ class UserService/*: UserDetailsService */{
         try {
               entityOptional = repository.findById(id)
              val  newUser:Usuario = entityOptional.get()
-            val  password = newUser.password
-            // val password =encoder.encode(entity.password)
+          //  val  password = newUser.password
+             val password =encoder.encode(entity.password)
             val user = Usuario(newUser.id,newUser.name, newUser.surname, entity.email,entity.address,password,entity.cvu,entity.walletAddress,0,0.0)
              val savedUser = repository.save(user)
             val userView =   UserViewMapper(savedUser.id, savedUser.name, savedUser.surname, savedUser.email, savedUser.address, savedUser.cvu, savedUser.walletAddress, savedUser.cantidadOperaciones, savedUser.reputacion)
