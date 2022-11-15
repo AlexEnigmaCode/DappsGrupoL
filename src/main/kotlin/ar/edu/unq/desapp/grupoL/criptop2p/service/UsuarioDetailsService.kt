@@ -30,6 +30,9 @@ class UsuarioDetailsService : UserDetailsService {
             "jcabelloc", "USER",
             "mlopez", "ADMIN"
         )
+         val  users : List<Usuario> = userRepository.findAll()
+         val user : Usuario = users.find { (it.name == username)  } ?: throw ItemNotFoundException("Not found user")
+
         val rol = usuarios[username]
         return if (rol != null) {
             val userBuilder = User.withUsername(username)

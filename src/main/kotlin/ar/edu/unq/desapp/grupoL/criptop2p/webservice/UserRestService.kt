@@ -4,12 +4,21 @@ import ar.edu.unq.desapp.grupoL.criptop2p.UserLoginMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.UserRegisterMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.UserUpdateMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.UserViewMapper
+import ar.edu.unq.desapp.grupoL.criptop2p.service.JwtUtilService
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.beans.factory.annotation.Autowired
 import ar.edu.unq.desapp.grupoL.criptop2p.service.UserService
+import ar.edu.unq.desapp.grupoL.criptop2p.service.filter.JwtRequestFilter
+import io.jsonwebtoken.Jwts
+import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.web.bind.annotation.*
+import java.nio.file.Files.setAttribute
 import java.util.HashMap
+import java.util.stream.Collectors
+import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
 
 @RestController
@@ -19,6 +28,18 @@ class UserRestService {
     @Autowired
     private  lateinit var  userService: UserService
     private val builder: ResponseEntity.BodyBuilder? = null
+
+    @Autowired
+    private lateinit var jwtuUtilSerice : JwtUtilService
+
+    @Autowired
+    private lateinit var userDetailsService: UserDetailsService
+
+    @Autowired
+    private lateinit var  jutRequestFilter: JwtRequestFilter
+
+
+
 
     @GetMapping("/api/users")
     fun allUsers(): ResponseEntity<*>{
@@ -52,8 +73,10 @@ class UserRestService {
         var response : ResponseEntity<*>?
         try {
             val userview = userService.login(user.email, user.password)
-
-            ResponseEntity.status(200)
+            val userDetails: UserDetails = userDetailsService.loadUserByUsername(userview.name)
+            val token = jwtuUtilSerice.generateToken(userDetails)
+            jutRequestFilter.filterConfig!!.servletContext.setAttribute("Authorization", token)
+           ResponseEntity.status(200)
            response = ResponseEntity.ok().body(userview)
         }
         catch (e:Exception) {
