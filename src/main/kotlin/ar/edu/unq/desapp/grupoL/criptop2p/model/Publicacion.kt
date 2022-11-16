@@ -1,7 +1,6 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.model
 
 import java.time.LocalDateTime
-import java.time.LocalTime
 import javax.persistence.*
 
 @Entity

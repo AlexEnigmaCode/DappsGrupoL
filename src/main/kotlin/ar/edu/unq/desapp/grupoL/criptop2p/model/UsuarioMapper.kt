@@ -1,10 +1,7 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.model
 
 import ar.edu.unq.desapp.grupoL.criptop2p.UserRegisterMapper
-import org.springframework.stereotype.Service
 
-
-//@Service
 data class UsuarioMapper(
     var id: Long?,
     var name: String?,

@@ -2,6 +2,7 @@ package ar.edu.unq.desapp.grupoL.criptop2p.model
 
 import ar.edu.unq.desapp.grupoL.criptop2p.Deposito
 
+
 class Cancelado: EstadoTransaccion() {
 
     override fun  realizaTransferencia(direccionEmvio: String, monto:Double,comprador:Usuario ): Deposito {
