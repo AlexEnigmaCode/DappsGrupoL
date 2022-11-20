@@ -12,9 +12,12 @@ plugins {
 	kotlin("jvm") version "1.6.21"
 	kotlin("plugin.spring") version "1.6.21"
 	kotlin("plugin.jpa") version "1.6.21"
-
+    application
 }
 
+application {
+    mainClass.set("ar.edu.unq.desapp.grupoL.criptop2p.Criptop2pApplication")
+}
 
 
 
@@ -50,7 +53,7 @@ repositories {
 }
 
 dependencies {
-		implementation("redis.clients:jedis:4.3.1")
+	//	implementation("redis.clients:jedis:4.3.1")
 	    implementation("org.apache.commons:commons-pool2:2.11.1")
 
 	implementation("io.jsonwebtoken:jjwt:0.9.1")
@@ -69,7 +72,7 @@ dependencies {
 	implementation ("io.springfox:springfox-boot-starter:3.0.0")
 	implementation ("io.springfox:springfox-swagger-ui:3.0.0")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    //implementation("org.springframework.boot:spring-boot-starter-data-redis")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")

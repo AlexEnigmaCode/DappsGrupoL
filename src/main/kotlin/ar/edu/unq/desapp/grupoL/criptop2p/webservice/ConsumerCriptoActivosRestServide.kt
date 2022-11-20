@@ -4,7 +4,6 @@ import ar.edu.unq.desapp.grupoL.criptop2p.CriptoActivoRegisterMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.HistoricoCotizaciones24hs
 import ar.edu.unq.desapp.grupoL.criptop2p.service.ConsumerCriptoActivoMicroService
 import ar.edu.unq.desapp.grupoL.criptop2p.service.CriptoActivoService
-import ar.edu.unq.desapp.grupoL.criptop2p.service.SchedulerService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.http.ResponseEntity

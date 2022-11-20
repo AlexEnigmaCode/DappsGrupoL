@@ -1,5 +1,5 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.persistence
-
+/*
 import ar.edu.unq.desapp.grupoL.criptop2p.CriptoActivoRegisterMapper
 import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Repository
@@ -16,3 +16,5 @@ interface RedisRepository {
    fun listToMap(criptoActivos: List<CriptoActivoRegisterMapper>): Map<String, CriptoActivoRegisterMapper>
    fun count():Long
 }
+
+ */

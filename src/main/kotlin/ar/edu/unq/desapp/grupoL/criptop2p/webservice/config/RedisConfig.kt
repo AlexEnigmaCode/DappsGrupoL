@@ -1,5 +1,6 @@
-package ar.edu.unq.desapp.grupoL.criptop2p.webservice.config
 
+package ar.edu.unq.desapp.grupoL.criptop2p.webservice.config
+/*
 import ar.edu.unq.desapp.grupoL.criptop2p.CriptoActivoRegisterMapper
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -22,3 +23,5 @@ class RedisConfig {
     }
 
 }
+
+ */

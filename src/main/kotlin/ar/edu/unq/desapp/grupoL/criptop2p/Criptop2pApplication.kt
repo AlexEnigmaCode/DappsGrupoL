@@ -1,24 +1,27 @@
 package ar.edu.unq.desapp.grupoL.criptop2p
 
 
-import ar.edu.unq.desapp.grupoL.criptop2p.persistence.RedisRepository
+//import ar.edu.unq.desapp.grupoL.criptop2p.persistence.RedisRepository
 import org.apache.commons.logging.LogFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.CommandLineRunner
+import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.cache.annotation.EnableCaching
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import org.springframework.web.client.RestTemplate
-import java.time.LocalDateTime
 
 
 @SpringBootApplication
-@EnableCaching
-class Criptop2pApplication : CommandLineRunner {
+//@EnableCaching
+//@Configuration  // le agrego esta configuratio
+
+class Criptop2pApplication /*: CommandLineRunner*/ {
 
 
 	private val LOG = LogFactory.getLog(javaClass)
+	/*
 	lateinit var redisRepository: RedisRepository
 
 
@@ -27,16 +30,29 @@ class Criptop2pApplication : CommandLineRunner {
 		this.redisRepository = redisRepository
 	}
 
+	@Autowired
+	lateinit var redisRepository: RedisRepository
 
-	@Bean
+	*@Bean
 	fun getresttemplate(): RestTemplate {
 		return RestTemplate()
 	}
+*/
 
-	fun main(args: Array<String>) {
-		runApplication<Criptop2pApplication>(*args)
+
+
+	companion object {
+		@JvmStatic
+		fun main(args: Array<String>) {
+			//runApplication<Criptop2pApplication>(*args)
+			//SpringApplication.run(Criptop2pApplication::class.java, *args)
+			SpringApplication.run(ar.edu.unq.desapp.grupoL.criptop2p.Criptop2pApplication::class.java,*args)
+		}
 	}
 
+
+
+/*
 	override fun run(vararg args: String?) {
 
 		LOG.info("Saving cripto activos. Current cripto activos count is  ${redisRepository.count()} " )
@@ -50,7 +66,7 @@ class Criptop2pApplication : CommandLineRunner {
 		redisRepository!!.save(cripto3)
 		LOG.info("Done saving cripto Activos. ${redisRepository.findAll()} ")
 	}
-
+*/
 }
 
 

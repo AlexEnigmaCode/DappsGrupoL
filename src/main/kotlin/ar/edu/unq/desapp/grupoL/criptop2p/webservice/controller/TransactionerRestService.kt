@@ -37,7 +37,7 @@ class TransactionerRestService {
     private lateinit var transactionerRepository: TransaccionRepository
 
 
-    @PutMapping("/api/transacciones/volumen/{id}")
+    @GetMapping("/api/transacciones/volumen/{id}")
     fun volumenOperadoEntreFechas (@PathVariable("id") id: Long,@RequestBody entity: BetweenDates): ResponseEntity<*> {
         var response : ResponseEntity<*>?
         try {
@@ -81,7 +81,7 @@ class TransactionerRestService {
 
 
     /** Cancel a transaction for a user*/
-    @PostMapping("/api/transacciones/{id}")
+    @PostMapping("/api/transacciones/cancelacion/{id}")
     fun cancelarTransaccion (@PathVariable("id") id: Long, @RequestBody transaccion: Transaccion): ResponseEntity<*> {
         var response : ResponseEntity<*>?
         try {
@@ -163,7 +163,7 @@ class TransactionerRestService {
 
 
     /**  Emviar criptoactivo */
-    @PostMapping("/api/transacciones/ventas/envios/{id}")
+    @PostMapping("/api/transacciones/finalizacion/{id}")
     fun finalizarTransaccion(@PathVariable("id") id: Long): ResponseEntity<*> {
         var response : ResponseEntity<*>?
         val resultado: MutableMap<String, String> = HashMap()

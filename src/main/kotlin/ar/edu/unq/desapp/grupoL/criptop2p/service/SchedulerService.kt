@@ -1,5 +1,5 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.service
-
+/*
 
 import ar.edu.unq.desapp.grupoL.criptop2p.CriptoActivoRegisterMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.RedisRepository
@@ -14,8 +14,8 @@ class SchedulerService {
     @Autowired
     private  lateinit var consumer: ConsumerCriptoActivoMicroService
 
-    @Autowired
-    private  lateinit var criptoActivoService: CriptoActivoService
+   // @Autowired
+   // private  lateinit var criptoActivoService: CriptoActivoService
 
     @Autowired
     private  lateinit var redisRepository: RedisRepository
@@ -40,3 +40,5 @@ class SchedulerService {
     }
 
 }
+
+ */

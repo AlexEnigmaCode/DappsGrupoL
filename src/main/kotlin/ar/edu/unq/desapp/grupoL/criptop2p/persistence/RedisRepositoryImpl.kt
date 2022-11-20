@@ -1,26 +1,30 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.persistence
-
+/*
 import ar.edu.unq.desapp.grupoL.criptop2p.CriptoActivoRegisterMapper
+import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.core.HashOperations
 import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.stereotype.Repository
 import javax.annotation.PostConstruct
 
-class RedisRepositoryInpl : RedisRepository  {
+@Configuration
+@Repository
+class RedisRepositoryImpl : RedisRepository  {
    val  key = "CriptoActivoRegisterMapper"
 
    lateinit var  redisTemplate : RedisTemplate <String, CriptoActivoRegisterMapper>
    lateinit var hashOperations : HashOperations <String,String, CriptoActivoRegisterMapper>
-
+/*
     fun RedisRepositoryInpl ( redisTemplate: RedisTemplate<String, CriptoActivoRegisterMapper>){
         this.redisTemplate = redisTemplate
     }
-
+*/
     @PostConstruct
      fun init(){
         hashOperations = redisTemplate.opsForHash()
      }
 
-
+/*
     override fun findAll(): Map<String, CriptoActivoRegisterMapper> {
       return  hashOperations.entries(key)
     }
@@ -53,3 +57,5 @@ class RedisRepositoryInpl : RedisRepository  {
          return criptosMap
      }
 }
+
+ */
