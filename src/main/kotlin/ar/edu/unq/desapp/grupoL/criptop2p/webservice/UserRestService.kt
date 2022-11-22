@@ -55,9 +55,20 @@ class UserRestService {
     fun register(@Valid @RequestBody user: UserRegisterMapper): ResponseEntity<*> {
         var response : ResponseEntity<*>?
         try {
-           val  userview = userService.register(user)
+           val  savedUser = userService.register(user)
+           val  userview = UserViewMapper(
+                savedUser.id,
+                savedUser.name,
+                savedUser.surname,
+                savedUser.email,
+                savedUser.address,
+                savedUser.cvu,
+                savedUser.walletAddress,
+                savedUser.cantidadOperaciones,
+                savedUser.reputacion)
             ResponseEntity.status(201)
-           response =  ResponseEntity.ok().body(userview)
+            response =  ResponseEntity.ok().body(userview)
+
         } catch (e: Exception) {
             ResponseEntity.status(404)
 
@@ -65,7 +76,8 @@ class UserRestService {
             resultado["email of user already exits"] = user.email.toString()
             response = ResponseEntity.ok().body<Map<String, String>>(resultado)
         }
-        return response!!
+
+       return response!!
     }
 
     /**login a user*/

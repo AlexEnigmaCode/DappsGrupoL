@@ -117,6 +117,10 @@ class Usuario:  EntidadValidable {
     }
 
 
+    fun setearReputacion(numero :Double){
+        reputacion = numero
+    }
+
 
     fun incrementarReputacion(numero :Double){
         reputacion += numero

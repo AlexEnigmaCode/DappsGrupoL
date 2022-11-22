@@ -26,7 +26,7 @@ class UserService{
 
 
     @Transactional
-    fun register(user: UserRegisterMapper): UserViewMapper {
+    fun register(user: UserRegisterMapper): Usuario {
 
         lateinit var  userview : UserViewMapper
        if ( existUser(user) )  {
@@ -37,31 +37,9 @@ class UserService{
        // val newuser = usuarioMapper.aModelo(user)
 
       val newUser = Usuario(0,user.name, user.surname, user.email,user.address,password,user.cvu,user.walletAddress,0, 0.0)
-      // try {
-            val savedUser = repository.save(newUser)
-           // savedUser.validar()
-
-                userview = UserViewMapper(
-                savedUser.id,
-                savedUser.name,
-                savedUser.surname,
-                savedUser.email,
-                savedUser.address,
-                savedUser.cvu,
-                savedUser.walletAddress,
-                savedUser.cantidadOperaciones,
-                savedUser.reputacion)
-
-       // }
-/*
-        catch (e: Exception) {
-
-            val resultado: MutableMap<String, String> = HashMap()
-            resultado["Object invalid"] = e.message.toString()
-
-        }
-  */
-        return  userview
+      val savedUser = repository.save(newUser)
+        // savedUser.validar()
+        return  savedUser
       }
 
 

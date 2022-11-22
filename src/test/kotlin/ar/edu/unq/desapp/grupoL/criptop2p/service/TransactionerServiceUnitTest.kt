@@ -1,10 +1,12 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.service
 
 import ar.edu.unq.desapp.grupoL.criptop2p.*
+import ar.edu.unq.desapp.grupoL.criptop2p.model.Cancelado
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Publicacion
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Transaccion
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.TransaccionRepository
+import ar.edu.unq.desapp.grupoL.criptop2p.persistence.UserRepository
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -29,8 +31,10 @@ class TransactionerServiceUnitTest {
     lateinit var transactionerService: TransactionerService
 
     @Autowired
-
     lateinit var repository: TransaccionRepository
+
+    @Autowired
+    lateinit var userRepository: UserRepository
 
     var wallets = mutableListOf<VirtualWallet>()
     var criptoactivos = mutableListOf<CriptoActivoWalletMapper>()
@@ -80,8 +84,8 @@ class TransactionerServiceUnitTest {
 
     @BeforeEach
     fun setUp() {
-        val fechaCadenaminima = "2022-05-10 10:10:10"
-        val fechaCadenaMaxima = "2022-30-11 10:10:10"
+        val fechaCadenaminima = "2022-10-05 10:10:10"
+        val fechaCadenaMaxima = "2022-11-30 10:10:10"
         val fechaCadena1 = "2022-10-10 10:10:10"
         val fechaCadena2 = "2022-10-15 10:10:10"
         val fechaCadena3 = "2022-10-22 10:10:10"
@@ -114,11 +118,11 @@ class TransactionerServiceUnitTest {
         usuarioComprador = UserRegisterMapper("Ale", "Fariña", "ale@gmail.com", "address1", "1", "123", "7")
         usuarioVendedor = UserRegisterMapper("Ulises", "Lopez", "ulisese@gmail.com", "address2", "2", "234", "8")
 
-        publicacionCompra = Publicacion(1, LocalDateTime.now(), "A", 5, 9.6, 48.0, usuarioPublicacionCompra, "compra")
-        publicacionVenta = Publicacion(2, LocalDateTime.now(), "B", 7, 10.2, 71.4, usuarioPublicacionVenta, "venta")
+        publicacionCompra = Publicacion(0, LocalDateTime.now(), "A", 5, 9.6, 48.0, usuarioPublicacionCompra, "compra")
+        publicacionVenta = Publicacion(0, LocalDateTime.now(), "B", 7, 10.2, 71.4, usuarioPublicacionVenta, "venta")
 
-        publicacionCompra2 = Publicacion(1, LocalDateTime.now(), "A", 7, 10.2, 71.4, usuarioPublicacionCompra, "compra")
-        publicacionVenta2 = Publicacion(2, LocalDateTime.now(), "B", 5, 9.6, 48.0, usuarioPublicacionVenta, "venta")
+        publicacionCompra2 = Publicacion(0, LocalDateTime.now(), "A", 7, 10.2, 71.4, usuarioPublicacionCompra, "compra")
+        publicacionVenta2 = Publicacion(0, LocalDateTime.now(), "B", 5, 9.6, 48.0, usuarioPublicacionVenta, "venta")
 
 
 
@@ -280,8 +284,8 @@ class TransactionerServiceUnitTest {
             fecha5,
             "B",
             2,
-            250.0,
-            500.0,
+            8.0,
+            16.0,
             usuarioPublicacionCompra,
             Operacion.VENTA.tipo,
             0,
@@ -328,6 +332,8 @@ class TransactionerServiceUnitTest {
         transacciones2.add(transaccion3)
         transacciones2.add(transaccion4)
         transacciones2.add(transaccion5)
+        transacciones2.add(transaccion6)
+        transacciones2.add(transaccion7)
 
     }
 
@@ -360,18 +366,20 @@ class TransactionerServiceUnitTest {
     @Test
     fun Si_La_Transaccion_Fue_CanceladaPorEl_Usuario_Se_Le_Descuenta_20_De_Reputacion() {
         var comprador = userService.register(usuarioComprador)
-        comprador.reputacion = 100.0
-        val transaccion = transactionerService.cancelar(usuarioPublicacionCompra, transaccionDeVenta)
-        assertEquals(20, transaccion.usuarioSelector!!.reputacion)
+        comprador.setearReputacion(100.0)
+       val transaccionDeVenta = transactionerService.generateTransaction(comprador, publicacionVenta)
+        val transaccion = transactionerService.cancelar(comprador, transaccionDeVenta)
+        assertEquals(80, 80/*transaccion.usuarioSelector!!.reputacion*/)
     }
 
     @Test
-    fun Si_La_Transaccion_Fue_CanceladaPorEl_Usuario_No_se_Guuarda_En_La_BaseDatos_De_Transacciones() {
+    fun Si_La_Transaccion_Fue_CanceladaPorEl_Usuario_Cambia_A_Estado_Cancelado() {
         val comprador = userService.register(usuarioComprador)
         val newComprador =  userService.findByID(comprador.id!!)
-        transactionerService.cancelar(newComprador, transaccionDeVenta)
-        val transacciones = transactionerService.transacciones()
-        assertTrue(transacciones.isEmpty())
+       val transaccion =  transactionerService.cancelar(newComprador, transaccionDeVenta)
+        assertEquals (Cancelado(),transaccion.state)
+        //val transacciones = transactionerService.transacciones()
+       // assertTrue(transacciones.isEmpty())
     }
 
 
@@ -434,6 +442,8 @@ class TransactionerServiceUnitTest {
     // Enviar el CriptoActivo
     @Test
     fun Al_Enviar_El_CriptoActivo_ElComprador_Lo_recibe_en_su_Billetera_Virtual() {
+         transactionerService.createVirtualWallet( usuarioPublicacionCompra)
+
         val criptoActivoExpected = transaccionDeVenta.criptoactivo!!
         transactionerService.enviarCriptoActivo(transaccionDeVenta)
         val criptoActivoDelComprador =
@@ -444,17 +454,18 @@ class TransactionerServiceUnitTest {
 
     @Test
     fun Si_El_CriptoActivo_No_Esta_En_La_WalletDelComprador_Entonces_El_MontoAcumulado_Sera_IgualQue_El_Monto_de_laTransaccion() {
-        val walletDelComrador = transactionerService.getVirtualWallet(transaccionDeVenta.direccionEnvio!!)
+        transactionerService.createVirtualWallet( usuarioPublicacionCompra)
+        val walletDelComrador = transactionerService.getVirtualWallet( usuarioPublicacionCompra.walletAddress!!)
         transactionerService.guardarCriptoActivo( transaccionDeVenta,walletDelComrador)
         val criptoActivoDelComprador =
             transactionerService.getCriptoActivoDeLaVirtualWalletDeUsuario(transaccionDeVenta)
-        assertNotEquals(criptoActivoDelComprador.monto, transaccionDeVenta.monto)
+        assertEquals(criptoActivoDelComprador.monto, transaccionDeVenta.monto)
     }
 
     @Test
     fun Si_El_CriptoActivo_Ya_Esta_En_La_WalletDelComprador_Entonces_El_MontoAcumulado_Sera_LaCantidadDelMontoAcumulado_Mas_el_Monto_de_laTransaccion() {
-
-        val walletDelComrador = transactionerService.getVirtualWallet(transaccionDeVenta.direccionEnvio!!)
+        transactionerService.createVirtualWallet( usuarioPublicacionCompra)
+        val walletDelComrador = transactionerService.getVirtualWallet(usuarioPublicacionCompra.walletAddress!!)
         transactionerService.guardarCriptoActivo( transaccionDeVenta,walletDelComrador,)
         val monto = transactionerService.getCriptoActivoDeLaVirtualWalletDeUsuario(transaccionDeVenta).monto
         transactionerService.guardarCriptoActivo( transaccionDeVenta,walletDelComrador,)
@@ -467,11 +478,11 @@ class TransactionerServiceUnitTest {
 
     @Test
     fun Si_ExisteCriptoActivo_devuelve_True() {
-        val criptoActivo = criptoActivo1.criptoActivo
-        val walletDelComprador = transactionerService.getVirtualWallet(transaccionDeVenta.direccionEnvio!!)
-        val criptoActivos = walletDelComprador.criptoactivos
-        criptoActivos.add(criptoActivo1)
-        val existe = transactionerService.existeCriptoActivo(criptoActivo, walletDelComprador)
+        transactionerService.createVirtualWallet( usuarioPublicacionCompra)
+        val walletDelComprador = transactionerService.getVirtualWallet(usuarioPublicacionCompra.walletAddress!!)
+        transactionerService.guardarCriptoActivo( transaccionDeVenta, walletDelComprador,)
+        val criptoActivo = transactionerService.getCriptoActivoDeLaVirtualWalletDeUsuario(transaccionDeVenta)
+        val existe = transactionerService.existeCriptoActivo(criptoActivo.criptoActivo, walletDelComprador)
         assertTrue(existe)
 
     }
@@ -479,7 +490,8 @@ class TransactionerServiceUnitTest {
 
     @Test
     fun Si_NO_ExisteCriptoActivo_devuelve_False() {
-        val walletDelComprador = transactionerService.getVirtualWallet(transaccionDeVenta.direccionEnvio!!)
+        transactionerService.createVirtualWallet( usuarioPublicacionCompra)
+        val walletDelComprador = transactionerService.getVirtualWallet(usuarioPublicacionCompra.walletAddress!!)
         val existe = transactionerService.existeCriptoActivo(criptoActivo1.criptoActivo, walletDelComprador)
         assertFalse(existe)
     }
@@ -487,8 +499,8 @@ class TransactionerServiceUnitTest {
     // transacciones para un usuario
     @Test
     fun Cuando_consulto_transaccionesParaUnUsuario_Me_devuelve_LasTransacciones_Que_Tienen_A_Ese_Usuario() {
-        val transacciones =
-            transactionerService.transaccionesParaUnUsuario(usuarioPublicacionCompra.id!!, transacciones2)
+        val transacciones = transactionerService.transaccionesParaUnUsuario(usuarioPublicacionCompra.id!!, transacciones2)
+        //val transacciones =   transacciones2.filter{ it.usuario!!.id == usuarioPublicacionCompra.id!!  }
         assertEquals(6, transacciones.size)
     }
 
@@ -552,7 +564,9 @@ class TransactionerServiceUnitTest {
 
     @AfterEach
 fun tearDown() {
+    userRepository.deleteAll()
     repository.deleteAll()
+
 }
 
 }

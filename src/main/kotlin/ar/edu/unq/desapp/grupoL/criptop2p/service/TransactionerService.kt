@@ -3,6 +3,7 @@ package ar.edu.unq.desapp.grupoL.criptop2p.service
 import ar.edu.unq.desapp.grupoL.criptop2p.*
 import ar.edu.unq.desapp.grupoL.criptop2p.model.*
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.TransaccionRepository
+import ar.edu.unq.desapp.grupoL.criptop2p.persistence.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -30,6 +31,9 @@ class TransactionerService {
     private lateinit var transactionerRepository: TransaccionRepository
 
     @Autowired
+    private lateinit var userRepository: UserRepository
+
+    @Autowired
     lateinit var  publisherService: PublisherService
 
 
@@ -47,7 +51,7 @@ class TransactionerService {
         lateinit var  direccionEnvio:String
         lateinit var accion :Accion
 
-            val cantidadOperaciones = publicacion.usuario!!.icrementarOperqaciones()
+            val cantidadOperaciones = publicacion.usuario!!.cantidadOperaciones
             val reputacion = incrementarReputacionSegunTiempo(publicacion.diahora!!)
 
             publicacion.usuario!!.incrementarReputacion(reputacion)
@@ -105,8 +109,9 @@ class TransactionerService {
     fun cancelar(usuario: Usuario,transaccion: Transaccion): Transaccion {
             transaccion.state = Cancelado()
             usuario.descontarReputacion(20.0)
-            return transactionerRepository.save(transaccion)
-
+          //  userRepository.save(usuario)
+           // return transactionerRepository.save(transaccion)
+           return transaccion
     }
 
 
@@ -223,6 +228,7 @@ class TransactionerService {
 
 
     fun createVirtualWallet (usuario:Usuario): VirtualWallet{
+        val criptoActivos = mutableListOf<CriptoActivoWalletMapper>()
         val wallet =  VirtualWallet (usuario, criptoActivos )
         wallets.add(wallet)
         return wallet
@@ -276,7 +282,7 @@ class TransactionerService {
     }
 
     fun transaccionesParaUnUsuario (usuarioId: Long,transacciones: MutableList<Transaccion>): MutableList<Transaccion> {
-            transacciones.filter{ it.usuario!!.id == usuarioId  }.toMutableList()
+            transacciones.filter{ it.usuario!!.id == usuarioId  }
            if (transacciones.isEmpty()){
                throw ItemNotFoundException ("No hay transacciones con el id de usuario $usuarioId ")
            }
@@ -328,4 +334,8 @@ class TransactionerService {
     fun getCuenta(cvu:String): CuentaCVU{
       return   mercadoPagoService.getCuenta(cvu)
     }
+
+   fun  crearCuentaParaCliente (usuario:Usuario){
+       mercadoPagoService.crearCuentaParaCliente(usuario)
+   }
 }
