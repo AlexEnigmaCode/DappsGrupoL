@@ -5,7 +5,7 @@ import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
 import ar.edu.unq.desapp.grupoL.criptop2p.model.UsuarioMapper
 import org.springframework.beans.factory.annotation.Autowired
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.UserRepository
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
@@ -18,7 +18,7 @@ class UserService{
     private  lateinit var repository: UserRepository
 
    // @Autowired
-    private  var encoder : BCryptPasswordEncoder = BCryptPasswordEncoder()
+   // private  var encoder : BCryptPasswordEncoder = BCryptPasswordEncoder()
 
  // @Autowired
  // private lateinit var usuarioMapper: UsuarioMapper
@@ -29,16 +29,17 @@ class UserService{
     fun register(user: UserRegisterMapper): Usuario {
 
         lateinit var  userview : UserViewMapper
-       if ( existUser(user) )  {
+
+        if ( existUser(user) )  {
          throw UsernameExistException("User with email:  ${user.email} is used")
         }
-  //      val  password = user.password!!
-        val password =encoder.encode(user.password)
+       val  password = user.password!!
+       // val password =encoder.encode(user.password)
        // val newuser = usuarioMapper.aModelo(user)
 
       val newUser = Usuario(0,user.name, user.surname, user.email,user.address,password,user.cvu,user.walletAddress,0, 0.0)
       val savedUser = repository.save(newUser)
-        // savedUser.validar()
+       // savedUser.validar()
         return  savedUser
       }
 
@@ -85,10 +86,17 @@ class UserService{
         try {
               entityOptional = repository.findById(id)
              val  newUser:Usuario = entityOptional.get()
-          //  val  password = newUser.password
-             val password =encoder.encode(entity.password)
+            val  password = newUser.password
+           // newUser.password =  encoder.encode(entity.password)
+           /* newUser.password = entity.password
+            newUser.email = entity.email
+            newUser.address = entity.address
+            newUser.cvu =  entity.cvu
+            newUser.walletAddress  = entity.walletAddress
+            */
             val user = Usuario(newUser.id,newUser.name, newUser.surname, entity.email,entity.address,password,entity.cvu,entity.walletAddress,0,0.0)
-             val savedUser = repository.save(user)
+            val savedUser = repository.save(user)
+            //val savedUser = repository.save(newUser)
             val userView =   UserViewMapper(savedUser.id, savedUser.name, savedUser.surname, savedUser.email, savedUser.address, savedUser.cvu, savedUser.walletAddress, savedUser.cantidadOperaciones, savedUser.reputacion)
              return userView
             }
@@ -117,12 +125,13 @@ class UserService{
 
 
     private fun existUser(user: UserRegisterMapper): Boolean {
-        var bool = false
+       // var bool = false
         val users = repository.findAll().toMutableList()
         if ( users.isNotEmpty() ) {
-        bool =  users.any { it.email == user.email }
+       // bool =  users.any { it.email == user.email }
+           return  users.any { it.email == user.email }
         }
-        return bool
+        return false
     }
 
 

@@ -1,7 +1,7 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.webservice.controller
 
 
-import ar.edu.unq.desapp.grupoL.criptop2p.LogExecutionTimeAuditory
+//import ar.edu.unq.desapp.grupoL.criptop2p.LogExecutionTimeAuditory
 import ar.edu.unq.desapp.grupoL.criptop2p.service.InformerService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -23,7 +23,7 @@ class InformerRestService {
     private  lateinit var  informerService: InformerService
     private val builder: ResponseEntity.BodyBuilder? = null
 
-    var logger: Logger = LoggerFactory.getLogger(LogExecutionTimeAuditory::class.java)
+  //  var logger: Logger = LoggerFactory.getLogger(LogExecutionTimeAuditory::class.java)
 
     @GetMapping("/api/informes/users")
     fun listadoUsuariosDePlataforma(): ResponseEntity<*> {

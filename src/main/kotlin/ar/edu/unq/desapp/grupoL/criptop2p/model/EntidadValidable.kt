@@ -17,7 +17,8 @@ abstract class EntidadValidable {
         fun validar() {
             val validator = Validation.buildDefaultValidatorFactory().validator
             val restriccionesDeValidacion = validator.validate(this)
-            if (esObjetoInvalido(restriccionesDeValidacion)) throw InvalidObjectException(restriccionesDeValidacion.toString())
+            if (esObjetoInvalido(restriccionesDeValidacion))
+                throw InvalidObjectException(restriccionesDeValidacion.forEach {  " ${it.propertyPath } ${it.messageTemplate}  " }.toString())
         }
 
         private fun esObjetoInvalido(validations: Set<ConstraintViolation<EntidadValidable>>): Boolean {

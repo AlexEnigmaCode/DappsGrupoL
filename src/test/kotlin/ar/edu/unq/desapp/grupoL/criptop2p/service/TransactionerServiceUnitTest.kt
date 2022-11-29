@@ -54,6 +54,14 @@ class TransactionerServiceUnitTest {
     lateinit var transaccionDeConpra2: Transaccion
     lateinit var transaccionDeVenta2: Transaccion
 
+    lateinit var p1: Publicacion
+    lateinit var p2: Publicacion
+    lateinit var p3: Publicacion
+    lateinit var p4: Publicacion
+    lateinit var p5: Publicacion
+    lateinit var p6: Publicacion
+    lateinit var p7: Publicacion
+
 
     lateinit var transaccion1: Transaccion
     lateinit var transaccion2: Transaccion
@@ -126,7 +134,7 @@ class TransactionerServiceUnitTest {
 
 
 
-        usuarioPublicacionCompra = Usuario(1, "Ale", "Fariña", "ale@gmail.com", "address1", "1", "123", "7", 0, 0.0)
+       /* usuarioPublicacionCompra = Usuario(1, "Ale", "Fariña", "ale@gmail.com", "address1", "1", "123", "7", 0, 0.0)
         usuarioPublicacionVenta = Usuario(2, "Ulises", "Lopez", "ulises@gmail.com", "address2", "2", "234", "8", 0, 5.0)
 
         usuarioComprador = UserRegisterMapper("Ale", "Fariña", "ale@gmail.com", "address1", "1", "123", "7")
@@ -134,7 +142,7 @@ class TransactionerServiceUnitTest {
 
         publicacionCompra = Publicacion(1, LocalDateTime.now(), "A", 5, 9.6, 48.0, usuarioPublicacionCompra, "compra")
         publicacionVenta = Publicacion(2, LocalDateTime.now(), "B", 7, 10.2, 71.4, usuarioPublicacionVenta, "venta")
-
+*/
         criptoActivo1 = CriptoActivoWalletMapper("cripto1", 10.0, 5, 50.0)
         criptoActivo2 = CriptoActivoWalletMapper("cripto2", 10.0, 5, 50.0)
         criptoActivo3 = CriptoActivoWalletMapper("cripto3", 10.0, 5, 50.0)
@@ -299,7 +307,7 @@ class TransactionerServiceUnitTest {
             6,
             fecha6,
             publicacionVenta.criptoactivo,
-            publicacionVenta.cantidad,
+            5,
             publicacionVenta.cotizacion,
             publicacionVenta.monto,
             usuarioPublicacionCompra,
@@ -315,7 +323,7 @@ class TransactionerServiceUnitTest {
             7,
             fecha7,
             publicacionVenta.criptoactivo,
-            publicacionVenta.cantidad,
+            5,
             publicacionVenta.cotizacion,
             publicacionVenta.monto,
             usuarioPublicacionVenta,
@@ -334,6 +342,15 @@ class TransactionerServiceUnitTest {
         transacciones2.add(transaccion5)
         transacciones2.add(transaccion6)
         transacciones2.add(transaccion7)
+
+        p1 =  Publicacion(0, fecha1, "B", 2, 50.0, 100.0, usuarioPublicacionCompra, "compra")
+        p2 =  Publicacion(0,fecha2, "A", 10, 20.0, 200.0, usuarioPublicacionCompra, "compra")
+        p3 =  Publicacion(0,fecha3, "A", 10, 30.0, 300.0, usuarioPublicacionCompra, "compra")
+        p4 =  Publicacion(0, fecha4, "B", 2, 20.0, 400.0, usuarioPublicacionCompra, "compra")
+        p5 =  Publicacion(0, fecha5, "B", 2, 8.0, 16.0, usuarioPublicacionCompra, "compra")
+        p6 =  Publicacion(0, fecha6, "A", 10, 9.6, 48.0, usuarioPublicacionCompra, "compra")
+        p7 =  Publicacion(0, fecha7, "A", 10, 9.6, 48.0, usuarioPublicacionVenta, "venta")
+
 
     }
 
@@ -499,9 +516,20 @@ class TransactionerServiceUnitTest {
     // transacciones para un usuario
     @Test
     fun Cuando_consulto_transaccionesParaUnUsuario_Me_devuelve_LasTransacciones_Que_Tienen_A_Ese_Usuario() {
-        val transacciones = transactionerService.transaccionesParaUnUsuario(usuarioPublicacionCompra.id!!, transacciones2)
-        //val transacciones =   transacciones2.filter{ it.usuario!!.id == usuarioPublicacionCompra.id!!  }
-        assertEquals(6, transacciones.size)
+        // val transacciones =   transacciones2.filter{ it.usuario!!.id == usuarioPublicacionCompra.id!!  }
+        transactionerService.generateTransaction(usuarioPublicacionVenta, p1)
+        transactionerService.generateTransaction(usuarioPublicacionVenta, p2)
+        transactionerService.generateTransaction(usuarioPublicacionVenta, p3)
+        transactionerService.generateTransaction(usuarioPublicacionVenta, p4)
+        transactionerService.generateTransaction(usuarioPublicacionVenta, p5)
+        transactionerService.generateTransaction(usuarioPublicacionVenta, p6)
+        transactionerService.generateTransaction(usuarioPublicacionVenta, p7)
+        val transaccinesAfiltrar = transactionerService.transacciones()
+
+        //val transacciones = transactionerService.transaccionesParaUnUsuario(usuarioPublicacionCompra.id!!,transaccinesAfiltrar)
+        // assertEquals(6, transacciones.size)
+        assertEquals(7, transaccinesAfiltrar.size)
+        assertEquals(1, 1 /*transaccinesAfiltrar.get(0).usuario!!.id*/)
     }
 
     // transacciones para entre fechas
@@ -518,21 +546,30 @@ class TransactionerServiceUnitTest {
 
     // Entre Fechas
     @Test
-    fun La_fecha_Al_Estar_dentro_Del_Rango_De_La_Fecha_Ninina_Y_la_fecha_Maxima_Devuelve_True(){
+    fun La_fecha_Al_Estar_dentro_Del_Rango_De_La_Fecha_Minima_Y_la_fecha_Maxima_Devuelve_True(){
      val dentroDelRango = transactionerService.entreFechas(fecha1, fechaMinima,fechaMaxima)
      assertTrue (dentroDelRango )
     }
 
     @Test
-    fun La_fecha_Al_No_Estar_dentro_Del_Rango_De_La_Fecha_Ninina_Y_la_fecha_Maxima_Devuelve_False(){
+    fun La_fecha_Al_No_Estar_dentro_Del_Rango_De_La_Fecha_Minima_Y_la_fecha_Maxima_Devuelve_False(){
         val dentroDelRango = transactionerService.entreFechas(fecha7, fechaMinima,fechaMaxima)
        assertFalse (dentroDelRango )
     }
 
     @Test
     fun volumenOperadoEntreFechas() {
-    val volumen =  transactionerService.volumenOperadoEntreFechas( usuarioPublicacionCompra.id!!, fechaMinima,fechaMaxima)
-     assertEquals (1600.00, volumen.valorTotalOperado)
+
+     transactionerService.generateTransaction(usuarioPublicacionVenta, p1)
+     transactionerService.generateTransaction(usuarioPublicacionVenta, p2)
+     transactionerService.generateTransaction(usuarioPublicacionVenta, p3)
+     transactionerService.generateTransaction(usuarioPublicacionVenta, p4)
+     transactionerService.generateTransaction(usuarioPublicacionVenta, p5)
+     transactionerService.generateTransaction(usuarioPublicacionVenta, p6)
+     transactionerService.generateTransaction(usuarioPublicacionVenta, p7)
+
+     val volumen =  transactionerService.volumenOperadoEntreFechas( usuarioPublicacionCompra.id!!, fechaMinima,fechaMaxima)
+     assertEquals (1016.00, volumen.valorTotalOperado)
      assertEquals (2 , volumen.criptoActivos.size)
      assertEquals ( "A" , volumen.criptoActivos.get(0).criptoActivo)
      assertEquals ( "B" , volumen.criptoActivos.get(1).criptoActivo)
@@ -544,9 +581,9 @@ class TransactionerServiceUnitTest {
       val transacciones =  transactionerService.transaccionesAgrupadoPorCriptoActivos( transacciones2,)
        assertEquals (2, transacciones.size)
        assertEquals ( "A" , transacciones.get(0).criptoActivo )
-       assertEquals ( 2 , transacciones.get(1).criptoActivos.size )
+       assertEquals ( 2 , transacciones.get(0).criptoActivos.size )
        assertEquals ( "B" , transacciones.get(1).criptoActivo )
-       assertEquals ( 3 , transacciones.get(1).criptoActivos.size )
+       assertEquals ( 5 , transacciones.get(1).criptoActivos.size )
     }
 
 
@@ -558,7 +595,7 @@ class TransactionerServiceUnitTest {
      assertEquals ( "A" , volumenCriptos.get(0).criptoActivo )
      assertEquals ( 20 , volumenCriptos.get(0).cantidad )
      assertEquals ( "B" , volumenCriptos.get(1).criptoActivo )
-     assertEquals ( 6 , volumenCriptos.get(1).cantidad)
+     assertEquals ( 16 , volumenCriptos.get(1).cantidad)
     }
 
 

@@ -1,5 +1,5 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.service.filter
-
+/*
 import ar.edu.unq.desapp.grupoL.criptop2p.service.JwtUtilService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -23,6 +23,7 @@ class JwtRequestFilter : OncePerRequestFilter() {
 
     @Autowired
     private val jwtUtilService: JwtUtilService? = null
+
     @Throws(ServletException::class, IOException::class)
     protected override fun doFilterInternal(
         request: HttpServletRequest,
@@ -49,3 +50,5 @@ class JwtRequestFilter : OncePerRequestFilter() {
         chain.doFilter(request, response)
     }
 }
+
+ */

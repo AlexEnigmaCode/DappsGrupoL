@@ -328,7 +328,7 @@ class TransactionerService {
 
     fun entreFechas(fecha:LocalDateTime, fecha1:LocalDateTime, fecha2:LocalDateTime): Boolean{
         return (   fecha.isBefore(fecha2) || fecha.isEqual(fecha2)  )
-                &&  (fecha.isAfter(fecha2) || fecha.isEqual(fecha1))
+                &&  (fecha.isAfter(fecha1) || fecha.isEqual(fecha1))
     }
 
     fun getCuenta(cvu:String): CuentaCVU{

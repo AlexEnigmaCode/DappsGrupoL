@@ -1,5 +1,5 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.service
-
+/*
 import ar.edu.unq.desapp.grupoL.criptop2p.ItemNotFoundException
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.UserRepository
@@ -17,7 +17,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 import java.util.Map
 
+*/
+/*
 @Service
+
 class UsuarioDetailsService : UserDetailsService {
 
     @Autowired
@@ -56,7 +59,7 @@ class UsuarioDetailsService : UserDetailsService {
       return userDet
 
    }
-
+*/
 
     /*
     override fun loadUserByUsername(username: String?): UserDetails {
@@ -67,9 +70,6 @@ class UsuarioDetailsService : UserDetailsService {
 
        val userDet :UserDetails = User(user.name, user.password, roles)
        return userDet
-
     }
-*/
-
-
 }
+ */

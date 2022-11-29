@@ -7,10 +7,7 @@ import ar.edu.unq.desapp.grupoL.criptop2p.service.CriptoActivoService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.CrossOrigin
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.util.HashMap
 
 
@@ -55,31 +52,5 @@ class ConsumerCriptoActivosRestServide {
         return response !!
     }
 
-    @GetMapping("/api/consumecriptoactivos/24hs")
-    fun consumeAllCriptoActivos24hs(): List<HistoricoCotizaciones24hs> {
-        return consumerService.consumeCriptoActivos24hs()
 
-    }
-
-
-    /**consume criptoActivo  by symbol*/
-    @GetMapping("/api/consumecriptoactivos/24hs/{symbol}")
-    fun consumeCriptoActivoBySymbol24hs(@PathVariable("symbol") symbol: String): ResponseEntity<*> {
-        var response : ResponseEntity<*>?
-        try {
-
-            val criptoActivo =  consumerService.consumeBySymbol24hs(symbol)
-
-            ResponseEntity.status(200)
-            response = ResponseEntity.ok().body(criptoActivo)
-        } catch (e: Exception) {
-            ResponseEntity.status(404)
-            val resultado: MutableMap<String, String> = HashMap()
-            resultado["cripto Activo with symbol not found"] = symbol
-            response = ResponseEntity.ok().body<Map<String, String>>(resultado)
-        }
-        return response !!
-    }
-
-
-}
+   }

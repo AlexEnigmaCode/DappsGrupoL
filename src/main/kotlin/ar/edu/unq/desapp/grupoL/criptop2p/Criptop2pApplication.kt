@@ -20,7 +20,7 @@ import org.springframework.web.client.RestTemplate
 class Criptop2pApplication /*: CommandLineRunner*/ {
 
 
-	private val LOG = LogFactory.getLog(javaClass)
+	//private val LOG = LogFactory.getLog(javaClass)
 	/*
 	lateinit var redisRepository: RedisRepository
 
@@ -32,13 +32,14 @@ class Criptop2pApplication /*: CommandLineRunner*/ {
 
 	@Autowired
 	lateinit var redisRepository: RedisRepository
-
-	*@Bean
+*/
+/*
+	@Bean
 	fun getresttemplate(): RestTemplate {
 		return RestTemplate()
 	}
-*/
 
+*/
 
 
 	companion object {

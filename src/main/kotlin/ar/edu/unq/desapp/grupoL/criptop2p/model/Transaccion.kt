@@ -1,11 +1,13 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.model
 
 import ar.edu.unq.desapp.grupoL.criptop2p.Accion
+import lombok.Data
 import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
 @Table(name = "transacciones")
+@Data
 class Transaccion {
 
     @Id

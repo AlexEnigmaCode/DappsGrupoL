@@ -4,16 +4,16 @@ import ar.edu.unq.desapp.grupoL.criptop2p.UserLoginMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.UserRegisterMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.UserUpdateMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.UserViewMapper
-import ar.edu.unq.desapp.grupoL.criptop2p.service.JwtUtilService
+//import ar.edu.unq.desapp.grupoL.criptop2p.service.JwtUtilService
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.beans.factory.annotation.Autowired
 import ar.edu.unq.desapp.grupoL.criptop2p.service.UserService
-import ar.edu.unq.desapp.grupoL.criptop2p.service.filter.JwtRequestFilter
+//import ar.edu.unq.desapp.grupoL.criptop2p.service.filter.JwtRequestFilter
 import io.jsonwebtoken.Jwts
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.security.core.userdetails.UserDetailsService
+//import org.springframework.security.core.userdetails.UserDetails
+//import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.web.bind.annotation.*
 import java.nio.file.Files.setAttribute
 import java.util.HashMap
@@ -30,6 +30,7 @@ class UserRestService {
     private  lateinit var  userService: UserService
     private val builder: ResponseEntity.BodyBuilder? = null
 
+  /*
     @Autowired
     private lateinit var jwtuUtilSerice : JwtUtilService
 
@@ -39,8 +40,7 @@ class UserRestService {
     @Autowired
     private lateinit var  jutRequestFilter: JwtRequestFilter
 
-
-
+*/
 
     @GetMapping("/api/users")
     fun allUsers(): ResponseEntity<*>{
@@ -52,7 +52,7 @@ class UserRestService {
 
     /**register a user*/
     @PostMapping("/api/register")
-    fun register(@Valid @RequestBody user: UserRegisterMapper): ResponseEntity<*> {
+    fun register(/*@Valid*/ @RequestBody user: UserRegisterMapper): ResponseEntity<*> {
         var response : ResponseEntity<*>?
         try {
            val  savedUser = userService.register(user)
@@ -73,7 +73,7 @@ class UserRestService {
             ResponseEntity.status(404)
 
             val resultado: MutableMap<String, String> = HashMap()
-            resultado["email of user already exits"] = user.email.toString()
+            resultado["error:"] =  e.message.toString() //user.email.toString()
             response = ResponseEntity.ok().body<Map<String, String>>(resultado)
         }
 
@@ -86,9 +86,9 @@ class UserRestService {
         var response : ResponseEntity<*>?
         try {
             val userview = userService.login(user.email, user.password)
-            val userDetails: UserDetails = userDetailsService.loadUserByUsername(userview.name)
-            val token = jwtuUtilSerice.generateToken(userDetails)
-            jutRequestFilter.filterConfig!!.servletContext.setAttribute("Authorization", token)
+       //     val userDetails: UserDetails = userDetailsService.loadUserByUsername(userview.name)
+     //       val token = jwtuUtilSerice.generateToken(userDetails)
+   //         jutRequestFilter.filterConfig!!.servletContext.setAttribute("Authorization", token)
            ResponseEntity.status(200)
            response = ResponseEntity.ok().body(userview)
         }
@@ -124,7 +124,7 @@ class UserRestService {
 
 
     /** Update*/
-    @PutMapping("/api/users/{id}")
+    @PutMapping("/api/users/update/{id}")
     fun update (@PathVariable("id") id: Long,@RequestBody entity: UserUpdateMapper): ResponseEntity<*> {
         var response : ResponseEntity<*>?
         try {
@@ -143,7 +143,7 @@ class UserRestService {
     }
 
     /**Delete user by id*/
-    @DeleteMapping("/api/users/{id}")
+    @DeleteMapping("/api/users/delete/{id}")
     fun deleteUserById(@PathVariable("id") id: Long): ResponseEntity<*> {
         var response : ResponseEntity<*>?
         try {
