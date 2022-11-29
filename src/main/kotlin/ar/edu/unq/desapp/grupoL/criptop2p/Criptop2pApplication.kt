@@ -15,7 +15,6 @@ import org.springframework.web.client.RestTemplate
 
 @SpringBootApplication
 //@EnableCaching
-//@Configuration  // le agrego esta configuratio
 
 class Criptop2pApplication /*: CommandLineRunner*/ {
 
@@ -45,29 +44,12 @@ class Criptop2pApplication /*: CommandLineRunner*/ {
 	companion object {
 		@JvmStatic
 		fun main(args: Array<String>) {
-			//runApplication<Criptop2pApplication>(*args)
-			//SpringApplication.run(Criptop2pApplication::class.java, *args)
-			SpringApplication.run(ar.edu.unq.desapp.grupoL.criptop2p.Criptop2pApplication::class.java,*args)
+		SpringApplication.run(ar.edu.unq.desapp.grupoL.criptop2p.Criptop2pApplication::class.java,*args)
 		}
 	}
 
 
 
-/*
-	override fun run(vararg args: String?) {
-
-		LOG.info("Saving cripto activos. Current cripto activos count is  ${redisRepository.count()} " )
-		val fecha = LocalDateTime.now()
-		val cripto1 = CriptoActivoRegisterMapper("A", "100", fecha)
-		val cripto2 = CriptoActivoRegisterMapper("B", "200",fecha)
-		val cripto3 = CriptoActivoRegisterMapper("C", "300)",fecha)
-
-		redisRepository!!.save(cripto1)
-		redisRepository!!.save(cripto2)
-		redisRepository!!.save(cripto3)
-		LOG.info("Done saving cripto Activos. ${redisRepository.findAll()} ")
-	}
-*/
 }
 
 

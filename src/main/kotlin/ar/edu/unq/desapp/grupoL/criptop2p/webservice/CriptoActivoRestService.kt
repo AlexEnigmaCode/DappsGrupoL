@@ -1,7 +1,6 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.webservice
 
 
-
 import ar.edu.unq.desapp.grupoL.criptop2p.Binance
 import ar.edu.unq.desapp.grupoL.criptop2p.CriptoActivoRegisterMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.model.CriptoActivo
