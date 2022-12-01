@@ -4,8 +4,6 @@ import ar.edu.unq.desapp.grupoL.criptop2p.*
 import ar.edu.unq.desapp.grupoL.criptop2p.model.HistoryCriptoActivo
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Transaccion
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.CriptoActivoRepository
-import ar.edu.unq.desapp.grupoL.criptop2p.persistence.HistoryCriptoRepository
-//import ar.edu.unq.desapp.grupoL.criptop2p.model.CriptoActivo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.http.ResponseEntity

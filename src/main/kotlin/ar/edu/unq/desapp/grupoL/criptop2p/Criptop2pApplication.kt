@@ -48,8 +48,6 @@ class Criptop2pApplication /*: CommandLineRunner*/ {
 		}
 	}
 
-
-
 }
 
 

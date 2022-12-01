@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
-/*
+
 @Service
 class HistoryCriptoActivoService {
 
@@ -25,7 +25,7 @@ class HistoryCriptoActivoService {
     fun consumeCriptoActivos24hs(): List<HistoryCriptoActivo> {
         val  criptoactivos = consumer.consumeCriptoActivos()
         val criptos = criptoactivos.map { HistoryCriptoActivo ( 0,it.criptoActivo,it.cotizacion,it.fecha) }
-       return historyRepository.saveAll(criptos)
+       return historyRepository.saveAll(criptos.asIterable()).toMutableList()
 
     }
 
@@ -50,13 +50,13 @@ class HistoryCriptoActivoService {
     }
 
     @Transactional
-    fun showHistory24hsBySymbol(symbol:String): MutableList<HistoryCriptoActivo> {
+    fun showHistory24hsBySymbol(symbol:String): Map<String?, List<HistoryCriptoActivo>> {
         val fechaActual : LocalDateTime = LocalDateTime.now()
         val fecha24hsAntes = fechaActual.minusHours(24)
         val  criptoactivos  = allHistory()
         val criptoEntreFechas =  buscarEntreFechas(fecha24hsAntes, fechaActual, criptoactivos )
         val criptoEntrefechasBySymbol = criptoBySymbol(symbol, criptoEntreFechas)
-        return  criptoEntrefechasBySymbol
+        return  criptoEntrefechasBySymbol.groupBy {it.criptoactivo}
     }
 
 
@@ -66,19 +66,19 @@ class HistoryCriptoActivoService {
     }
 
     fun criptoBySymbol (symbol:String, criptoactivos: MutableList<HistoryCriptoActivo> ):MutableList<HistoryCriptoActivo> {
-        criptoactivos.filter{ it.criptoactivo == symbol  }
-        if (criptoactivos.isEmpty()){
+        val criptos  = criptoactivos.filter  { it.criptoactivo == (symbol) } .toMutableList()
+        if (criptos.isEmpty()){
             throw ItemNotFoundException ("No hay criptoactivos con el symbol  $symbol ")
         }
-        return criptoactivos
+        return criptos
     }
 
     fun buscarEntreFechas(fecha1: LocalDateTime, fecha2: LocalDateTime, criptoactivos: MutableList<HistoryCriptoActivo>): MutableList<HistoryCriptoActivo>{
-        criptoactivos.filter { entreFechas(it.diahora!!,fecha1,fecha2) }.toMutableList()
-        if (criptoactivos.isEmpty()){
+       val criptos =  criptoactivos.filter { entreFechas(it.diahora!!,fecha1,fecha2) }.toMutableList()
+        if (criptos.isEmpty()){
             throw ItemNotFoundException ("No hay criptoactivos que se encuentre entre las fechas $fecha1 y $fecha2 ")
         }
-        return criptoactivos
+        return criptos
     }
 
     fun entreFechas(fecha: LocalDateTime, fecha1: LocalDateTime, fecha2: LocalDateTime): Boolean{
@@ -89,4 +89,3 @@ class HistoryCriptoActivoService {
 
 }
 
- */

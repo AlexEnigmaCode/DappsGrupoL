@@ -136,7 +136,8 @@ class UserRestService {
             ResponseEntity.status(404)
 
             val resultado: MutableMap<String, String> = HashMap()
-            resultado["usuario con id no encontrado"] = id.toString()
+           // resultado["usuario con id no encontrado"] = id.toString()
+            resultado["error"] = e.message.toString()
             response = ResponseEntity.ok().body<Map<String, String>>(resultado)
         }
         return response !!

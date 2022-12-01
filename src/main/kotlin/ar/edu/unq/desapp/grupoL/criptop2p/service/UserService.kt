@@ -28,9 +28,7 @@ class UserService{
     @Transactional
     fun register(user: UserRegisterMapper): Usuario {
 
-        lateinit var  userview : UserViewMapper
-
-        if ( existUser(user) )  {
+        if ( existEmail(user.email!!) )  {
          throw UsernameExistException("User with email:  ${user.email} is used")
         }
        val  password = user.password!!
@@ -50,8 +48,7 @@ class UserService{
     fun login(email: String, password: String): UserViewMapper {
 
        val users = repository.findAll()
-       // return users.find { (it.email == email) && (it.password == password) } ?: throw UserNotFoundException("Not found user")
-        val newUser = users.find { (it.email == email)  } ?: throw ItemNotFoundException("Not found user")
+        val newUser = users.find { (it.email == email)  && (it.password == password) } ?: throw ItemNotFoundException("Not found user")
         val userview = UserViewMapper(newUser.id,newUser.name,newUser.surname,newUser.email,newUser.address,newUser.cvu,newUser.walletAddress,newUser.cantidadOperaciones,newUser.reputacion)
         return userview
     }
@@ -82,29 +79,19 @@ class UserService{
 
     @Transactional
     fun update(id: Long, entity: UserUpdateMapper) : UserViewMapper {
-       lateinit var   entityOptional:Optional<Usuario?>
-        try {
-              entityOptional = repository.findById(id)
-             val  newUser:Usuario = entityOptional.get()
-            val  password = newUser.password
-           // newUser.password =  encoder.encode(entity.password)
-           /* newUser.password = entity.password
-            newUser.email = entity.email
-            newUser.address = entity.address
-            newUser.cvu =  entity.cvu
-            newUser.walletAddress  = entity.walletAddress
-            */
-            val user = Usuario(newUser.id,newUser.name, newUser.surname, entity.email,entity.address,password,entity.cvu,entity.walletAddress,0,0.0)
-            val savedUser = repository.save(user)
-            //val savedUser = repository.save(newUser)
+      if ( existEmail(entity.email!!) )  {
+                throw UsernameExistException("User with email:  ${entity.email} is used")
+            }
+        val  newUser:Usuario = findByID(id)
+        newUser.password = entity.password
+        newUser.email = entity.email
+        newUser.address = entity.address
+        newUser.cvu =  entity.cvu
+        newUser.walletAddress  = entity.walletAddress
+            val savedUser = repository.save(newUser)
             val userView =   UserViewMapper(savedUser.id, savedUser.name, savedUser.surname, savedUser.email, savedUser.address, savedUser.cvu, savedUser.walletAddress, savedUser.cantidadOperaciones, savedUser.reputacion)
              return userView
-            }
-        catch (e:Exception){
-             throw ItemNotFoundException("User with Id:  $id not found")
 
-
-    }
 }
 
     @Transactional
@@ -124,12 +111,10 @@ class UserService{
 
 
 
-    private fun existUser(user: UserRegisterMapper): Boolean {
-       // var bool = false
-        val users = repository.findAll().toMutableList()
+    private fun existEmail(email: String): Boolean {
+       val users = repository.findAll().toMutableList()
         if ( users.isNotEmpty() ) {
-       // bool =  users.any { it.email == user.email }
-           return  users.any { it.email == user.email }
+            return  users.any { it.email == email }
         }
         return false
     }
