@@ -109,9 +109,9 @@ class TransactionerService {
     fun cancelar(usuario: Usuario,transaccion: Transaccion): Transaccion {
             transaccion.state = Cancelado()
             usuario.descontarReputacion(20.0)
-          //  userRepository.save(usuario)
-           // return transactionerRepository.save(transaccion)
-           return transaccion
+            userRepository.save(usuario)
+           return transactionerRepository.save(transaccion)
+          // return transaccion
     }
 
 
@@ -282,16 +282,16 @@ class TransactionerService {
     }
 
     fun transaccionesParaUnUsuario (usuarioId: Long,transacciones: MutableList<Transaccion>): MutableList<Transaccion> {
-            transacciones.filter{ it.usuario!!.id == usuarioId  }
-           if (transacciones.isEmpty()){
+          val transaccionesParaUsuario=   transacciones.filter{ it.usuario!!.id == usuarioId  }.toMutableList()
+           if (transaccionesParaUsuario.isEmpty()){
                throw ItemNotFoundException ("No hay transacciones con el id de usuario $usuarioId ")
            }
-        return transacciones
+        return transaccionesParaUsuario
     }
 
     fun transaccionesDeUnUsuarioEntreFechas(usuarioId: Long,fecha1:LocalDateTime, fecha2:LocalDateTime, transacciones: MutableList<Transaccion>):MutableList<Transaccion>{
-        transacciones.filter { entreFechas(it.diahora!!,fecha1,fecha2) }.toMutableList()
-        if (transacciones.isEmpty()){
+       val transaccionesEntreFechas = transacciones.filter { entreFechas(it.diahora!!,fecha1,fecha2) }.toMutableList()
+        if (transaccionesEntreFechas.isEmpty()){
             throw ItemNotFoundException ("No hay transacciones que se encuentre entre las fechas $fecha1 y $fecha2 ")
         }
         return transacciones

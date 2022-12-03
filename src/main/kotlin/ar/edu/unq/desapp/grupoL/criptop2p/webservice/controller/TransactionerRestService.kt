@@ -8,6 +8,7 @@ import ar.edu.unq.desapp.grupoL.criptop2p.model.Publicacion
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Transaccion
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.TransaccionRepository
 import ar.edu.unq.desapp.grupoL.criptop2p.service.ConsumerCriptoActivoMicroService
+import ar.edu.unq.desapp.grupoL.criptop2p.service.PublisherService
 import ar.edu.unq.desapp.grupoL.criptop2p.service.TransactionerService
 import ar.edu.unq.desapp.grupoL.criptop2p.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
@@ -28,6 +29,9 @@ class TransactionerRestService {
 
     @Autowired
     private  lateinit var consumer : ConsumerCriptoActivoMicroService
+
+    @Autowired
+    private  lateinit var publisherService : PublisherService
 
     @Autowired
     private  lateinit var  userService : UserService
@@ -54,17 +58,14 @@ class TransactionerRestService {
         return response !!
     }
 
-
-    /** Proccess a transaction for a user*/
-    @PostMapping("/api/transacciones/{id}")
-    fun procesarTransaccion (@PathVariable("id") id: Long, @RequestBody transaccion: Transaccion): ResponseEntity<*> {
+    /** generate a transaction for a user*/
+    @PostMapping("/api/transacciones/generar/{id}/{idPublicacion}")
+    fun generateTransaccion (@PathVariable("id") id: Long, @PathVariable("idPublicacion") idPublicacion: Long /*@RequestBody publicacion: Publicacion*/): ResponseEntity<*> {
         var response : ResponseEntity<*>?
         try {
-
-            val  criptoActivo = consumer.consumeBySymbol(transaccion.criptoactivo!!)
-            val cotizacion =  criptoActivo.cotizacion!!.toDouble()
             val usuario =    userService.findByID(id)
-            val transaccion =  transactionerService.procesarTransaccion(usuario,transaccion,cotizacion)
+            val publicacion =  publisherService.selectByID(idPublicacion,usuario.id!!)
+            val transaccion =  transactionerService.generateTransaction(usuario,publicacion)
 
             ResponseEntity.status(200)
             response = ResponseEntity.ok().body(transaccion)
@@ -72,7 +73,31 @@ class TransactionerRestService {
             ResponseEntity.status(404)
 
             val resultado: MutableMap<String, String> = HashMap()
-            resultado["usuario con id no encontrado"] = id.toString()
+            resultado["Error"] = e.message.toString()
+            response = ResponseEntity.ok().body<Map<String, String>>(resultado)
+        }
+        return response !!
+    }
+
+
+    /** Proccess a transaction for a user*/
+    @PostMapping("/api/transacciones/procesar/{id}/{idTransaccion}")
+    fun procesarTransaccion (@PathVariable("id") id: Long, @PathVariable("idTransaccion") idTransaccion: Long/*@RequestBody transaccion: Transaccion*/): ResponseEntity<*> {
+        var response : ResponseEntity<*>?
+        try {
+            val  transaccionfound = transactionerService.findByID(idTransaccion)
+            val  criptoActivo = consumer.consumeBySymbol(transaccionfound.criptoactivo!!)
+            val cotizacion =  criptoActivo.cotizacion!!.toDouble()
+            val usuario =    userService.findByID(id)
+            val transaccion =  transactionerService.procesarTransaccion(usuario,transaccionfound,cotizacion)
+
+            ResponseEntity.status(200)
+            response = ResponseEntity.ok().body(transaccion)
+        } catch (e: Exception) {
+            ResponseEntity.status(404)
+
+            val resultado: MutableMap<String, String> = HashMap()
+            resultado["Error"] = e.message.toString()
             response = ResponseEntity.ok().body<Map<String, String>>(resultado)
         }
         return response !!
@@ -81,12 +106,13 @@ class TransactionerRestService {
 
 
     /** Cancel a transaction for a user*/
-    @PostMapping("/api/transacciones/cancelacion/{id}")
-    fun cancelarTransaccion (@PathVariable("id") id: Long, @RequestBody transaccion: Transaccion): ResponseEntity<*> {
+    @PostMapping("/api/transacciones/cancelacion/{id}/{IdTransaccion}")
+    fun cancelarTransaccion (@PathVariable("id") id: Long, @PathVariable("idTransaccion") idTransaccion: Long /*@RequestBody transaccion: Transaccion*/): ResponseEntity<*> {
         var response : ResponseEntity<*>?
         try {
             val usuario =    userService.findByID(id)
-            val transaccion =  transactionerService.cancelar(usuario,transaccion)
+            val  transaccionfound = transactionerService.findByID(idTransaccion)
+            val transaccion =  transactionerService.cancelar(usuario, transaccionfound)
 
             ResponseEntity.status(200)
             response = ResponseEntity.ok().body(transaccion)
@@ -94,7 +120,7 @@ class TransactionerRestService {
             ResponseEntity.status(404)
 
             val resultado: MutableMap<String, String> = HashMap()
-            resultado["usuario con id no encontrado"] = id.toString()
+            resultado["Error"] = e.message.toString()
             response = ResponseEntity.ok().body<Map<String, String>>(resultado)
         }
         return response !!
@@ -115,7 +141,7 @@ class TransactionerRestService {
             ResponseEntity.status(404)
 
             val resultado: MutableMap<String, String> = HashMap()
-            resultado["usuario con id no encontrado"] = id.toString()
+            resultado["Error"] = e.message.toString()
             response = ResponseEntity.ok().body<Map<String, String>>(resultado)
         }
         return response !!
@@ -204,11 +230,30 @@ class TransactionerRestService {
 
 
     @GetMapping("api/transacciones")
-    fun listarPublicaciones(): ResponseEntity<*> {
-        val publicaciones = transactionerService.transacciones()
+    fun listarTransacciones(): ResponseEntity<*> {
+        val transacciones = transactionerService.transacciones()
 
-        return ResponseEntity.ok().body(publicaciones)
+        return ResponseEntity.ok().body(transacciones)
 
+    }
+
+
+    /**get transaction by id**/
+    @GetMapping("/api/transacciones/{id}")
+    fun selectById(@PathVariable("id") id: Long): ResponseEntity<*> {
+        var response : ResponseEntity<*>?
+        try {
+            val transaccion = transactionerService.findByID(id)
+
+            ResponseEntity.status(200)
+            response = ResponseEntity.ok().body(transaccion)
+        } catch (e: Exception) {
+            ResponseEntity.status(404)
+            val resultado: MutableMap<String, String> = HashMap()
+            resultado["Error"] = e.message.toString()
+            response = ResponseEntity.ok().body<Map<String, String>>(resultado)
+        }
+        return response !!
     }
 
 

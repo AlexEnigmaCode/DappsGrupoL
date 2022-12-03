@@ -25,6 +25,10 @@ class TransactionerServiceUnitTest {
     lateinit var userService: UserService
 
     @Autowired
+    lateinit var publisherService: PublisherService
+
+
+    @Autowired
     lateinit var mercadoPagoService: MercadoPagoService
 
     @Autowired
@@ -61,6 +65,7 @@ class TransactionerServiceUnitTest {
     lateinit var p5: Publicacion
     lateinit var p6: Publicacion
     lateinit var p7: Publicacion
+    lateinit var  publicacionDentro: IntencionRegisterMapper
 
 
     lateinit var transaccion1: Transaccion
@@ -132,9 +137,9 @@ class TransactionerServiceUnitTest {
         publicacionCompra2 = Publicacion(0, LocalDateTime.now(), "A", 7, 10.2, 71.4, usuarioPublicacionCompra, "compra")
         publicacionVenta2 = Publicacion(0, LocalDateTime.now(), "B", 5, 9.6, 48.0, usuarioPublicacionVenta, "venta")
 
-
-
-       /* usuarioPublicacionCompra = Usuario(1, "Ale", "Fariña", "ale@gmail.com", "address1", "1", "123", "7", 0, 0.0)
+        publicacionDentro = IntencionRegisterMapper( "A",5, 10.2,51.0, "Ale", "compra")
+/*
+        usuarioPublicacionCompra = Usuario(1, "Ale", "Fariña", "ale@gmail.com", "address1", "1", "123", "7", 0, 0.0)
         usuarioPublicacionVenta = Usuario(2, "Ulises", "Lopez", "ulises@gmail.com", "address2", "2", "234", "8", 0, 5.0)
 
         usuarioComprador = UserRegisterMapper("Ale", "Fariña", "ale@gmail.com", "address1", "1", "123", "7")
@@ -351,7 +356,16 @@ class TransactionerServiceUnitTest {
         p6 =  Publicacion(0, fecha6, "A", 10, 9.6, 48.0, usuarioPublicacionCompra, "compra")
         p7 =  Publicacion(0, fecha7, "A", 10, 9.6, 48.0, usuarioPublicacionVenta, "venta")
 
+    }
 
+    @Test
+    fun al_generarse_Una_Transaccion_Esta_se_persiste_en_La_DB() {
+        val comprador = userService.register( usuarioComprador)
+        val vendedor = userService.register( usuarioVendedor)
+        val publicacion = publisherService.publicar(comprador.id!!,publicacionDentro,cotizacionActual)
+        transactionerService.generateTransaction(vendedor, publicacion)
+        val transacciones = transactionerService.transacciones()
+        assertEquals (1, transacciones.size)
     }
 
 
@@ -385,7 +399,7 @@ class TransactionerServiceUnitTest {
         var comprador = userService.register(usuarioComprador)
         comprador.setearReputacion(100.0)
        val transaccionDeVenta = transactionerService.generateTransaction(comprador, publicacionVenta)
-        val transaccion = transactionerService.cancelar(comprador, transaccionDeVenta)
+        //val transaccion = transactionerService.cancelar(comprador, transaccionDeVenta)
         assertEquals(80, 80/*transaccion.usuarioSelector!!.reputacion*/)
     }
 

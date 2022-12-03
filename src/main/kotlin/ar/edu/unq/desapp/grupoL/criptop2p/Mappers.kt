@@ -33,6 +33,16 @@ data class UserViewMapper(val id: Long?,
                           var reputacion: Double)
 
 
+
+data class PublicacionViewMapper (val id: Long,
+                                  val diahora: LocalDateTime,
+                                  val criptoactivo: String,
+                                  val cantidad: Long,
+                                  val cotizacion: Double,
+                                  val monto: Double,
+                                  val usuario: UserViewMapper,
+                                  val operacion: String, )
+
 data class Binance (val symbol:String?, val price: String?)
 
 

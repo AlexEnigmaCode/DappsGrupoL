@@ -27,8 +27,7 @@ internal class ConsumerCriptoActivoMicroServiceTest {
     @Test
     fun consumeAllCriptoActivos() {
         criptoActivos  = consumerService.consumeCriptoActivos()
-        // assertEquals ("ETHBTC",criptoActivos.get(0).criptoActivo)
-        assertTrue { criptoActivos.isNotEmpty() }
+          assertTrue { criptoActivos.isNotEmpty() }
     }
 
     @Test

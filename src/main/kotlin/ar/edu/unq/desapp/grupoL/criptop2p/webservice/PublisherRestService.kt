@@ -2,8 +2,11 @@ package ar.edu.unq.desapp.grupoL.criptop2p.webservice
 
 
 import ar.edu.unq.desapp.grupoL.criptop2p.IntencionRegisterMapper
+import ar.edu.unq.desapp.grupoL.criptop2p.PublicacionViewMapper
+import ar.edu.unq.desapp.grupoL.criptop2p.UserUpdateMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.UserViewMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Publicacion
+import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
 import ar.edu.unq.desapp.grupoL.criptop2p.service.ConsumerCriptoActivoMicroService
 import ar.edu.unq.desapp.grupoL.criptop2p.service.PublisherService
 import ar.edu.unq.desapp.grupoL.criptop2p.service.UserService
@@ -11,13 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDateTime
 import java.util.HashMap
 
 
 @RestController
 @EnableAutoConfiguration
 @CrossOrigin("*")
-class PublisherRestService {
+class PublisherRestService   {
 
     @Autowired
     private lateinit var  publisherService: PublisherService
@@ -37,24 +41,58 @@ class PublisherRestService {
 
             val  criptoActivo = consumer.consumeBySymbol(entity.criptoactivo!!)
             val cotizacion =  criptoActivo.cotizacion!!.toDouble()
-            val publicacion = publisherService!!.publicar(id,entity,cotizacion)
+            val publicacion = publisherService.publicar(id,entity,cotizacion)
+            val publicacionDTO = publicacionToPublicacionViewMapper(publicacion)
 
             ResponseEntity.status(200)
-            response = ResponseEntity.ok().body(publicacion)
-        } catch (e: Exception) {
+
+
+              response = ResponseEntity.ok().body(publicacionDTO)
+
+            } catch (e: Exception) {
             ResponseEntity.status(404)
 
             val resultado: MutableMap<String, String> = HashMap()
-            resultado["usuario con id no encontrado"] = id.toString()
+            resultado["Error"] = e.message.toString()
             response = ResponseEntity.ok().body<Map<String, String>>(resultado)
         }
         return response !!
     }
 
+     fun   usuarioToUserViewMapper(usuario: Usuario): UserViewMapper {
+    val userViewMapper =  UserViewMapper(
+            usuario.id,
+            usuario.name,
+            usuario.surname,
+            usuario.email,
+            usuario.address,
+            usuario.cvu,
+            usuario.walletAddress,
+            usuario.cantidadOperaciones,
+            usuario.reputacion)
+         return userViewMapper
+}
+
+    fun publicacionToPublicacionViewMapper(publicacion:Publicacion):PublicacionViewMapper {
+        val  usuarioViewMapper = usuarioToUserViewMapper(publicacion.usuario!!)
+        val publicacionDTO =  PublicacionViewMapper (
+            publicacion.id!!,
+            publicacion.diahora!!,
+            publicacion.criptoactivo!!,
+            publicacion.cantidad!!,
+            publicacion.cotizacion,
+            publicacion.monto,
+            usuarioViewMapper,
+            publicacion.operacion!!
+        )
+         return publicacionDTO
+    }
+
     @GetMapping("api/publicaciones")
     fun listarPublicaciones(): ResponseEntity<*> {
         val publicaciones = publisherService.findAll()
-        return ResponseEntity.ok().body(publicaciones)
+        val publicacionesDto =  publicaciones.map{ publicacionToPublicacionViewMapper(it)}
+        return ResponseEntity.ok().body(publicacionesDto)
     }
 
 
@@ -63,14 +101,14 @@ class PublisherRestService {
     fun selectById(@PathVariable("id") id: Long,@PathVariable("idUsuario") idUsuario: Long): ResponseEntity<*> {
         var response : ResponseEntity<*>?
         try {
-            val newPublication = publisherService.selectByID(id,idUsuario)
-
+            val publicacion = publisherService.selectByID(id,idUsuario)
+            val publicacionDTO = publicacionToPublicacionViewMapper(publicacion)
             ResponseEntity.status(200)
-            response = ResponseEntity.ok().body(newPublication)
+            response = ResponseEntity.ok().body(publicacionDTO)
         } catch (e: Exception) {
             ResponseEntity.status(404)
             val resultado: MutableMap<String, String> = HashMap()
-            resultado["Publication with id not found"] = id.toString()
+            resultado["Error"] = e.message.toString()
             response = ResponseEntity.ok().body<Map<String, String>>(resultado)
         }
         return response !!

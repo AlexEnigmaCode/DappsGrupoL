@@ -53,13 +53,14 @@ class PublisherService {
                 usuario,
                 intencion.operacion)
 
-            return publisherRepository.save(publicacion)
+            val publicacionsaved =  publisherRepository.save(publicacion)
+            return publicacionsaved
         } catch (e: Exception) {
             throw ItemNotFoundException("User with Id:  $id not found")
         }
     }
 
-
+    @Transactional
     fun puedePublicarSegunCotizacionActual(intencion: IntencionRegisterMapper,cotizacionActual:Double): Boolean {
       //val cotizacionActual = cotizacionActual(intencion.criptoactivo!!).toDouble()
       val minRef =  cotizacionActual * 0.95
