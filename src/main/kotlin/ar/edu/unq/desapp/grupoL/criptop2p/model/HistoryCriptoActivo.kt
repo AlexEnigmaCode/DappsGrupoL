@@ -1,12 +1,13 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.model
 
+import java.io.Serializable
 import java.time.LocalDateTime
 import javax.persistence.*
 
 
 @Entity
 @Table(name = "historycriptoactivos")
-class HistoryCriptoActivo {
+class HistoryCriptoActivo : Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

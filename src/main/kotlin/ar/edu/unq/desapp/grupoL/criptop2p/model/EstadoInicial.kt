@@ -1,8 +1,8 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.model
 
-import ar.edu.unq.desapp.grupoL.criptop2p.Deposito
+//import ar.edu.unq.desapp.grupoL.criptop2p.Deposito
 
-
+/*
 class EstadoInicial : EstadoTransaccion() {
 
     override fun  realizaTransferencia(direccionEmvio: String, monto:Double,comprador:Usuario) : Deposito {
@@ -27,3 +27,4 @@ class EstadoInicial : EstadoTransaccion() {
 
 
 }
+*/

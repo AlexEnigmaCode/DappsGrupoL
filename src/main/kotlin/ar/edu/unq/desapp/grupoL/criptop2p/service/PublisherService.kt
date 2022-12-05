@@ -35,6 +35,11 @@ class PublisherService {
 
     @Transactional
     fun publicar(id: Long, intencion: IntencionRegisterMapper,cotizacionActual:Double ): Publicacion {
+        val operaciones:List<String> = listOf("compra", "venta")
+        if ( !  operaciones.contains( intencion.operacion!!) ){
+            throw ItemNotFoundException("Solo se admiten las palabras compra ó venta")
+        }
+
         if ( ! puedePublicarSegunCotizacionActual(intencion,cotizacionActual)) {
             throw Exception("Error : No puede publicar, el precio de la publicación está por fuera del precio de referencia")
         }
@@ -104,6 +109,9 @@ class PublisherService {
 
     @Transactional
     fun confirm(usuario:Usuario, publicacion:Publicacion):Transaccion{
+    if (usuario.id == publicacion.usuario!!.id!!) {
+            throw PublicacionException ("Error: No puede confirmar la transaccion con su propia intención")
+        }
     val transaction = transactioneServicee.generateTransaction(usuario,publicacion)
     deleteById(publicacion.id!!)
     return  transaction

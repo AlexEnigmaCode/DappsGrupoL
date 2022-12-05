@@ -1,12 +1,13 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.model
 
 
+import java.io.Serializable
 import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
 @Table(name = "publicaciones")
-class Publicacion {
+class Publicacion : Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_publicacion")
@@ -30,7 +31,7 @@ class Publicacion {
     var monto: Double = 0.0
 
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(cascade = [CascadeType.ALL],fetch = FetchType.EAGER)
     @JoinColumn(name = "id_usuario", nullable = true)
     var usuario: Usuario? = null
 

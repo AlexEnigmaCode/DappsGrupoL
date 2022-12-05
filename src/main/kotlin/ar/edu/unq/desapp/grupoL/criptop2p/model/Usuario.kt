@@ -2,13 +2,14 @@ package ar.edu.unq.desapp.grupoL.criptop2p.model
 
 
 import ar.edu.unq.desapp.grupoL.criptop2p.Deposito
+import java.io.Serializable
 import javax.persistence.*
 import kotlin.jvm.Transient
 import javax.validation.constraints.*
 
 @Entity
 @Table(name = "usuarios")
-class Usuario:  EntidadValidable {
+class Usuario: Serializable, EntidadValidable {
 
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)

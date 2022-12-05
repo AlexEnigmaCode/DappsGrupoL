@@ -1,13 +1,12 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.webservice
 
 
-import ar.edu.unq.desapp.grupoL.criptop2p.IntencionRegisterMapper
-import ar.edu.unq.desapp.grupoL.criptop2p.PublicacionViewMapper
-import ar.edu.unq.desapp.grupoL.criptop2p.UserUpdateMapper
-import ar.edu.unq.desapp.grupoL.criptop2p.UserViewMapper
+import ar.edu.unq.desapp.grupoL.criptop2p.*
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Publicacion
+import ar.edu.unq.desapp.grupoL.criptop2p.model.Transaccion
 import ar.edu.unq.desapp.grupoL.criptop2p.model.Usuario
 import ar.edu.unq.desapp.grupoL.criptop2p.service.ConsumerCriptoActivoMicroService
+import ar.edu.unq.desapp.grupoL.criptop2p.service.DTOService
 import ar.edu.unq.desapp.grupoL.criptop2p.service.PublisherService
 import ar.edu.unq.desapp.grupoL.criptop2p.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,6 +31,9 @@ class PublisherRestService   {
     @Autowired
     private  lateinit var userService : UserService
 
+    @Autowired
+    private  lateinit var dtoService : DTOService
+
 
     /** Publish an intention for a user*/
     @PostMapping("/api/publicaciones/{id}")
@@ -42,7 +44,7 @@ class PublisherRestService   {
             val  criptoActivo = consumer.consumeBySymbol(entity.criptoactivo!!)
             val cotizacion =  criptoActivo.cotizacion!!.toDouble()
             val publicacion = publisherService.publicar(id,entity,cotizacion)
-            val publicacionDTO = publicacionToPublicacionViewMapper(publicacion)
+            val publicacionDTO = dtoService.publicacionToPublicacionViewMapper(publicacion)
 
             ResponseEntity.status(200)
 
@@ -59,50 +61,24 @@ class PublisherRestService   {
         return response !!
     }
 
-     fun   usuarioToUserViewMapper(usuario: Usuario): UserViewMapper {
-    val userViewMapper =  UserViewMapper(
-            usuario.id,
-            usuario.name,
-            usuario.surname,
-            usuario.email,
-            usuario.address,
-            usuario.cvu,
-            usuario.walletAddress,
-            usuario.cantidadOperaciones,
-            usuario.reputacion)
-         return userViewMapper
-}
 
-    fun publicacionToPublicacionViewMapper(publicacion:Publicacion):PublicacionViewMapper {
-        val  usuarioViewMapper = usuarioToUserViewMapper(publicacion.usuario!!)
-        val publicacionDTO =  PublicacionViewMapper (
-            publicacion.id!!,
-            publicacion.diahora!!,
-            publicacion.criptoactivo!!,
-            publicacion.cantidad!!,
-            publicacion.cotizacion,
-            publicacion.monto,
-            usuarioViewMapper,
-            publicacion.operacion!!
-        )
-         return publicacionDTO
-    }
 
     @GetMapping("api/publicaciones")
     fun listarPublicaciones(): ResponseEntity<*> {
         val publicaciones = publisherService.findAll()
-        val publicacionesDto =  publicaciones.map{ publicacionToPublicacionViewMapper(it)}
+        val publicacionesDto =  publicaciones.map{ dtoService.publicacionToPublicacionViewMapper(it)}
         return ResponseEntity.ok().body(publicacionesDto)
     }
 
 
+
     /**get publication by id**/
     @GetMapping("/api/publicaciones/{id}/{idUsuario}")
-    fun selectById(@PathVariable("id") id: Long,@PathVariable("idUsuario") idUsuario: Long): ResponseEntity<*> {
+    fun selectById(@PathVariable("idUsuario") idUsuario: Long, @PathVariable("id") idPublicacion: Long): ResponseEntity<*> {
         var response : ResponseEntity<*>?
         try {
-            val publicacion = publisherService.selectByID(id,idUsuario)
-            val publicacionDTO = publicacionToPublicacionViewMapper(publicacion)
+            val publicacion = publisherService.selectByID(idPublicacion,idUsuario)
+            val publicacionDTO = dtoService.publicacionToPublicacionViewMapper(publicacion)
             ResponseEntity.status(200)
             response = ResponseEntity.ok().body(publicacionDTO)
         } catch (e: Exception) {
@@ -115,25 +91,26 @@ class PublisherRestService   {
     }
 
     /** Confirm  an intention */
-    @PostMapping("/api/publicaciones/confirmations/{id}")
-    fun confirm (@PathVariable("id") id: Long, @RequestBody publication: Publicacion) :ResponseEntity<*>{
+    @PostMapping("/api/publicaciones/confirmations/{id}/{idPublicacion}")
+    fun confirm (@PathVariable("id") id: Long, @PathVariable("idPublicacion") idPublicacion: Long /*@RequestBody publication: Publicacion*/) :ResponseEntity<*>{
         var response : ResponseEntity<*>?
         try {
             val newUser = userService.findByID(id)
-            val newTransaction = publisherService.confirm(newUser,publication)
+            val publicacion = publisherService.selectByID(idPublicacion,newUser.id!!)
+            val transaccion = publisherService.confirm(newUser,publicacion)
+
+            val newTransaction = dtoService.transaccionToTransaccionViewMapper(transaccion)
 
             ResponseEntity.status(200)
             response = ResponseEntity.ok().body(newTransaction)
         } catch (e: Exception) {
             ResponseEntity.status(404)
             val resultado: MutableMap<String, String> = HashMap()
-            resultado["User with id not found"] = id.toString()
+            resultado["Error"] = e.message.toString()
             response = ResponseEntity.ok().body<Map<String, String>>(resultado)
         }
         return response !!
     }
-
-
 
 
 

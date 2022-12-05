@@ -1,7 +1,7 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.model
 
-import ar.edu.unq.desapp.grupoL.criptop2p.Deposito
-
+//import ar.edu.unq.desapp.grupoL.criptop2p.Deposito
+/*
 class EstadoPagoConfirmado: EstadoTransaccion() {
 
     override fun  realizaTransferencia(direccionEmvio: String,monto:Double,comprador:Usuario) : Deposito{
@@ -21,3 +21,5 @@ class EstadoPagoConfirmado: EstadoTransaccion() {
         throw Exception ( "Error: Aún no se ha enviado el criptoactivo" )}
 
 }
+
+ */

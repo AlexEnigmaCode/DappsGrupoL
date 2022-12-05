@@ -2,13 +2,14 @@ package ar.edu.unq.desapp.grupoL.criptop2p.model
 
 import ar.edu.unq.desapp.grupoL.criptop2p.Accion
 import lombok.Data
+import java.io.Serializable
 import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
 @Table(name = "transacciones")
 @Data
-class Transaccion {
+class Transaccion : Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,9 +34,9 @@ class Transaccion {
     var monto: Double = 0.0
 
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne( cascade = [CascadeType.ALL],fetch = FetchType.EAGER)
     @JoinColumn(name = "id_usuario", nullable = true)
-    var usuario: Usuario? = null
+    var usuario : Usuario? = null
 
     @Column
     var operacion: String? = null
@@ -53,9 +54,9 @@ class Transaccion {
     @Column
     var accion: Accion? = null
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(cascade = [CascadeType.ALL],fetch = FetchType.EAGER)
     @JoinColumn(name = "id_usuarioselector", nullable = true)
-    var usuarioSelector: Usuario? = null
+    var usuarioselector: Usuario? = null
 
     @Transient
     var state: EstadoTransaccion? = null
@@ -74,7 +75,7 @@ class Transaccion {
         reputacion: Double?,
         direccionEnvio: String?,
         accion: Accion?,
-        usuarioSelector: Usuario?
+        usuarioselector: Usuario?
 
     ) : super() {
         this.id = id
@@ -89,27 +90,26 @@ class Transaccion {
         this.reputacion = reputacion
         this.direccionEnvio = direccionEnvio
         this.accion = accion
-        this.usuarioSelector = usuarioSelector
+        this.usuarioselector = usuarioselector
     }
 
-    fun getComprador(): Usuario {
-        if (operacion == "compra") {
-            return usuario!!
-        } else {
-            return usuarioSelector!!
-        }
-
+    fun comprador(): Usuario {
+   if (operacion == "compra") {
+       return usuario!!
+   }
+   else{
+       return usuarioselector!!
+   }
     }
 
 
-    fun getVendedor(): Usuario {
+    fun vendedor(): Usuario {
         if (operacion == "venta") {
             return usuario!!
-        } else {
-            return usuarioSelector!!
         }
-
+        else{
+            return usuarioselector!!
+        }
     }
-
 
 }

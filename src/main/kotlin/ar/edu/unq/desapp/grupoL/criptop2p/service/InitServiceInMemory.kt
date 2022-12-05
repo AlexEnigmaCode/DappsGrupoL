@@ -30,7 +30,7 @@ class InitServiceInMemory {
             logger.info("Init Data Using H2 DB")
         // if (className == "com.mysql.cj.jdbc.Driver") {
           //  logger.info("Init Data Using Mysql DB")
-             // fireInitialData()
+              fireInitialData()
         }
     }
 

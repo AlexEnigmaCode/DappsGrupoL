@@ -1,7 +1,8 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.model
 
-import ar.edu.unq.desapp.grupoL.criptop2p.Deposito
+//import ar.edu.unq.desapp.grupoL.criptop2p.Deposito
 
+/*
 class EstadoPagoTransferido: EstadoTransaccion() {
 
     override fun  realizaTransferencia(direccionEmvio: String, monto:Double, comprador:Usuario) : Deposito {
@@ -23,3 +24,5 @@ class EstadoPagoTransferido: EstadoTransaccion() {
         throw Exception ("El Pago aón no ha sido confirmado")
     }
 }
+
+ */

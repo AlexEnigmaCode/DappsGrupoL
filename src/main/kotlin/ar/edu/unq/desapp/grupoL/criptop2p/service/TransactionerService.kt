@@ -16,6 +16,11 @@ class TransactionerService {
     var transacciones = mutableListOf<Transaccion>()
     val wallets = mutableListOf<VirtualWallet>()
 
+    lateinit var  state : EstadoTransaccionService
+
+    //@Autowired
+   // protected lateinit var estadoTransaccionService: EstadoTransaccionService
+
 
     @Autowired
     private lateinit var userService: UserService
@@ -36,26 +41,37 @@ class TransactionerService {
     @Autowired
     lateinit var  publisherService: PublisherService
 
+  fun setActualState(actualState : EstadoTransaccionService){
+      state = actualState
+  }
+
+  fun getActualState () : EstadoTransaccionService
+  {return state }
+
 
     @Transactional
-    fun procesarTransaccion(usuario: Usuario, transaccion: Transaccion, cotizacionActual : Double  ): Transaccion {
+    fun procesarTransaccion(/*usuario: Usuario,*/ transaccion: Transaccion, cotizacionActual : Double  ): Transaccion {
        if (isCanceled(transaccion, cotizacionActual)) {
-           transaccion.state = Cancelado()
+          // transaccion.state = EstadoCanceladoService()
+          state = EstadoCanceladoService()
            throw Exception ("transaccion ${transaccion.id}  cancelada, no cumple los requerimientos según la cotizacion actual ")
         }
-        return procesar(usuario, transaccion)
+        return procesar(/*usuario,*/ transaccion)
     }
 
     @Transactional
     fun generateTransaction(usuario: Usuario,publicacion: Publicacion): Transaccion {
         lateinit var  direccionEnvio:String
         lateinit var accion :Accion
+        if (usuario.id == publicacion.usuario!!.id!!) {
+            throw PublicacionException ("Error: No puede generar la transaccion con su propia intención")
+        }
 
             val cantidadOperaciones = publicacion.usuario!!.cantidadOperaciones
-            val reputacion = incrementarReputacionSegunTiempo(publicacion.diahora!!)
+            //val reputacion = incrementarReputacionSegunTiempo(publicacion.diahora!!)
 
-            publicacion.usuario!!.incrementarReputacion(reputacion)
-            usuario.incrementarReputacion(reputacion)
+            //publicacion.usuario!!.incrementarReputacion(reputacion)
+            //usuario.incrementarReputacion(reputacion)
 
         when (publicacion.operacion) {
             "compra" -> {
@@ -66,6 +82,7 @@ class TransactionerService {
             "venta" -> {
                 direccionEnvio = publicacion.usuario!!.cvu!!
                 accion = Accion.CONFIRMAR_RECEPCION
+
             }
         }
 
@@ -79,11 +96,10 @@ class TransactionerService {
                 publicacion.usuario,
                 publicacion.operacion,
                 cantidadOperaciones,
-                reputacion,
+                1.0,
                 direccionEnvio,
                 accion,
-                usuario
-            )
+                usuario   )
 
             return  transactionerRepository.save(transaccion)
 
@@ -91,7 +107,7 @@ class TransactionerService {
 
 
     @Transactional
-     fun procesar(usuario: Usuario, transaccion: Transaccion): Transaccion {
+     fun procesar(/*usuario: Usuario,*/ transaccion: Transaccion): Transaccion {
         lateinit var  direccionEnvio:String
         lateinit var accion :Accion
 
@@ -99,17 +115,21 @@ class TransactionerService {
            val reputacion = incrementarReputacionSegunTiempo(transaccion.diahora!!)
 
           transaccion.usuario!!.incrementarReputacion(reputacion)
-          usuario.incrementarReputacion(reputacion)
-          transaccion.state = EstadoInicial()
+          //usuario.incrementarReputacion(reputacion)
+          transaccion.usuarioselector!!.incrementarReputacion(reputacion)
+        // transaccion.state = EstadoInicial()
+             state = EstadoInicialService()
              return  transactionerRepository.save(transaccion)
 
            }
 
    @Transactional
-    fun cancelar(usuario: Usuario,transaccion: Transaccion): Transaccion {
-            transaccion.state = Cancelado()
-            usuario.descontarReputacion(20.0)
-            userRepository.save(usuario)
+    fun cancelar(/*usuario: Usuario,*/transaccion: Transaccion): Transaccion {
+           // transaccion.state = Cancelado()
+            state = EstadoCanceladoService()
+           // usuario.descontarReputacion(20.0)
+            transaccion.usuarioselector!!.descontarReputacion(20.0)
+          //  userRepository.save(usuario)
            return transactionerRepository.save(transaccion)
           // return transaccion
     }
@@ -166,44 +186,84 @@ class TransactionerService {
         }
     }
 
+
+/*
+    fun getComprador (transaccion:Transaccion): Usuario {
+        return  when    (transaccion.operacion) {
+            "compra" -> {
+                 transaccion.usuario!!
+            }
+            else -> {
+                 transaccion.usuarioselector!!
+            }
+        }
+    }
+
+
+    fun getVendedor(transaccion:Transaccion): Usuario {
+        return  when    (transaccion.operacion) {
+            "venta" -> {
+
+                transaccion.usuario!!
+            }
+            else -> {
+                transaccion.usuarioselector!!
+            }
+        }
+    }
+
+*/
     private fun  cotizacionActual(symbol:String): Double{
         val  criptoActivo = consumer.consumeBySymbol(symbol)
         return  criptoActivo.cotizacion!!.toDouble()
     }
 
-
+    @Transactional
        fun confirmarRecepcion(transaccion:Transaccion):Boolean {
+       // state = EstadoPagoConfirmadoService()
+        //return state.confirmarRecepcion(transaccion)
+
+
         val  cuenta  = getCuenta(transaccion.direccionEnvio!!)
-        val montoDepositado =  mercadoPagoService.consultarMonto(cuenta ,transaccion.usuarioSelector!!)
+        val montoDepositado =  mercadoPagoService.consultarMonto(cuenta , transaccion.comprador()  /*transaccion.usuarioSelector!!*/)
         return  ( montoDepositado >= transaccion.monto )
+
        }
+
 
 
     @Transactional
      fun realizarTransferencia(direccionEnvio: String, monto:Double,comprador:Usuario) : Deposito{
+       // setActualState (EstadoPagoTransferidoService())
+        //return getActualState().realizaTransferencia(direccionEnvio, monto,comprador)
+
         val  cuenta  = getCuenta(direccionEnvio)
         val deposito =   mercadoPagoService.depositar(cuenta, monto, comprador )
         return deposito
-    }
+
+           }
 
 
     @Transactional
     fun notificarPago (transaccion:Transaccion,deposito:Deposito){
-          transaccion.usuarioSelector!!.notificar(deposito)
+       // state.notificarPago(transaccion,deposito)
+         transaccion.vendedor().notificar(deposito)  // getVendedor(transaccion).notificar(deposito)
 
    }
 
-
        @Transactional
        fun finalizarTransaccion(transaccion:Transaccion){
-          deleteById(transaccion.id!!)
+      // state.finalizaTransaccion(transaccion)
+       deleteById(transaccion.id!!)
         }
 
-
+    @Transactional
     fun enviarCriptoActivo ( transaccion:Transaccion){
-        val walletAddress = transaccion.usuarioSelector!!.walletAddress!!
+     //state.enviarCriptoActivo(transaccion)
+        val walletAddress =  transaccion.comprador().walletAddress!!// getComprador(transaccion).walletAddress!!  //transaccion.usuarioSelector!!.walletAddress!!
         val wallet = getVirtualWallet(walletAddress)
         guardarCriptoActivo(transaccion,wallet)
+
     }
 
 
@@ -246,7 +306,7 @@ class TransactionerService {
     }
 
     fun getCriptoActivoDeLaVirtualWalletDeUsuario(transaccion:Transaccion): CriptoActivoWalletMapper {
-      val usuario = transaccion.usuarioSelector!!
+      val usuario =  transaccion.comprador() // getComprador(transaccion)//transaccion.usuarioSelector!!
       val criptoactivos = criptoActivosDeLaVirtualWalletDeUsuario(usuario)
       return  criptoactivos.find { it.criptoActivo == transaccion.criptoactivo } ?:throw ItemNotFoundException("Not found criptoActivo")
     }
@@ -318,9 +378,11 @@ class TransactionerService {
 
        for (cripto in transaccionesCriptoActivos){
           val cantidad = cripto.criptoActivos.sumOf { it.cantidad }
-         val  cotizacionActual = 100.0
-         val monto =  cantidad * cotizacionActual
-          criptoActivo =  CriptoActivoWalletMapper(cripto.criptoActivo,cotizacionActual, cantidad,monto)
+          val sumaCotizaciones = cripto.criptoActivos.sumOf { it.cotizacion }
+          val cantidadCotizacines  = cripto.criptoActivos.size
+          val cotizacionPromedio = sumaCotizaciones/cantidadCotizacines
+          val monto =  cantidad * cotizacionPromedio
+          criptoActivo =  CriptoActivoWalletMapper(cripto.criptoActivo,cotizacionPromedio, cantidad,monto)
           criptoActivos.add(criptoActivo)
         }
           return  criptoActivos.sortedBy { it.criptoActivo }.toMutableList()
