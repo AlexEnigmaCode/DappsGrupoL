@@ -1,20 +1,14 @@
 
 package ar.edu.unq.desapp.grupoL.criptop2p.webservice.config
-
-import ar.edu.unq.desapp.grupoL.criptop2p.CriptoActivoRegisterMapper
-//import ar.edu.unq.desapp.grupoL.criptop2p.persistence.RedisRepositoryImpl
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
-import org.springframework.data.redis.core.RedisTemplate
-
-
 /*
 import ar.edu.unq.desapp.grupoL.criptop2p.CriptoActivoRegisterMapper
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory
 import org.springframework.data.redis.core.RedisTemplate
+import ar.edu.unq.desapp.grupoL.criptop2p.persistence.RedisRepositoryImpl
 */
+
+
 
 //@Configuration
 //class RedisConfig {
@@ -34,10 +28,11 @@ import org.springframework.data.redis.core.RedisTemplate
 }
 
  */
-     // @Bean
-     // fun redisRepository(): RedisRepositoryImpl {
-      //return redisRepository()
-/*}
+/*
+      @Bean
+      fun redisRepository(): RedisRepositoryImpl {
+     return redisRepository()
+}
 
       @Bean
       fun redisTemplate(): RedisTemplate<String, CriptoActivoRegisterMapper> {
@@ -45,4 +40,4 @@ import org.springframework.data.redis.core.RedisTemplate
             return redisTemplate()
       }
 }
-        */
+*/

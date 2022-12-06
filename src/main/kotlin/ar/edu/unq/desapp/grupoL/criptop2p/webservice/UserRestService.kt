@@ -16,7 +16,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.web.bind.annotation.*
@@ -54,20 +53,8 @@ import org.springframework.web.bind.annotation.*
         var logger = LoggerFactory.getLogger(UserRestService::class.java)
     }
 
-/*
-    @GetMapping("/publico/get")
-    fun getMensajePublico(): ResponseEntity<*>? {
-        val auth = SecurityContextHolder.getContext().authentication
-        logger.info("Datos del Usuario: {}", auth.principal)
-        logger.info("Datos de los Permisos {}", auth.authorities)
-        logger.info("Esta autenticado {}", auth.isAuthenticated)
-        val mensaje: MutableMap<String, String> = HashMap()
-        mensaje["contenido"] = "Hola Mundo"
-        return ResponseEntity.ok<Map<String, String>>(mensaje)
-    }
 
-*/
-    @PostMapping("/publico/post")
+    @PostMapping("/publico/api/post")
     fun authenticate(@RequestBody authenticationReq: AuthenticationReq): ResponseEntity<TokenInfo?>? {
         logger.info("Autenticando al usuario {}", authenticationReq.getUsuario())
         authenticationManager.authenticate(
@@ -130,19 +117,25 @@ import org.springframework.web.bind.annotation.*
         var response : ResponseEntity<*>?
         try {
             val userview = userService.login(user.email, user.password)
-
+            /*authenticationManager.authenticate(
+                UsernamePasswordAuthenticationToken(
+                   userview.name,
+                   user.password
+                )
+            )
+           */
             val userDetails: UserDetails = userDetailsService.loadUserByUsername(userview.name)
             val jwtToken = jwtuUtilSerice.generateToken(userDetails)
    //         jutRequestFilter.filterConfig!!.servletContext.setAttribute("Authorization", token)
-           // val tokenInfo = TokenInfo(userview, jwtToken)
+           val tokenInfo = TokenInfo(jwtToken)
            ResponseEntity.status(200)
-           response = ResponseEntity.ok().body(userview)
-          //  response = ResponseEntity.ok().body(tokenInfo)
+          // response = ResponseEntity.ok().body(userview)
+            response = ResponseEntity.ok().body(tokenInfo)
         }
         catch (e:Exception) {
             ResponseEntity.status(404)
            val resultado: MutableMap<String, String> = HashMap()
-            resultado["user not found"] = user.email
+            resultado["error"] =  e.message.toString()
             response = ResponseEntity.ok().body<Map<String, String>>(resultado)
         }
           return response!!

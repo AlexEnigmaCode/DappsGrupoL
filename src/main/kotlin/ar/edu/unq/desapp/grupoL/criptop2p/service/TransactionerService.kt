@@ -50,13 +50,13 @@ class TransactionerService {
 
 
     @Transactional
-    fun procesarTransaccion(/*usuario: Usuario,*/ transaccion: Transaccion, cotizacionActual : Double  ): Transaccion {
+    fun procesarTransaccion( transaccion: Transaccion, cotizacionActual : Double  ): Transaccion {
        if (isCanceled(transaccion, cotizacionActual)) {
           // transaccion.state = EstadoCanceladoService()
           state = EstadoCanceladoService()
            throw Exception ("transaccion ${transaccion.id}  cancelada, no cumple los requerimientos según la cotizacion actual ")
         }
-        return procesar(/*usuario,*/ transaccion)
+        return procesar( transaccion)
     }
 
     @Transactional

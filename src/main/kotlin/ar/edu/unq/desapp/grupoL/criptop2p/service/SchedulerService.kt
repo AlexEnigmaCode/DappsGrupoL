@@ -1,5 +1,4 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.service
-
 /*
 import ar.edu.unq.desapp.grupoL.criptop2p.CriptoActivoRegisterMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.persistence.RedisRepositoryImpl
@@ -7,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+
 
 
 @Service
@@ -21,7 +21,7 @@ class SchedulerService {
 
     @Transactional
     fun  getCriptoActivos(): List<CriptoActivoRegisterMapper> {
-        val criptosMap = redisRepository.getAll()
+        val criptosMap = redisRepository.findAll()
         if (!criptosMap.isEmpty()) {  return criptosMap.values.toList()}
         else {return consumer.consumeCriptoActivos() }
     }
@@ -44,7 +44,7 @@ class SchedulerService {
 
     @Transactional
     fun  geAlltCriptoActivosFromCache(): Map<String, CriptoActivoRegisterMapper> {
-        val criptoActivos =redisRepository.getAll()
+        val criptoActivos =redisRepository.findAll()
         return criptoActivos
     }
 

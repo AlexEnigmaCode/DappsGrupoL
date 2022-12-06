@@ -28,24 +28,12 @@ sonarqube {
 		property ("sonar.host.url", "https://sonarcloud.io")
 			}
 }
-/*
-compileJava.options.encoding = 'utf-8'
-compileTestJava.options.encoding = 'utf-8'
-*/
+
 
 group = "ar.edu.unq.desapp.grupoL"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
-//java.sourceCompatibility = JavaVersion.VERSION_1_8
 
-/*
-configurations {
-	developmentOnly
-	runtimeClasspath {
-		extendsFrom developmentOnly
-	}
-}
-*/
 repositories {
 	mavenCentral()
 	mavenLocal()
@@ -93,7 +81,7 @@ dependencies {
 	providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
-	//testImplementation("redis.embedded:embedded-redis:0.5")
+	testImplementation("redis.embedded:embedded-redis:0.5")
 	testImplementation("com.tngtech.archunit:archunit-junit4:1.0.1")
 
 
@@ -105,7 +93,7 @@ tasks.withType<KotlinCompile> {
 	kotlinOptions {
 		freeCompilerArgs = listOf("-Xjsr305=strict")
 		jvmTarget = "17"
-		//jvmTarget = "1.8"
+
 	}
 }
 

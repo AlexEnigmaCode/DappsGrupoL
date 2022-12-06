@@ -15,7 +15,7 @@ import java.util.*
 class UserService{
 
     @Autowired
-    private  lateinit var repository: UserRepository
+    private val repository: UserRepository ? = null
 
    // @Autowired
    // private  var encoder : BCryptPasswordEncoder = BCryptPasswordEncoder()
@@ -36,7 +36,7 @@ class UserService{
        // val newuser = usuarioMapper.aModelo(user)
 
       val newUser = Usuario(0,user.name, user.surname, user.email,user.address,password,user.cvu,user.walletAddress,0, 0.0)
-      val savedUser = repository.save(newUser)
+      val savedUser = repository!!.save(newUser)
        // savedUser.validar()
         return  savedUser
       }
@@ -47,7 +47,7 @@ class UserService{
     @Transactional
     fun login(email: String, password: String): UserViewMapper {
 
-       val users = repository.findAll()
+       val users = repository!!.findAll()
         val newUser = users.find { (it.email == email)  && (it.password == password) } ?: throw ItemNotFoundException("Not found user")
         val userview = UserViewMapper(newUser.id,newUser.name,newUser.surname,newUser.email,newUser.address,newUser.cvu,newUser.walletAddress,newUser.cantidadOperaciones,newUser.reputacion)
         return userview
@@ -55,7 +55,7 @@ class UserService{
 
     @Transactional
     fun findByID(id: Long): Usuario {
-       val user =  repository.findById(id)
+       val user =  repository!!.findById(id)
        if ( ! (user.isPresent ))
        {throw ItemNotFoundException("User with Id:  $id not found") }
        val newUser=  user.get()
@@ -68,7 +68,7 @@ class UserService{
 
     @Transactional
     fun deleteById(id: Long) {
-        val user =  repository.findById(id)
+        val user =  repository!!.findById(id)
         if ( ! (user.isPresent ))
         {throw ItemNotFoundException("User with Id:  $id not found") }
        repository.deleteById(id)
@@ -88,7 +88,7 @@ class UserService{
         newUser.address = entity.address
         newUser.cvu =  entity.cvu
         newUser.walletAddress  = entity.walletAddress
-            val savedUser = repository.save(newUser)
+            val savedUser = repository!!.save(newUser)
             val userView =   UserViewMapper(savedUser.id, savedUser.name, savedUser.surname, savedUser.email, savedUser.address, savedUser.cvu, savedUser.walletAddress, savedUser.cantidadOperaciones, savedUser.reputacion)
              return userView
 
@@ -96,14 +96,14 @@ class UserService{
 
     @Transactional
     fun findAll(): List<UserViewMapper> {
-     val list =  repository.findAll()
+     val list =  repository!!.findAll()
      val users =  list.map { UserViewMapper(it.id, it.name, it.surname, it.email, it.address, it.cvu, it.walletAddress, it.cantidadOperaciones, it.reputacion) }
      return users
     }
 
     @Transactional
     fun listadoInformeUsuarios(): List<InformeUsuarioMapper> {
-        val list =  repository.findAll()
+        val list =  repository!!.findAll()
         val users =  list.map { InformeUsuarioMapper (it.name!!, it.surname!!,it.cantidadOperaciones, it.reputacion) }
         return users
     }
@@ -112,7 +112,7 @@ class UserService{
 
 
     private fun existEmail(email: String): Boolean {
-       val users = repository.findAll().toMutableList()
+       val users = repository!!.findAll().toMutableList()
         if ( users.isNotEmpty() ) {
             return  users.any { it.email == email }
         }

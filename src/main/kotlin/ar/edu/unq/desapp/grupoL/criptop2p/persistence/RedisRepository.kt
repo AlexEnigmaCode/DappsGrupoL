@@ -5,6 +5,10 @@ import org.springframework.cache.annotation.EnableCaching
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.core.RedisHash
 import org.springframework.stereotype.Repository
+*/
+
+
+/*
 
 @Configuration
 @Repository
