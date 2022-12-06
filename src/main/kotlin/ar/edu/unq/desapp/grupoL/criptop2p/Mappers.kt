@@ -65,7 +65,7 @@ val usuarioSelector: UserViewMapper
 
 data class Binance (val symbol:String?, val price: String?):Serializable
 
-
+/*
 data class Binance24hs (val symbol:String,
 val priceChange: String,
 val priceChangePercent: String,
@@ -87,6 +87,7 @@ val closeTime: Long,
 val firstId: Long,
 val lastId: Long,
 val count:Long ):Serializable
+*/
 
 data class HistoricoCotizaciones24hs (val symbol:String, val  cotizaciones :List <Binance24hsMapper> ):Serializable
 
@@ -165,6 +166,8 @@ data class  BetweenDates(
 data class CuentaCVU (val usuario:Usuario,val depositos: MutableList<Deposito>): Serializable
 
 data class Deposito (val usuario:Usuario, var monto: Double ):Serializable
+
+data class DepositoView (val usuario: UserViewMapper, var monto: Double) :Serializable
 
 data  class VirtualWallet  (val usuario:Usuario, val criptoactivos: MutableList<CriptoActivoWalletMapper>): Serializable
 data class Transferencia (val direccionEnvio:String, val monto:Double): Serializable

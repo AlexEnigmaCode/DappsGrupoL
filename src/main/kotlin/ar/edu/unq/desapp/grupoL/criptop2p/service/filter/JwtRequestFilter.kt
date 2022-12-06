@@ -1,5 +1,5 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.service.filter
-/*
+
 import ar.edu.unq.desapp.grupoL.criptop2p.service.JwtUtilService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -51,4 +51,4 @@ class JwtRequestFilter : OncePerRequestFilter() {
     }
 }
 
- */
+

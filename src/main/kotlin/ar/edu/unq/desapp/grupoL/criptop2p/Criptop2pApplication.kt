@@ -14,7 +14,7 @@ import org.springframework.web.client.RestTemplate
 
 
 @SpringBootApplication
-//@EnableCaching
+@EnableCaching
 
 class Criptop2pApplication /*: CommandLineRunner*/ {
 
@@ -39,6 +39,8 @@ class Criptop2pApplication /*: CommandLineRunner*/ {
 	}
 
 */
+
+
 
 
 	companion object {

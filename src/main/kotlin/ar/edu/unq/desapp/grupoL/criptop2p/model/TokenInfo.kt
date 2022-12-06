@@ -1,6 +1,8 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.model
-/*
+
+import ar.edu.unq.desapp.grupoL.criptop2p.UserViewMapper
 import java.io.Serializable
+
 
 class TokenInfo(val jwtToken: String) : Serializable {
 
@@ -8,5 +10,3 @@ class TokenInfo(val jwtToken: String) : Serializable {
         private const val serialVersionUID = 1L
     }
 }
-
- */

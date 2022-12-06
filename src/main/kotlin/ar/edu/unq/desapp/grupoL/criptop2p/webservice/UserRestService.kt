@@ -1,48 +1,92 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.webservice
 
+
 import ar.edu.unq.desapp.grupoL.criptop2p.UserLoginMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.UserRegisterMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.UserUpdateMapper
 import ar.edu.unq.desapp.grupoL.criptop2p.UserViewMapper
-//import ar.edu.unq.desapp.grupoL.criptop2p.service.JwtUtilService
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration
-import org.springframework.beans.factory.annotation.Autowired
+import ar.edu.unq.desapp.grupoL.criptop2p.model.AuthenticationReq
+import ar.edu.unq.desapp.grupoL.criptop2p.model.TokenInfo
+import ar.edu.unq.desapp.grupoL.criptop2p.service.JwtUtilService
 import ar.edu.unq.desapp.grupoL.criptop2p.service.UserService
-//import ar.edu.unq.desapp.grupoL.criptop2p.service.filter.JwtRequestFilter
-import io.jsonwebtoken.Jwts
-import org.springframework.http.HttpHeaders
+import ar.edu.unq.desapp.grupoL.criptop2p.service.filter.JwtRequestFilter
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.http.ResponseEntity
-//import org.springframework.security.core.userdetails.UserDetails
-//import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.web.bind.annotation.*
-import java.nio.file.Files.setAttribute
-import java.util.HashMap
-import java.util.stream.Collectors
-import javax.servlet.http.HttpServletRequest
-import javax.validation.Valid
+
+
 
 @RestController
 @EnableAutoConfiguration
-@CrossOrigin("*")
+//@CrossOrigin("*")
+@RequestMapping("")
 
-class UserRestService {
-    @Autowired
-    private  lateinit var  userService: UserService
-    private val builder: ResponseEntity.BodyBuilder? = null
 
-  /*
+
+    class UserRestService {
+
     @Autowired
-    private lateinit var jwtuUtilSerice : JwtUtilService
+    lateinit var userService: UserService
+
+    @Autowired
+    private lateinit var authenticationManager: AuthenticationManager
+
+    @Autowired
+    private lateinit var jwtuUtilSerice: JwtUtilService
 
     @Autowired
     private lateinit var userDetailsService: UserDetailsService
 
     @Autowired
-    private lateinit var  jutRequestFilter: JwtRequestFilter
+    private lateinit var jwtRequestFilter: JwtRequestFilter
+
+    private val builder: ResponseEntity.BodyBuilder? = null
+
+
+    companion object {
+        var logger = LoggerFactory.getLogger(UserRestService::class.java)
+    }
+
+/*
+    @GetMapping("/publico/get")
+    fun getMensajePublico(): ResponseEntity<*>? {
+        val auth = SecurityContextHolder.getContext().authentication
+        logger.info("Datos del Usuario: {}", auth.principal)
+        logger.info("Datos de los Permisos {}", auth.authorities)
+        logger.info("Esta autenticado {}", auth.isAuthenticated)
+        val mensaje: MutableMap<String, String> = HashMap()
+        mensaje["contenido"] = "Hola Mundo"
+        return ResponseEntity.ok<Map<String, String>>(mensaje)
+    }
 
 */
+    @PostMapping("/publico/post")
+    fun authenticate(@RequestBody authenticationReq: AuthenticationReq): ResponseEntity<TokenInfo?>? {
+        logger.info("Autenticando al usuario {}", authenticationReq.getUsuario())
+        authenticationManager.authenticate(
+            UsernamePasswordAuthenticationToken(
+                authenticationReq.getUsuario(),
+                authenticationReq.clave
+            )
+        )
 
-    @GetMapping("/api/users")
+        val userDetails = userDetailsService.loadUserByUsername(
+            authenticationReq.getUsuario()
+        )
+        val jwt: String = jwtuUtilSerice.generateToken(userDetails)
+       val tokenInfo = TokenInfo(jwt)
+        return ResponseEntity.ok(tokenInfo)
+
+}
+
+    @GetMapping("/publico/api/users")
     fun allUsers(): ResponseEntity<*>{
        val users = userService.findAll()
        return ResponseEntity.ok().body(users)
@@ -51,7 +95,7 @@ class UserRestService {
 
 
     /**register a user*/
-    @PostMapping("/api/register")
+    @PostMapping("/publico/api/register")
     fun register(/*@Valid*/ @RequestBody user: UserRegisterMapper): ResponseEntity<*> {
         var response : ResponseEntity<*>?
         try {
@@ -81,16 +125,19 @@ class UserRestService {
     }
 
     /**login a user*/
-    @PostMapping("/api/login")
+    @PostMapping("/publico/api/login")
     fun login(@RequestBody user: UserLoginMapper): ResponseEntity<*> {
         var response : ResponseEntity<*>?
         try {
             val userview = userService.login(user.email, user.password)
-       //     val userDetails: UserDetails = userDetailsService.loadUserByUsername(userview.name)
-     //       val token = jwtuUtilSerice.generateToken(userDetails)
+
+            val userDetails: UserDetails = userDetailsService.loadUserByUsername(userview.name)
+            val jwtToken = jwtuUtilSerice.generateToken(userDetails)
    //         jutRequestFilter.filterConfig!!.servletContext.setAttribute("Authorization", token)
+           // val tokenInfo = TokenInfo(userview, jwtToken)
            ResponseEntity.status(200)
            response = ResponseEntity.ok().body(userview)
+          //  response = ResponseEntity.ok().body(tokenInfo)
         }
         catch (e:Exception) {
             ResponseEntity.status(404)

@@ -1,12 +1,17 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.persistence
 /*
 import ar.edu.unq.desapp.grupoL.criptop2p.CriptoActivoRegisterMapper
+import org.springframework.cache.annotation.EnableCaching
 import org.springframework.context.annotation.Configuration
+import org.springframework.data.redis.core.RedisHash
 import org.springframework.stereotype.Repository
 
 @Configuration
 @Repository
+@EnableCaching
+@RedisHash
 interface RedisRepository {
+
 
    fun findAll(): Map<String, CriptoActivoRegisterMapper>
    fun findById(id:String): CriptoActivoRegisterMapper
@@ -17,4 +22,4 @@ interface RedisRepository {
    fun count():Long
 }
 
- */
+*/

@@ -90,7 +90,7 @@ class TransactionerRestService {
             val  criptoActivo = consumer.consumeBySymbol(transaccionfound.criptoactivo!!)
             val cotizacion =  criptoActivo.cotizacion!!.toDouble()
             val usuario =    userService.findByID(id)
-            val transaccion =  transactionerService.procesarTransaccion(usuario,transaccionfound, 1.0/*cotizacion*/)
+            val transaccion =  transactionerService.procesarTransaccion(/*usuario,*/transaccionfound, 1.0/*cotizacion*/)
             val newTransaction = dtoService.transaccionToTransaccionViewMapper(transaccion)
 
             ResponseEntity.status(200)
@@ -114,7 +114,7 @@ class TransactionerRestService {
         try {
             val usuario =    userService.findByID(id)
             val  transaccionfound = transactionerService.findByID(idTransaccion)
-            val transaccion =  transactionerService.cancelar(usuario, transaccionfound)
+            val transaccion =  transactionerService.cancelar(/*usuario,*/ transaccionfound)
             val newTransaction = dtoService.transaccionToTransaccionViewMapper(transaccion)
 
             ResponseEntity.status(200)

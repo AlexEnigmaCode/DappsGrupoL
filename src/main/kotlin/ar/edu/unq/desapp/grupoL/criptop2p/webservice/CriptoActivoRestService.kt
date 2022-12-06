@@ -18,15 +18,15 @@ import java.util.*
 @CrossOrigin("*")
 class CriptoActivoRestService {
 
-    // @Autowired
-    // lateinit var schedullerService: SchedulerService
+  //   @Autowired
+   //  lateinit var schedullerService: SchedulerService
 
     @Autowired
     private val criptoActivoService: CriptoActivoService? = null
     private val builder: ResponseEntity.BodyBuilder? = null
     private var criptoActivos = listOf<CriptoActivo>()
 
-    /*
+/*
     @GetMapping("/api/scheduller/criptoactivos")
     fun getAllCriptoActivos(): List<CriptoActivoRegisterMapper> {
         return schedullerService.getCriptoActivos()
@@ -52,6 +52,16 @@ class CriptoActivoRestService {
             response = ResponseEntity.ok().body<Map<String, String>>(resultado)
         }
         return response !!
+    }
+
+    @PostMapping("/api/scheduller/criptoactivos/cache/save")
+    fun saveAllCacheCriptoActivos() /*:Map<String, CriptoActivoRegisterMapper>*/ {
+        schedullerService.saveCacheFromBinanceApi()
+    }
+
+    @GetMapping("/api/scheduller/criptoactivos/cache/find")
+    fun findAllCacheCriptoActivos(): Map<String, CriptoActivoRegisterMapper> {
+        return schedullerService.geAlltCriptoActivosFromCache()
     }
 
 */

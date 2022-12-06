@@ -75,7 +75,7 @@ class DTOService {
         resultado["${usuario.name}"] = criptos
         return resultado
     }
-
+/*
     fun depositoToDepositoView(deposito:Deposito): MutableMap<String, Double> {
         val monto = deposito.monto
         val usuario = deposito.usuario
@@ -83,6 +83,25 @@ class DTOService {
         resultado["Deposito hecho por : ${usuario.name}"] = monto
         return resultado
     }
+*/
+    fun depositoToDepositoView(deposito:Deposito): DepositoView {
+        val monto = deposito.monto
+        val usuario = deposito.usuario
+       // val resultado: MutableMap<String, Double> = HashMap()
+       // resultado["Deposito hecho por : ${usuario.name}"] = monto
+     val usuarioniewMapper = UserViewMapper (usuario.id,
+         usuario.name,
+         usuario.surname,
+         usuario.email,
+         usuario.address,
+         usuario.cvu,
+         usuario.walletAddress,
+         usuario.cantidadOperaciones,
+         usuario.reputacion)
+    val   depositoView = DepositoView (usuarioniewMapper,monto)
+    return depositoView
+}
+
 
     fun  confirmadoToConfirmadoView(confirmado:Boolean): MutableMap<String, String> {
         val resultado: MutableMap<String, String> = HashMap()

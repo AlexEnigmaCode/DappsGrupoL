@@ -72,8 +72,10 @@ dependencies {
 	implementation ("io.springfox:springfox-boot-starter:3.0.0")
 	implementation ("io.springfox:springfox-swagger-ui:3.0.0")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    //implementation("org.springframework.boot:spring-boot-starter-data-redis")
-	//implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+
+	implementation("org.springframework.boot:spring-boot-starter-security")
+
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -90,7 +92,7 @@ dependencies {
 	runtimeOnly("com.h2database:h2")
 	providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	//testImplementation("org.springframework.security:spring-security-test")
+	testImplementation("org.springframework.security:spring-security-test")
 	//testImplementation("redis.embedded:embedded-redis:0.5")
 	testImplementation("com.tngtech.archunit:archunit-junit4:1.0.1")
 

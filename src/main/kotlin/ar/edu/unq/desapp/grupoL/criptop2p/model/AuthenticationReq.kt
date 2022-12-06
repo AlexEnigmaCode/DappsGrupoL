@@ -1,5 +1,5 @@
 package ar.edu.unq.desapp.grupoL.criptop2p.model
-/*
+
 import java.io.Serializable
 
 class AuthenticationReq(private var usuario: String, var clave: String) : Serializable {
@@ -15,5 +15,3 @@ class AuthenticationReq(private var usuario: String, var clave: String) : Serial
         private const val serialVersionUID = 1L
     }
 }
-
- */
