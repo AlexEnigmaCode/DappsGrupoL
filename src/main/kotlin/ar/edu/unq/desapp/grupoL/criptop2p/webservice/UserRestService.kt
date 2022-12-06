@@ -55,23 +55,33 @@ import org.springframework.web.bind.annotation.*
 
 
     @PostMapping("/publico/api/post")
-    fun authenticate(@RequestBody authenticationReq: AuthenticationReq): ResponseEntity<TokenInfo?>? {
-        logger.info("Autenticando al usuario {}", authenticationReq.getUsuario())
-        authenticationManager.authenticate(
-            UsernamePasswordAuthenticationToken(
-                authenticationReq.getUsuario(),
-                authenticationReq.clave
+    fun autenticate(@RequestBody user: UserLoginMapper): ResponseEntity<*> {
+        var response : ResponseEntity<*>?
+        try {
+            val userview = userService.login(user.email, user.password)
+            authenticationManager.authenticate(
+                UsernamePasswordAuthenticationToken(
+                   userview.name,
+                   user.password
+                )
             )
-        )
 
-        val userDetails = userDetailsService.loadUserByUsername(
-            authenticationReq.getUsuario()
-        )
-        val jwt: String = jwtuUtilSerice.generateToken(userDetails)
-       val tokenInfo = TokenInfo(jwt)
-        return ResponseEntity.ok(tokenInfo)
-
-}
+            val userDetails: UserDetails = userDetailsService.loadUserByUsername(userview.name)
+            val jwtToken = jwtuUtilSerice.generateToken(userDetails)
+            //         jutRequestFilter.filterConfig!!.servletContext.setAttribute("Authorization", token)
+            val tokenInfo = TokenInfo(jwtToken)
+            ResponseEntity.status(200)
+            // response = ResponseEntity.ok().body(userview)
+            response = ResponseEntity.ok().body(tokenInfo)
+        }
+        catch (e:Exception) {
+            ResponseEntity.status(404)
+            val resultado: MutableMap<String, String> = HashMap()
+            resultado["error"] =  e.message.toString()
+            response = ResponseEntity.ok().body<Map<String, String>>(resultado)
+        }
+        return response!!
+    }
 
     @GetMapping("/publico/api/users")
     fun allUsers(): ResponseEntity<*>{
@@ -117,20 +127,10 @@ import org.springframework.web.bind.annotation.*
         var response : ResponseEntity<*>?
         try {
             val userview = userService.login(user.email, user.password)
-            /*authenticationManager.authenticate(
-                UsernamePasswordAuthenticationToken(
-                   userview.name,
-                   user.password
-                )
-            )
-           */
-            val userDetails: UserDetails = userDetailsService.loadUserByUsername(userview.name)
-            val jwtToken = jwtuUtilSerice.generateToken(userDetails)
-   //         jutRequestFilter.filterConfig!!.servletContext.setAttribute("Authorization", token)
-           val tokenInfo = TokenInfo(jwtToken)
+
            ResponseEntity.status(200)
-          // response = ResponseEntity.ok().body(userview)
-            response = ResponseEntity.ok().body(tokenInfo)
+           response = ResponseEntity.ok().body(userview)
+
         }
         catch (e:Exception) {
             ResponseEntity.status(404)

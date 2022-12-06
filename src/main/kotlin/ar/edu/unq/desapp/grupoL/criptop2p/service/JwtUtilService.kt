@@ -38,7 +38,7 @@ class JwtUtilService {
 
     fun generateToken(userDetails: UserDetails): String {
         val claims: MutableMap<String, Any> = HashMap()
-        // Agregando informacion adicional como "claim"
+
         val rol: GrantedAuthority = userDetails.getAuthorities().stream().collect(Collectors.toList()).get(0)
         claims["rol"] = rol
         return createToken(claims, userDetails.getUsername())

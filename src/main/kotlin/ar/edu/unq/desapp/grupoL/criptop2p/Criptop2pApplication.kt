@@ -16,10 +16,10 @@ import org.springframework.web.client.RestTemplate
 @SpringBootApplication
 @EnableCaching
 
-class Criptop2pApplication /*: CommandLineRunner*/ {
+class Criptop2pApplication : CommandLineRunner {
 
 
-	//private val LOG = LogFactory.getLog(javaClass)
+	private val LOG = LogFactory.getLog(javaClass)
 	/*
 	lateinit var redisRepository: RedisRepository
 

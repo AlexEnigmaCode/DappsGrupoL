@@ -1,5 +1,5 @@
 package ar.edu.unq.desapp.grupoL.criptop2p
-/*
+
 import org.aspectj.lang.annotation.Around
 import kotlin.Throws
 import org.aspectj.lang.ProceedingJoinPoint
@@ -47,5 +47,3 @@ class LogExecutionTimeAuditory {
         var logger = LoggerFactory.getLogger(LogExecutionTimeAuditory::class.java)
     }
 }
-
-*/
